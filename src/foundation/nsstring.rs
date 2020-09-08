@@ -79,6 +79,20 @@ impl Ord for NSString {
     }
 }
 
+impl From<&str> for NSString {
+    #[inline]
+    fn from(s: &str) -> Self {
+        Self::from_str(s)
+    }
+}
+
+impl From<&mut str> for NSString {
+    #[inline]
+    fn from(s: &mut str) -> Self {
+        Self::from_str(s)
+    }
+}
+
 impl NSString {
     /// Returns the `NSString` class.
     #[inline]
@@ -390,6 +404,20 @@ impl Ord for NSMutableString {
     #[inline]
     fn cmp(&self, other: &Self) -> Ordering {
         NSString::cmp(self, other)
+    }
+}
+
+impl From<&str> for NSMutableString {
+    #[inline]
+    fn from(s: &str) -> Self {
+        Self::from_str(s)
+    }
+}
+
+impl From<&mut str> for NSMutableString {
+    #[inline]
+    fn from(s: &mut str) -> Self {
+        Self::from_str(s)
     }
 }
 
