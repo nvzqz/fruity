@@ -104,7 +104,7 @@ impl Class {
     }
 
     /// Returns this class's superclass, or `None` if this is a root class
-    /// (e.g. `NSObject`).
+    /// (e.g. [`NSObject`](struct.NSObject.html)).
     #[inline]
     pub fn superclass(&self) -> Option<&Class> {
         unsafe { class_getSuperclass(self) }
