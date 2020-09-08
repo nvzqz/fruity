@@ -1,4 +1,4 @@
-use super::{Class, NSUInteger, SEL};
+use super::{Class, NSUInteger, BOOL, SEL};
 use std::{ffi::c_void, fmt, ptr::NonNull};
 
 /// A non-null pointer to a class instance.
@@ -95,6 +95,49 @@ impl NSObject {
     #[inline]
     pub fn as_non_null_ptr(&self) -> NonNull<c_void> {
         self.0.as_non_null_ptr()
+    }
+
+    /// Returns the class that this object is an instance of.
+    #[inline]
+    pub fn get_class(&self) -> &'static Class {
+        extern "C" {
+            fn objc_msgSend(obj: id, sel: SEL) -> &'static Class;
+        }
+
+        let obj = self.as_id();
+        let sel = selector!(class);
+
+        unsafe { objc_msgSend(obj, sel) }
+    }
+
+    /// Returns `true` if this object is an instance or subclass of `class`.
+    ///
+    /// See [documentation](https://developer.apple.com/documentation/objectivec/1418956-nsobject/1418511-iskindofclass)
+    #[inline]
+    pub fn is_kind_of_class(&self, class: &Class) -> bool {
+        extern "C" {
+            fn objc_msgSend(obj: id, sel: SEL, class: &Class) -> BOOL;
+        }
+
+        let obj = self.as_id();
+        let sel = selector!(isKindOfClass:);
+
+        unsafe { objc_msgSend(obj, sel, class) != 0 }
+    }
+
+    /// Returns `true` if this object is an instance of `class`.
+    ///
+    /// See [documentation](https://developer.apple.com/documentation/objectivec/1418956-nsobject/1418766-ismemberofclass)
+    #[inline]
+    pub fn is_member_of_class(&self, class: &Class) -> bool {
+        extern "C" {
+            fn objc_msgSend(obj: id, sel: SEL, class: &Class) -> BOOL;
+        }
+
+        let obj = self.as_id();
+        let sel = selector!(isMemberOfClass:);
+
+        unsafe { objc_msgSend(obj, sel, class) != 0 }
     }
 
     /// Returns an integer that can be used as a table address in a hash table
