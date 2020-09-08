@@ -1,5 +1,6 @@
-use crate::objc::{Class, NSObject, NSUInteger};
-use std::ops::Deref;
+use super::NSComparisonResult;
+use crate::objc::{id, Class, NSObject, NSUInteger, BOOL, SEL};
+use std::{cmp::Ordering, ops::Deref};
 
 /// A static, plain-text Unicode string object.
 ///
@@ -21,6 +22,37 @@ impl Deref for NSString {
     #[inline]
     fn deref(&self) -> &NSObject {
         &self.0
+    }
+}
+
+impl PartialEq for NSString {
+    #[inline]
+    fn eq(&self, other: &Self) -> bool {
+        extern "C" {
+            fn objc_msgSend(obj: id, sel: SEL, other: id) -> BOOL;
+        }
+
+        let obj = self.as_id();
+        let sel = selector!(isEqualToString:);
+        let other = other.as_id();
+
+        unsafe { objc_msgSend(obj, sel, other) != 0 }
+    }
+}
+
+impl Eq for NSString {}
+
+impl PartialOrd for NSString {
+    #[inline]
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(self.cmp(other))
+    }
+}
+
+impl Ord for NSString {
+    #[inline]
+    fn cmp(&self, other: &Self) -> Ordering {
+        self.compare(other).into()
     }
 }
 
@@ -52,6 +84,132 @@ impl NSString {
     pub fn mutable_copy(&self) -> NSMutableString {
         NSMutableString(Self(NSObject::mutable_copy(self)))
     }
+
+    // TODO: Other comparison methods:
+    // - compare:options:
+    // - compare:options:range:
+    // - compare:options:range:locale:
+
+    /// Compares the string and a given string using no options.
+    ///
+    /// See [documentation](https://developer.apple.com/documentation/foundation/nsstring/1414082-compare).
+    #[inline]
+    pub fn compare(&self, other: &NSString) -> NSComparisonResult {
+        extern "C" {
+            fn objc_msgSend(obj: id, sel: SEL, other: id) -> NSComparisonResult;
+        }
+
+        let obj = self.as_id();
+        let sel = selector!(compare:);
+        let other = other.as_id();
+
+        unsafe { objc_msgSend(obj, sel, other) }
+    }
+
+    /// Compares the string and a given string using a localized comparison.
+    ///
+    /// See [documentation](https://developer.apple.com/documentation/foundation/nsstring/1416999-localizedcompare).
+    #[inline]
+    pub fn localized_compare(&self, other: &NSString) -> NSComparisonResult {
+        extern "C" {
+            fn objc_msgSend(obj: id, sel: SEL, other: id) -> NSComparisonResult;
+        }
+
+        let obj = self.as_id();
+        let sel = selector!(localizedCompare:);
+        let other = other.as_id();
+
+        unsafe { objc_msgSend(obj, sel, other) }
+    }
+
+    /// Compares the string with a given string using `NSCaseInsensitiveSearch`.
+    ///
+    /// See [documentation](https://developer.apple.com/documentation/foundation/nsstring/1414769-caseinsensitivecompare).
+    #[inline]
+    pub fn case_insensitive_compare(&self, other: &NSString) -> NSComparisonResult {
+        extern "C" {
+            fn objc_msgSend(obj: id, sel: SEL, other: id) -> NSComparisonResult;
+        }
+
+        let obj = self.as_id();
+        let sel = selector!(caseInsensitiveCompare:);
+        let other = other.as_id();
+
+        unsafe { objc_msgSend(obj, sel, other) }
+    }
+
+    /// Compares the string with a given string using a case-insensitive,
+    /// localized, comparison.
+    ///
+    /// See [documentation](https://developer.apple.com/documentation/foundation/nsstring/1417333-localizedcaseinsensitivecompare).
+    #[inline]
+    pub fn localized_case_insensitive_compare(&self, other: &NSString) -> NSComparisonResult {
+        extern "C" {
+            fn objc_msgSend(obj: id, sel: SEL, other: id) -> NSComparisonResult;
+        }
+
+        let obj = self.as_id();
+        let sel = selector!(localizedCaseInsensitiveCompare:);
+        let other = other.as_id();
+
+        unsafe { objc_msgSend(obj, sel, other) }
+    }
+
+    /// Compares strings as sorted by the Finder.
+    ///
+    /// This method should be used whenever file names or other strings are
+    /// presented in lists and tables where Finder-like sorting is appropriate.
+    /// The exact sorting behavior of this method is different under different
+    /// locales and may be changed in future releases. This method uses the
+    /// current locale.
+    ///
+    /// See [documentation](https://developer.apple.com/documentation/foundation/nsstring/1409742-localizedstandardcompare).
+    #[inline]
+    pub fn localized_standard_compare(&self, other: &NSString) -> NSComparisonResult {
+        extern "C" {
+            fn objc_msgSend(obj: id, sel: SEL, other: id) -> NSComparisonResult;
+        }
+
+        let obj = self.as_id();
+        let sel = selector!(localizedStandardCompare:);
+        let other = other.as_id();
+
+        unsafe { objc_msgSend(obj, sel, other) }
+    }
+
+    /// Returns `true` if the given string matches the beginning characters of
+    /// this string.
+    ///
+    /// See [documentation](https://developer.apple.com/documentation/foundation/nsstring/1410309-hasprefix).
+    #[inline]
+    pub fn has_prefix(&self, prefix: &NSString) -> bool {
+        extern "C" {
+            fn objc_msgSend(obj: id, sel: SEL, prefix: id) -> BOOL;
+        }
+
+        let obj = self.as_id();
+        let sel = selector!(hasPrefix:);
+        let prefix = prefix.as_id();
+
+        unsafe { objc_msgSend(obj, sel, prefix) != 0 }
+    }
+
+    /// Returns `true` if the given string matches the ending characters of this
+    /// string.
+    ///
+    /// See [documentation](https://developer.apple.com/documentation/foundation/nsstring/1416529-hassuffix).
+    #[inline]
+    pub fn has_suffix(&self, suffix: &NSString) -> bool {
+        extern "C" {
+            fn objc_msgSend(obj: id, sel: SEL, suffix: id) -> BOOL;
+        }
+
+        let obj = self.as_id();
+        let sel = selector!(hasSuffix:);
+        let suffix = suffix.as_id();
+
+        unsafe { objc_msgSend(obj, sel, suffix) != 0 }
+    }
 }
 
 /// A dynamic plain-text Unicode string object.
@@ -81,6 +239,57 @@ impl Deref for NSMutableString {
     #[inline]
     fn deref(&self) -> &NSString {
         &self.0
+    }
+}
+
+impl PartialEq for NSMutableString {
+    #[inline]
+    fn eq(&self, other: &Self) -> bool {
+        NSString::eq(self, other)
+    }
+}
+
+impl PartialEq<NSString> for NSMutableString {
+    #[inline]
+    fn eq(&self, other: &NSString) -> bool {
+        (self as &NSString).eq(other)
+    }
+}
+
+impl PartialEq<NSMutableString> for NSString {
+    #[inline]
+    fn eq(&self, other: &NSMutableString) -> bool {
+        self.eq(other as &NSString)
+    }
+}
+
+impl Eq for NSMutableString {}
+
+impl PartialOrd for NSMutableString {
+    #[inline]
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(self.cmp(other))
+    }
+}
+
+impl PartialOrd<NSString> for NSMutableString {
+    #[inline]
+    fn partial_cmp(&self, other: &NSString) -> Option<Ordering> {
+        Some(NSString::cmp(self, other))
+    }
+}
+
+impl PartialOrd<NSMutableString> for NSString {
+    #[inline]
+    fn partial_cmp(&self, other: &NSMutableString) -> Option<Ordering> {
+        Some(NSString::cmp(self, other))
+    }
+}
+
+impl Ord for NSMutableString {
+    #[inline]
+    fn cmp(&self, other: &Self) -> Ordering {
+        NSString::cmp(self, other)
     }
 }
 
