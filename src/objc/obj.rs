@@ -5,7 +5,7 @@ use std::{ffi::c_void, fmt, ptr::NonNull};
 ///
 /// See [documentation](https://developer.apple.com/documentation/objectivec/id).
 #[repr(transparent)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Ord, PartialOrd, Eq, PartialEq)]
 #[allow(non_camel_case_types)]
 pub struct id(NonNull<c_void>);
 
