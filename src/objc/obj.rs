@@ -1,4 +1,4 @@
-use super::Class;
+use super::{Class, SEL};
 use std::{ffi::c_void, fmt, ptr::NonNull};
 
 /// A non-null pointer to a class instance.
@@ -95,6 +95,38 @@ impl NSObject {
     #[inline]
     pub fn as_non_null_ptr(self) -> NonNull<c_void> {
         self.0.as_non_null_ptr()
+    }
+
+    /// Returns a copy of this object using
+    /// [`NSCopying`](https://developer.apple.com/documentation/foundation/nscopying).
+    ///
+    /// See [documentation](https://developer.apple.com/documentation/objectivec/nsobject/1418807-copy).
+    #[inline]
+    pub fn copy(&self) -> NSObject {
+        extern "C" {
+            fn objc_msgSend(obj: id, sel: SEL) -> NSObject;
+        }
+
+        let obj = self.as_id();
+        let sel = selector!(copy);
+
+        unsafe { objc_msgSend(obj, sel) }
+    }
+
+    /// Returns a copy of this object using
+    /// [`NSMutableCopying`](https://developer.apple.com/documentation/foundation/nsmutablecopying).
+    ///
+    /// See [documentation](https://developer.apple.com/documentation/objectivec/nsobject/1418978-mutablecopy).
+    #[inline]
+    pub fn mutable_copy(&self) -> NSObject {
+        extern "C" {
+            fn objc_msgSend(obj: id, sel: SEL) -> NSObject;
+        }
+
+        let obj = self.as_id();
+        let sel = selector!(copy);
+
+        unsafe { objc_msgSend(obj, sel) }
     }
 }
 
