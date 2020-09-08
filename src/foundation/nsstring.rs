@@ -5,6 +5,26 @@ use crate::{
 };
 use std::{cmp::Ordering, ops::Deref};
 
+/// Returns the selector with a given name.
+///
+/// If the string cannot be converted to UTF-8 (this should be only due to
+/// insufficient memory), this returns
+/// [`None`](https://doc.rust-lang.org/std/option/enum.Option.html#variant.None).
+///
+/// Use this function if you want your code to look more like Objective-C.
+/// Otherwise, the [`to_selector`](struct.NSString.html#method.to_selector)
+/// method should be preferred.
+///
+/// See [documentation](https://developer.apple.com/documentation/foundation/1395294-nsselectorfromstring).
+#[inline]
+#[allow(non_snake_case)]
+pub fn NSSelectorFromString(string: &NSString) -> Option<SEL> {
+    extern "C" {
+        fn NSSelectorFromString(string: id) -> Option<SEL>;
+    }
+    unsafe { NSSelectorFromString(string.as_id()) }
+}
+
 /// A static, plain-text Unicode string object.
 ///
 /// See [documentation](https://developer.apple.com/documentation/foundation/nsstring).
@@ -151,6 +171,18 @@ impl NSString {
     #[inline]
     pub fn mutable_copy(&self) -> NSMutableString {
         NSMutableString(Self(NSObject::mutable_copy(self)))
+    }
+
+    /// Returns a selector with this string as its name.
+    ///
+    /// If this string cannot be converted to UTF-8 (this should be only due to
+    /// insufficient memory), this returns
+    /// [`None`](https://doc.rust-lang.org/std/option/enum.Option.html#variant.None).
+    ///
+    /// See [documentation](https://developer.apple.com/documentation/foundation/1395294-nsselectorfromstring).
+    #[inline]
+    pub fn to_selector(&self) -> Option<SEL> {
+        NSSelectorFromString(self)
     }
 
     // TODO: Other comparison methods:
