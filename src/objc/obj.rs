@@ -140,7 +140,7 @@ impl NSObject {
         }
 
         let obj = self.as_id();
-        let sel = selector!(copy);
+        let sel = selector!(mutableCopy);
 
         unsafe { objc_msgSend(obj, sel) }
     }
