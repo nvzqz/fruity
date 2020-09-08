@@ -6,6 +6,8 @@
 #![deny(improper_ctypes)]
 #![warn(missing_docs)]
 
+pub mod mem;
+
 #[macro_use]
 pub mod objc;
 

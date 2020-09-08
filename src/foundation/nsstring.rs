@@ -1,5 +1,8 @@
 use super::NSComparisonResult;
-use crate::objc::{id, Class, NSObject, NSUInteger, BOOL, SEL};
+use crate::{
+    mem::{NoCopy, NoCopyMut},
+    objc::{id, Class, NSObject, NSUInteger, BOOL, NO, SEL},
+};
 use std::{cmp::Ordering, ops::Deref};
 
 /// A static, plain-text Unicode string object.
@@ -96,6 +99,40 @@ impl NSString {
     #[inline]
     pub fn from_str(s: &str) -> NSString {
         unsafe { Self::_from_str(s, Self::class()) }
+    }
+
+    /// Creates an immutable string object without copying a slice.
+    pub fn from_str_no_copy<'a>(s: &'a str) -> NoCopy<'a, NSString> {
+        let value: Self = Self(Self::class().alloc());
+
+        extern "C" {
+            fn objc_msgSend(
+                obj: NSString,
+                sel: SEL,
+                bytes: *const u8,
+                length: NSUInteger,
+                encoding: NSStringEncoding,
+                free_when_done: BOOL,
+            ) -> NSString;
+        }
+
+        let obj = value;
+        let sel = selector!(initWithBytesNoCopy:length:encoding:freeWhenDone:);
+        let bytes = s.as_ptr();
+        let length = s.len();
+        let encoding = NSStringEncoding::UTF8;
+        let free_when_done = NO;
+
+        unsafe {
+            NoCopy::new(objc_msgSend(
+                obj,
+                sel,
+                bytes,
+                length,
+                encoding,
+                free_when_done,
+            ))
+        }
     }
 
     /// Returns a copy of this object using
@@ -339,6 +376,40 @@ impl NSMutableString {
     #[inline]
     pub fn from_str(s: &str) -> NSMutableString {
         unsafe { Self(NSString::_from_str(s, Self::class())) }
+    }
+
+    /// Creates a mutable string object without copying a slice.
+    pub fn from_str_no_copy<'a>(s: &'a mut str) -> NoCopyMut<'a, NSMutableString> {
+        let value: Self = Self(NSString(Self::class().alloc()));
+
+        extern "C" {
+            fn objc_msgSend(
+                obj: NSMutableString,
+                sel: SEL,
+                bytes: *mut u8,
+                length: NSUInteger,
+                encoding: NSStringEncoding,
+                free_when_done: BOOL,
+            ) -> NSMutableString;
+        }
+
+        let obj = value;
+        let sel = selector!(initWithBytesNoCopy:length:encoding:freeWhenDone:);
+        let bytes = s.as_mut_ptr();
+        let length = s.len();
+        let encoding = NSStringEncoding::UTF8;
+        let free_when_done = NO;
+
+        unsafe {
+            NoCopyMut::new(objc_msgSend(
+                obj,
+                sel,
+                bytes,
+                length,
+                encoding,
+                free_when_done,
+            ))
+        }
     }
 }
 
