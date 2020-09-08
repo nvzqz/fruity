@@ -6,6 +6,8 @@
 #![deny(improper_ctypes)]
 #![warn(missing_docs)]
 
+#[macro_use]
+pub mod objc;
+
 pub mod core_foundation;
 pub mod foundation;
-pub mod objc;
