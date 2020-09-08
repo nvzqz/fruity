@@ -67,9 +67,11 @@ impl NSString {
         unsafe { &CLASS }
     }
 
-    /// Creates an immutable string object from copying a slice.
-    pub fn from_str(s: &str) -> NSString {
-        let value: Self = Self(Self::class().alloc());
+    // Shared non-inlined `from_str` implementation.
+    //
+    // This allows for reducing the code size of the final binary.
+    unsafe fn _from_str(s: &str, class: &Class) -> NSString {
+        let value: Self = Self(class.alloc());
 
         extern "C" {
             fn objc_msgSend(
@@ -87,7 +89,13 @@ impl NSString {
         let length = s.len();
         let encoding = NSStringEncoding::UTF8;
 
-        unsafe { objc_msgSend(obj, sel, bytes, length, encoding) }
+        objc_msgSend(obj, sel, bytes, length, encoding)
+    }
+
+    /// Creates an immutable string object from copying a slice.
+    #[inline]
+    pub fn from_str(s: &str) -> NSString {
+        unsafe { Self::_from_str(s, Self::class()) }
     }
 
     /// Returns a copy of this object using
@@ -328,26 +336,9 @@ impl NSMutableString {
     }
 
     /// Creates a mutable string object from copying a slice.
+    #[inline]
     pub fn from_str(s: &str) -> NSMutableString {
-        let value: Self = Self(NSString(Self::class().alloc()));
-
-        extern "C" {
-            fn objc_msgSend(
-                obj: NSMutableString,
-                sel: SEL,
-                bytes: *const u8,
-                length: NSUInteger,
-                encoding: NSStringEncoding,
-            ) -> NSMutableString;
-        }
-
-        let obj = value;
-        let sel = selector!(initWithBytes:length:encoding:);
-        let bytes = s.as_ptr();
-        let length = s.len();
-        let encoding = NSStringEncoding::UTF8;
-
-        unsafe { objc_msgSend(obj, sel, bytes, length, encoding) }
+        unsafe { Self(NSString::_from_str(s, Self::class())) }
     }
 }
 
