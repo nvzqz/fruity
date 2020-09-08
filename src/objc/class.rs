@@ -110,6 +110,51 @@ impl Class {
         unsafe { class_getSuperclass(self) }
     }
 
+    /// Returns an iterator over the superclasses of this class.
+    #[inline]
+    pub fn superclass_iter(&self) -> impl Iterator<Item = &Class> + Copy {
+        #[derive(Copy, Clone)]
+        struct Iter<'a>(&'a Class);
+
+        impl<'a> Iterator for Iter<'a> {
+            type Item = &'a Class;
+
+            #[inline]
+            fn next(&mut self) -> Option<Self::Item> {
+                let superclass = self.0.superclass()?;
+                self.0 = superclass;
+                Some(superclass)
+            }
+        }
+
+        // There are no more superclasses after the root is reached.
+        impl std::iter::FusedIterator for Iter<'_> {}
+
+        Iter(self)
+    }
+
+    /// Returns the number of superclasses of this class.
+    #[inline]
+    pub fn superclass_count(&self) -> usize {
+        self.superclass_iter().count()
+    }
+
+    /// Returns `true` if this class has a superclass.
+    #[inline]
+    pub fn is_subclass(&self) -> bool {
+        self.superclass().is_some()
+    }
+
+    /// Returns `true` if this class is a subclass of, or identical to, the
+    /// other class.
+    pub fn is_subclass_of(&self, other: &Self) -> bool {
+        if self == other {
+            true
+        } else {
+            self.superclass_iter().any(|superclass| superclass == other)
+        }
+    }
+
     /// Returns the size of instances of this class.
     #[inline]
     pub fn instance_size(&self) -> usize {
