@@ -67,6 +67,29 @@ impl NSString {
         unsafe { &CLASS }
     }
 
+    /// Creates an immutable string object from copying a slice.
+    pub fn from_str(s: &str) -> NSString {
+        let value: Self = Self(Self::class().alloc());
+
+        extern "C" {
+            fn objc_msgSend(
+                obj: NSString,
+                sel: SEL,
+                bytes: *const u8,
+                length: NSUInteger,
+                encoding: NSStringEncoding,
+            ) -> NSString;
+        }
+
+        let obj = value;
+        let sel = selector!(initWithBytes:length:encoding:);
+        let bytes = s.as_ptr();
+        let length = s.len();
+        let encoding = NSStringEncoding::UTF8;
+
+        unsafe { objc_msgSend(obj, sel, bytes, length, encoding) }
+    }
+
     /// Returns a copy of this object using
     /// [`NSCopying`](https://developer.apple.com/documentation/foundation/nscopying).
     ///
@@ -302,6 +325,29 @@ impl NSMutableString {
             static CLASS: Class;
         }
         unsafe { &CLASS }
+    }
+
+    /// Creates a mutable string object from copying a slice.
+    pub fn from_str(s: &str) -> NSMutableString {
+        let value: Self = Self(NSString(Self::class().alloc()));
+
+        extern "C" {
+            fn objc_msgSend(
+                obj: NSMutableString,
+                sel: SEL,
+                bytes: *const u8,
+                length: NSUInteger,
+                encoding: NSStringEncoding,
+            ) -> NSMutableString;
+        }
+
+        let obj = value;
+        let sel = selector!(initWithBytes:length:encoding:);
+        let bytes = s.as_ptr();
+        let length = s.len();
+        let encoding = NSStringEncoding::UTF8;
+
+        unsafe { objc_msgSend(obj, sel, bytes, length, encoding) }
     }
 }
 

@@ -1,3 +1,4 @@
+use super::{NSObject, SEL};
 use std::{
     cell::UnsafeCell,
     cmp,
@@ -95,6 +96,17 @@ impl Class {
         }
 
         all
+    }
+
+    #[inline]
+    pub(crate) fn alloc(&self) -> NSObject {
+        extern "C" {
+            fn objc_msgSend(class: &Class, sel: SEL) -> NSObject;
+        }
+
+        let sel = selector!(alloc);
+
+        unsafe { objc_msgSend(self, sel) }
     }
 
     /// Returns the name of this class.
