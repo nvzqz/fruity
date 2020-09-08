@@ -87,13 +87,13 @@ impl NSObject {
 
     /// Returns a raw nullable pointer to this object's data.
     #[inline]
-    pub fn as_ptr(self) -> *mut c_void {
+    pub fn as_ptr(&self) -> *mut c_void {
         self.0.as_ptr()
     }
 
     /// Returns a raw non-null pointer to this object's data.
     #[inline]
-    pub fn as_non_null_ptr(self) -> NonNull<c_void> {
+    pub fn as_non_null_ptr(&self) -> NonNull<c_void> {
         self.0.as_non_null_ptr()
     }
 
