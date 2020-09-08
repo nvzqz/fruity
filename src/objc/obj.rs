@@ -1,4 +1,4 @@
-use super::{Class, SEL};
+use super::{Class, NSUInteger, SEL};
 use std::{ffi::c_void, fmt, ptr::NonNull};
 
 /// A non-null pointer to a class instance.
@@ -95,6 +95,22 @@ impl NSObject {
     #[inline]
     pub fn as_non_null_ptr(&self) -> NonNull<c_void> {
         self.0.as_non_null_ptr()
+    }
+
+    /// Returns an integer that can be used as a table address in a hash table
+    /// structure.
+    ///
+    /// See [documentation](https://developer.apple.com/documentation/objectivec/1418956-nsobject/1418859-hash).
+    #[inline]
+    pub fn hash(&self) -> NSUInteger {
+        extern "C" {
+            fn objc_msgSend(obj: id, sel: SEL) -> NSUInteger;
+        }
+
+        let obj = self.as_id();
+        let sel = selector!(hash);
+
+        unsafe { objc_msgSend(obj, sel) }
     }
 
     /// Returns a copy of this object using
