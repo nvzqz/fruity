@@ -14,5 +14,5 @@ pub use int::*;
 pub use obj::*;
 pub use sel::*;
 
-#[link(name = "objc", kind = "dylib")]
+#[cfg_attr(feature = "link", link(name = "objc", kind = "dylib"))]
 extern "C" {}

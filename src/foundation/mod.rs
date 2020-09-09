@@ -6,5 +6,5 @@ mod nsstring;
 pub use cmp::*;
 pub use nsstring::*;
 
-#[link(name = "Foundation", kind = "framework")]
+#[cfg_attr(feature = "link", link(name = "Foundation", kind = "framework"))]
 extern "C" {}
