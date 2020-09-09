@@ -1,3 +1,4 @@
+use super::BOOL;
 use std::{
     ffi::CStr,
     fmt,
@@ -20,6 +21,18 @@ pub struct SEL(NonNull<c_void>);
 
 unsafe impl Send for SEL {}
 unsafe impl Sync for SEL {}
+
+impl PartialEq for SEL {
+    #[inline]
+    fn eq(&self, other: &Self) -> bool {
+        extern "C" {
+            fn sel_isEqual(lhs: SEL, rhs: SEL) -> BOOL;
+        }
+        unsafe { sel_isEqual(*self, *other) != 0 }
+    }
+}
+
+impl Eq for SEL {}
 
 impl fmt::Debug for SEL {
     #[inline]
