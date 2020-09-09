@@ -39,6 +39,9 @@ macro_rules! selector_str {
     ($($sel:ident :)*) => {
         std::concat!($(std::stringify!($sel), ":",)* "\0")
     };
+    ($sel:expr) => {
+        std::compile_error!("Selector literal cannot be an expression")
+    };
     ($($sel:tt)+) => {
         std::compile_error!(std::concat!(
             "Invalid selector literal: '",
