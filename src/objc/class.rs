@@ -1,4 +1,4 @@
-use super::{NSObject, SEL};
+use super::{NSObject, BOOL, SEL};
 use std::{
     cell::UnsafeCell,
     cmp,
@@ -107,6 +107,36 @@ impl Class {
         let sel = selector!(alloc);
 
         unsafe { objc_msgSend(self, sel) }
+    }
+
+    /// Returns `true` if this class implements or inherits a method that can
+    /// respond to a specified message.
+    ///
+    /// See [documentation](https://developer.apple.com/documentation/objectivec/1418956-nsobject/1418583-respondstoselector).
+    #[inline]
+    pub fn responds_to_selector(&self, selector: SEL) -> bool {
+        extern "C" {
+            fn objc_msgSend(class: &Class, sel: SEL, selector: SEL) -> BOOL;
+        }
+
+        let sel = selector!(respondsToSelector:);
+
+        unsafe { objc_msgSend(self, sel, selector) != 0 }
+    }
+
+    /// Returns `true` if instances of this class implement or inherit a method
+    /// that can respond to a specified message.
+    ///
+    /// See [documentation](https://developer.apple.com/documentation/objectivec/nsobject/1418555-instancesrespondtoselector).
+    #[inline]
+    pub fn instances_respond_to_selector(&self, selector: SEL) -> bool {
+        extern "C" {
+            fn objc_msgSend(class: &Class, sel: SEL, selector: SEL) -> BOOL;
+        }
+
+        let sel = selector!(instancesRespondToSelector:);
+
+        unsafe { objc_msgSend(self, sel, selector) != 0 }
     }
 
     /// Returns the name of this class.

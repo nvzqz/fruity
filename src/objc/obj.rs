@@ -97,6 +97,22 @@ impl NSObject {
         self.0.as_non_null_ptr()
     }
 
+    /// Returns `true` if this object implements or inherits a method that can
+    /// respond to a specified message.
+    ///
+    /// See [documentation](https://developer.apple.com/documentation/objectivec/1418956-nsobject/1418583-respondstoselector).
+    #[inline]
+    pub fn responds_to_selector(&self, selector: SEL) -> bool {
+        extern "C" {
+            fn objc_msgSend(obj: id, sel: SEL, selector: SEL) -> BOOL;
+        }
+
+        let obj = self.as_id();
+        let sel = selector!(respondsToSelector:);
+
+        unsafe { objc_msgSend(obj, sel, selector) != 0 }
+    }
+
     /// Returns the class that this object is an instance of.
     #[inline]
     pub fn get_class(&self) -> &'static Class {
