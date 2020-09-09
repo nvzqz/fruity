@@ -1,8 +1,5 @@
 use super::NSComparisonResult;
-use crate::{
-    mem::{NoCopy, NoCopyMut},
-    objc::{id, Class, NSObject, NSUInteger, BOOL, NO, SEL},
-};
+use crate::objc::{id, Class, NSObject, NSUInteger, BOOL, NO, SEL};
 use std::{cmp::Ordering, ops::Deref};
 
 /// Returns the selector with a given name.
@@ -136,7 +133,12 @@ impl NSString {
     }
 
     /// Creates an immutable string object without copying a slice.
-    pub fn from_str_no_copy<'a>(s: &'a str) -> NoCopy<'a, NSString> {
+    ///
+    /// # Safety
+    ///
+    /// The returned string object or its clones must not outlive the referenced
+    /// string slice.
+    pub unsafe fn from_str_no_copy(s: &str) -> NSString {
         let value: Self = Self(Self::class().alloc());
 
         extern "C" {
@@ -157,16 +159,7 @@ impl NSString {
         let encoding = NSStringEncoding::UTF8;
         let free_when_done = NO;
 
-        unsafe {
-            NoCopy::new(objc_msgSend(
-                obj,
-                sel,
-                bytes,
-                length,
-                encoding,
-                free_when_done,
-            ))
-        }
+        objc_msgSend(obj, sel, bytes, length, encoding, free_when_done)
     }
 
     /// Returns a copy of this object using
@@ -439,7 +432,12 @@ impl NSMutableString {
     }
 
     /// Creates a mutable string object without copying a slice.
-    pub fn from_str_no_copy<'a>(s: &'a mut str) -> NoCopyMut<'a, NSMutableString> {
+    ///
+    /// # Safety
+    ///
+    /// The returned string object or its clones must not outlive the referenced
+    /// string slice.
+    pub unsafe fn from_str_no_copy(s: &mut str) -> NSMutableString {
         let value: Self = Self(NSString(Self::class().alloc()));
 
         extern "C" {
@@ -460,16 +458,7 @@ impl NSMutableString {
         let encoding = NSStringEncoding::UTF8;
         let free_when_done = NO;
 
-        unsafe {
-            NoCopyMut::new(objc_msgSend(
-                obj,
-                sel,
-                bytes,
-                length,
-                encoding,
-                free_when_done,
-            ))
-        }
+        objc_msgSend(obj, sel, bytes, length, encoding, free_when_done)
     }
 }
 
