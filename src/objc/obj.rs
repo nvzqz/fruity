@@ -1,13 +1,43 @@
 use super::{Class, NSUInteger, BOOL, SEL};
 use std::{ffi::c_void, fmt, ptr::NonNull};
 
-/// A non-null pointer to a class instance.
+/// A non-null smart pointer to any object instance, including classes.
+///
+/// This is semantically equivalent to `id _Nonnull` in Objective-C.
 ///
 /// See [documentation](https://developer.apple.com/documentation/objectivec/id).
+///
+/// # Distinction from `NSObject`
+///
+/// `NSObject` is the root of _almost_ all Objective-C classes. Although very
+/// rare, it is possible for other root objects to exist. For example, one you
+/// can find
 #[repr(transparent)]
-#[derive(Copy, Clone, Ord, PartialOrd, Eq, PartialEq)]
 #[allow(non_camel_case_types)]
 pub struct id(NonNull<c_void>);
+
+unsafe impl Send for id {}
+unsafe impl Sync for id {}
+
+impl Drop for id {
+    #[inline]
+    fn drop(&mut self) {
+        extern "C" {
+            fn objc_release(obj: NonNull<c_void>);
+        }
+        unsafe { objc_release(self.0) };
+    }
+}
+
+impl Clone for id {
+    #[inline]
+    fn clone(&self) -> Self {
+        extern "C" {
+            fn objc_retain(obj: NonNull<c_void>) -> NonNull<c_void>;
+        }
+        Self(unsafe { objc_retain(self.0) })
+    }
+}
 
 impl fmt::Debug for id {
     #[inline]
@@ -24,15 +54,35 @@ impl fmt::Pointer for id {
 }
 
 impl id {
+    /// Creates an object identifier from a raw nullable pointer.
+    ///
+    /// # Safety
+    ///
+    /// The pointer must point to a valid Objective-C object instance.
+    #[inline]
+    pub const unsafe fn from_ptr(ptr: *mut c_void) -> Self {
+        Self(NonNull::new_unchecked(ptr))
+    }
+
+    /// Creates an object identifier from a raw non-null pointer.
+    ///
+    /// # Safety
+    ///
+    /// The pointer must point to a valid Objective-C object instance.
+    #[inline]
+    pub const unsafe fn from_non_null_ptr(ptr: NonNull<c_void>) -> Self {
+        Self(ptr)
+    }
+
     /// Casts `self` to a raw nullable pointer.
     #[inline]
-    pub fn as_ptr(self) -> *mut c_void {
+    pub fn as_ptr(&self) -> *mut c_void {
         self.0.as_ptr()
     }
 
     /// Casts `self` to a raw non-null pointer.
     #[inline]
-    pub fn as_non_null_ptr(self) -> NonNull<c_void> {
+    pub fn as_non_null_ptr(&self) -> NonNull<c_void> {
         self.0
     }
 }
@@ -41,25 +91,8 @@ impl id {
 ///
 /// See [documentation](https://developer.apple.com/documentation/objectivec/nsobject).
 #[repr(transparent)]
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub struct NSObject(id);
-
-unsafe impl Send for NSObject {}
-unsafe impl Sync for NSObject {}
-
-impl Drop for NSObject {
-    #[inline]
-    fn drop(&mut self) {
-        unsafe { objc_release(self.as_id()) };
-    }
-}
-
-impl Clone for NSObject {
-    #[inline]
-    fn clone(&self) -> Self {
-        Self(unsafe { objc_retain(self.as_id()) })
-    }
-}
 
 impl AsRef<NSObject> for NSObject {
     #[inline]
@@ -81,8 +114,8 @@ impl NSObject {
 
     /// Returns a pointer to this object's data.
     #[inline]
-    pub fn as_id(&self) -> id {
-        self.0
+    pub fn as_id(&self) -> &id {
+        &self.0
     }
 
     /// Returns a raw nullable pointer to this object's data.
@@ -104,10 +137,10 @@ impl NSObject {
     #[inline]
     pub fn responds_to_selector(&self, selector: SEL) -> bool {
         extern "C" {
-            fn objc_msgSend(obj: id, sel: SEL, selector: SEL) -> BOOL;
+            fn objc_msgSend(obj: *mut c_void, sel: SEL, selector: SEL) -> BOOL;
         }
 
-        let obj = self.as_id();
+        let obj = self.as_ptr();
         let sel = selector!(respondsToSelector:);
 
         unsafe { objc_msgSend(obj, sel, selector) != 0 }
@@ -117,10 +150,10 @@ impl NSObject {
     #[inline]
     pub fn get_class(&self) -> &'static Class {
         extern "C" {
-            fn objc_msgSend(obj: id, sel: SEL) -> &'static Class;
+            fn objc_msgSend(obj: *mut c_void, sel: SEL) -> &'static Class;
         }
 
-        let obj = self.as_id();
+        let obj = self.as_ptr();
         let sel = selector!(class);
 
         unsafe { objc_msgSend(obj, sel) }
@@ -132,10 +165,10 @@ impl NSObject {
     #[inline]
     pub fn is_kind_of_class(&self, class: &Class) -> bool {
         extern "C" {
-            fn objc_msgSend(obj: id, sel: SEL, class: &Class) -> BOOL;
+            fn objc_msgSend(obj: *mut c_void, sel: SEL, class: &Class) -> BOOL;
         }
 
-        let obj = self.as_id();
+        let obj = self.as_ptr();
         let sel = selector!(isKindOfClass:);
 
         unsafe { objc_msgSend(obj, sel, class) != 0 }
@@ -147,10 +180,10 @@ impl NSObject {
     #[inline]
     pub fn is_member_of_class(&self, class: &Class) -> bool {
         extern "C" {
-            fn objc_msgSend(obj: id, sel: SEL, class: &Class) -> BOOL;
+            fn objc_msgSend(obj: *mut c_void, sel: SEL, class: &Class) -> BOOL;
         }
 
-        let obj = self.as_id();
+        let obj = self.as_ptr();
         let sel = selector!(isMemberOfClass:);
 
         unsafe { objc_msgSend(obj, sel, class) != 0 }
@@ -163,10 +196,10 @@ impl NSObject {
     #[inline]
     pub fn hash(&self) -> NSUInteger {
         extern "C" {
-            fn objc_msgSend(obj: id, sel: SEL) -> NSUInteger;
+            fn objc_msgSend(obj: *mut c_void, sel: SEL) -> NSUInteger;
         }
 
-        let obj = self.as_id();
+        let obj = self.as_ptr();
         let sel = selector!(hash);
 
         unsafe { objc_msgSend(obj, sel) }
@@ -179,10 +212,10 @@ impl NSObject {
     #[inline]
     pub fn copy(&self) -> NSObject {
         extern "C" {
-            fn objc_msgSend(obj: id, sel: SEL) -> NSObject;
+            fn objc_msgSend(obj: *mut c_void, sel: SEL) -> NSObject;
         }
 
-        let obj = self.as_id();
+        let obj = self.as_ptr();
         let sel = selector!(copy);
 
         unsafe { objc_msgSend(obj, sel) }
@@ -195,17 +228,12 @@ impl NSObject {
     #[inline]
     pub fn mutable_copy(&self) -> NSObject {
         extern "C" {
-            fn objc_msgSend(obj: id, sel: SEL) -> NSObject;
+            fn objc_msgSend(obj: *mut c_void, sel: SEL) -> NSObject;
         }
 
-        let obj = self.as_id();
+        let obj = self.as_ptr();
         let sel = selector!(mutableCopy);
 
         unsafe { objc_msgSend(obj, sel) }
     }
-}
-
-extern "C" {
-    fn objc_retain(obj: id) -> id;
-    fn objc_release(obj: id);
 }

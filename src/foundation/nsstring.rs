@@ -1,6 +1,6 @@
 use super::NSComparisonResult;
-use crate::objc::{id, Class, NSObject, NSUInteger, BOOL, NO, SEL};
-use std::{cmp::Ordering, ops::Deref};
+use crate::objc::{Class, NSObject, NSUInteger, BOOL, NO, SEL};
+use std::{cmp::Ordering, ffi::c_void, ops::Deref};
 
 /// Returns the selector with a given name.
 ///
@@ -17,9 +17,9 @@ use std::{cmp::Ordering, ops::Deref};
 #[allow(non_snake_case)]
 pub fn NSSelectorFromString(string: &NSString) -> Option<SEL> {
     extern "C" {
-        fn NSSelectorFromString(string: id) -> Option<SEL>;
+        fn NSSelectorFromString(string: *mut c_void) -> Option<SEL>;
     }
-    unsafe { NSSelectorFromString(string.as_id()) }
+    unsafe { NSSelectorFromString(string.as_ptr()) }
 }
 
 /// A static, plain-text Unicode string object.
@@ -49,12 +49,12 @@ impl PartialEq for NSString {
     #[inline]
     fn eq(&self, other: &Self) -> bool {
         extern "C" {
-            fn objc_msgSend(obj: id, sel: SEL, other: id) -> BOOL;
+            fn objc_msgSend(obj: *mut c_void, sel: SEL, other: *mut c_void) -> BOOL;
         }
 
-        let obj = self.as_id();
+        let obj = self.as_ptr();
         let sel = selector!(isEqualToString:);
-        let other = other.as_id();
+        let other = other.as_ptr();
 
         unsafe { objc_msgSend(obj, sel, other) != 0 }
     }
@@ -203,12 +203,12 @@ impl NSString {
     #[inline]
     pub fn compare(&self, other: &NSString) -> NSComparisonResult {
         extern "C" {
-            fn objc_msgSend(obj: id, sel: SEL, other: id) -> NSComparisonResult;
+            fn objc_msgSend(obj: *mut c_void, sel: SEL, other: *mut c_void) -> NSComparisonResult;
         }
 
-        let obj = self.as_id();
+        let obj = self.as_ptr();
         let sel = selector!(compare:);
-        let other = other.as_id();
+        let other = other.as_ptr();
 
         unsafe { objc_msgSend(obj, sel, other) }
     }
@@ -219,12 +219,12 @@ impl NSString {
     #[inline]
     pub fn localized_compare(&self, other: &NSString) -> NSComparisonResult {
         extern "C" {
-            fn objc_msgSend(obj: id, sel: SEL, other: id) -> NSComparisonResult;
+            fn objc_msgSend(obj: *mut c_void, sel: SEL, other: *mut c_void) -> NSComparisonResult;
         }
 
-        let obj = self.as_id();
+        let obj = self.as_ptr();
         let sel = selector!(localizedCompare:);
-        let other = other.as_id();
+        let other = other.as_ptr();
 
         unsafe { objc_msgSend(obj, sel, other) }
     }
@@ -235,12 +235,12 @@ impl NSString {
     #[inline]
     pub fn case_insensitive_compare(&self, other: &NSString) -> NSComparisonResult {
         extern "C" {
-            fn objc_msgSend(obj: id, sel: SEL, other: id) -> NSComparisonResult;
+            fn objc_msgSend(obj: *mut c_void, sel: SEL, other: *mut c_void) -> NSComparisonResult;
         }
 
-        let obj = self.as_id();
+        let obj = self.as_ptr();
         let sel = selector!(caseInsensitiveCompare:);
-        let other = other.as_id();
+        let other = other.as_ptr();
 
         unsafe { objc_msgSend(obj, sel, other) }
     }
@@ -252,12 +252,12 @@ impl NSString {
     #[inline]
     pub fn localized_case_insensitive_compare(&self, other: &NSString) -> NSComparisonResult {
         extern "C" {
-            fn objc_msgSend(obj: id, sel: SEL, other: id) -> NSComparisonResult;
+            fn objc_msgSend(obj: *mut c_void, sel: SEL, other: *mut c_void) -> NSComparisonResult;
         }
 
-        let obj = self.as_id();
+        let obj = self.as_ptr();
         let sel = selector!(localizedCaseInsensitiveCompare:);
-        let other = other.as_id();
+        let other = other.as_ptr();
 
         unsafe { objc_msgSend(obj, sel, other) }
     }
@@ -274,12 +274,12 @@ impl NSString {
     #[inline]
     pub fn localized_standard_compare(&self, other: &NSString) -> NSComparisonResult {
         extern "C" {
-            fn objc_msgSend(obj: id, sel: SEL, other: id) -> NSComparisonResult;
+            fn objc_msgSend(obj: *mut c_void, sel: SEL, other: *mut c_void) -> NSComparisonResult;
         }
 
-        let obj = self.as_id();
+        let obj = self.as_ptr();
         let sel = selector!(localizedStandardCompare:);
-        let other = other.as_id();
+        let other = other.as_ptr();
 
         unsafe { objc_msgSend(obj, sel, other) }
     }
@@ -291,12 +291,12 @@ impl NSString {
     #[inline]
     pub fn has_prefix(&self, prefix: &NSString) -> bool {
         extern "C" {
-            fn objc_msgSend(obj: id, sel: SEL, prefix: id) -> BOOL;
+            fn objc_msgSend(obj: *mut c_void, sel: SEL, prefix: *mut c_void) -> BOOL;
         }
 
-        let obj = self.as_id();
+        let obj = self.as_ptr();
         let sel = selector!(hasPrefix:);
-        let prefix = prefix.as_id();
+        let prefix = prefix.as_ptr();
 
         unsafe { objc_msgSend(obj, sel, prefix) != 0 }
     }
@@ -308,12 +308,12 @@ impl NSString {
     #[inline]
     pub fn has_suffix(&self, suffix: &NSString) -> bool {
         extern "C" {
-            fn objc_msgSend(obj: id, sel: SEL, suffix: id) -> BOOL;
+            fn objc_msgSend(obj: *mut c_void, sel: SEL, suffix: *mut c_void) -> BOOL;
         }
 
-        let obj = self.as_id();
+        let obj = self.as_ptr();
         let sel = selector!(hasSuffix:);
-        let suffix = suffix.as_id();
+        let suffix = suffix.as_ptr();
 
         unsafe { objc_msgSend(obj, sel, suffix) != 0 }
     }
