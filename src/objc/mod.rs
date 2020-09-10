@@ -6,11 +6,13 @@ mod sel;
 mod bool;
 mod class;
 mod int;
+mod nsobject;
 mod obj;
 
 pub use self::bool::*;
 pub use class::*;
 pub use int::*;
+pub use nsobject::*;
 pub use obj::*;
 pub use sel::*;
 
