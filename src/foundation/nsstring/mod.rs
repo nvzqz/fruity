@@ -2,6 +2,8 @@ use super::NSComparisonResult;
 use crate::objc::{Class, NSObject, NSUInteger, Object, BOOL, NO, SEL};
 use std::{cmp::Ordering, ffi::CStr, fmt, ops::Deref, os::raw::c_char, ptr::NonNull, str};
 
+mod macros;
+
 /// Returns the selector with a given name.
 ///
 /// If the string cannot be converted to UTF-8 (this should be only due to
