@@ -14,3 +14,6 @@ keywords = ["apple", "cocoa", "objc", "foundation", "uikit"]
 [features]
 default = ["link"]
 link = []
+
+[package.metadata.docs.rs]
+targets = ["x86_64-apple-darwin"]
