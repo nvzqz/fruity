@@ -12,9 +12,9 @@ use std::{cell::UnsafeCell, fmt, ops::Deref, ptr::NonNull};
 #[repr(C)]
 pub struct Object {
     // Stores data that may live in the `__DATA` link section, which is mutable.
-    // It is normally undefined behavior for shared references to point to
-    // mutable data. We can inform Rust that this data is internally mutable by
-    // using `UnsafeCell`.
+    // It is normally undefined behavior for references to alias mutable data.
+    // We can inform Rust that this data is internally mutable by using
+    // `UnsafeCell`.
     _data: UnsafeCell<[u8; 0]>,
 }
 
