@@ -2,6 +2,12 @@
 /// from a selector literal, that may be used as the basis of a
 /// [`SEL`](objc/struct.SEL.html).
 ///
+/// # Feature Flag
+///
+/// This macro is defined in [`objc`](objc/index.html),
+/// which requires the **`objc`**
+/// [feature flag](index.html#feature-flags).
+///
 /// # Examples
 ///
 /// This macro accepts anything that can go in Objective-C's `@selector`:
@@ -52,6 +58,12 @@ macro_rules! selector_str {
 }
 
 /// Creates a [`SEL`](objc/struct.SEL.html) from a selector literal.
+///
+/// # Feature Flag
+///
+/// This macro is defined in [`objc`](objc/index.html),
+/// which requires the **`objc`**
+/// [feature flag](index.html#feature-flags).
 ///
 /// # Examples
 ///

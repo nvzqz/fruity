@@ -1,5 +1,25 @@
 //! Rusty bindings for Apple libraries, brought to you by
 //! [@NikolaiVazquez](https://twitter.com/NikolaiVazquez).
+//!
+//! # Feature Flags
+//!
+//! Each module for a library or framework has its own
+//! [feature flag](https://doc.rust-lang.org/cargo/reference/features.html)
+//! with the same name.
+//!
+//! For example, this is how you enable the
+//! [`foundation`](foundation/index.html) module via [`Cargo.toml`]:
+//!
+//! ```toml
+//! [dependencies.fruity]
+//! version = "0.1.0"
+//! features = ["foundation"]
+//! ```
+//!
+//! This feature transitively enables the [`objc`](objc/index.html) and
+//! [`core_foundation`](core_foundation/index.html) features/modules.
+//!
+//! [`Cargo.toml`]: https://doc.rust-lang.org/cargo/reference/manifest.html
 
 // This crate is only available for 32 and 64 bit systems.
 #![cfg(any(target_pointer_width = "32", target_pointer_width = "64"))]

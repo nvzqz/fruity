@@ -1,4 +1,9 @@
 //! [Objective-C](https://developer.apple.com/documentation/objectivec) library.
+//!
+//! # Feature Flag
+//!
+//! This module corresponds to the **`objc`**
+//! [feature flag](../index.html#feature-flags).
 
 #[macro_use]
 mod sel;

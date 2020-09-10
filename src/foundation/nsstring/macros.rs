@@ -1,6 +1,12 @@
 /// Creates an [`NSString`](foundation/struct.NSString.html) from a static
 /// string.
 ///
+/// # Feature Flag
+///
+/// This macro is defined in [`foundation`](foundation/index.html),
+/// which requires the **`foundation`**
+/// [feature flag](index.html#feature-flags).
+///
 /// # Examples
 ///
 /// This macro takes a `"string"` literal as the argument:
