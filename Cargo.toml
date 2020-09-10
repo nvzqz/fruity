@@ -1,10 +1,10 @@
 [package]
 name = "fruity"
-version = "0.0.0"
+version = "0.1.0"
 authors = ["Nikolai Vazquez <hello@nikolaivazquez.com>"]
 edition = "2018"
 license = "MIT OR Apache-2.0"
-description = "[WIP] Rusty bindings for Apple libraries"
+description = "Rusty bindings for Apple libraries"
 repository = "https://github.com/nvzqz/fruity"
 homepage = "https://github.com/nvzqz/fruity"
 documentation = "https://docs.rs/fruity"
