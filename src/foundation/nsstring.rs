@@ -321,7 +321,7 @@ impl NSString {
     pub fn to_string_with_nul(&self) -> String {
         // SAFETY: This use of the string is reasonably short-lived enough for
         // its lifetime to be long enough.
-        unsafe { self.to_str() }.into()
+        unsafe { self.to_str_with_nul() }.into()
     }
 
     /// Returns a selector with this string as its name.
