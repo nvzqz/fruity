@@ -5,9 +5,7 @@
 //! This module corresponds to the **`foundation`**
 //! [feature flag](../index.html#feature-flags).
 //!
-//! It also transitively enables:
-//! - [`objc`](../objc/index.html)
-//! - [`core_foundation`](../core_foundation/index.html)
+//! It also transitively enables [`objc`](../objc/index.html).
 
 mod cmp;
 mod nsstring;

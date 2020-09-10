@@ -18,7 +18,7 @@ link = []
 # Libraries and frameworks
 objc = []
 core_foundation = []
-foundation = ["objc", "core_foundation"]
+foundation = ["objc"]
 
 [package.metadata.docs.rs]
 targets = ["x86_64-apple-darwin"]

@@ -16,8 +16,8 @@
 //! features = ["foundation"]
 //! ```
 //!
-//! This feature transitively enables the [`objc`](objc/index.html) and
-//! [`core_foundation`](core_foundation/index.html) features/modules.
+//! This feature transitively enables the [`objc`](objc/index.html)
+//! feature/module.
 //!
 //! [`Cargo.toml`]: https://doc.rust-lang.org/cargo/reference/manifest.html
 
