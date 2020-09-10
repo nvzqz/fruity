@@ -1,6 +1,6 @@
 use super::NSComparisonResult;
-use crate::objc::{Class, NSObject, NSUInteger, BOOL, NO, SEL};
-use std::{cmp::Ordering, ffi::c_void, ops::Deref};
+use crate::objc::{Class, NSObject, NSUInteger, Object, BOOL, NO, SEL};
+use std::{cmp::Ordering, ops::Deref};
 
 /// Returns the selector with a given name.
 ///
@@ -17,9 +17,9 @@ use std::{cmp::Ordering, ffi::c_void, ops::Deref};
 #[allow(non_snake_case)]
 pub fn NSSelectorFromString(string: &NSString) -> Option<SEL> {
     extern "C" {
-        fn NSSelectorFromString(string: *mut c_void) -> Option<SEL>;
+        fn NSSelectorFromString(string: &Object) -> Option<SEL>;
     }
-    unsafe { NSSelectorFromString(string.as_ptr()) }
+    unsafe { NSSelectorFromString(string) }
 }
 
 /// A static, plain-text Unicode string object.
@@ -49,14 +49,12 @@ impl PartialEq for NSString {
     #[inline]
     fn eq(&self, other: &Self) -> bool {
         extern "C" {
-            fn objc_msgSend(obj: *mut c_void, sel: SEL, other: *mut c_void) -> BOOL;
+            fn objc_msgSend(obj: &Object, sel: SEL, other: &Object) -> BOOL;
         }
 
-        let obj = self.as_ptr();
         let sel = selector!(isEqualToString:);
-        let other = other.as_ptr();
 
-        unsafe { objc_msgSend(obj, sel, other) != 0 }
+        unsafe { objc_msgSend(self, sel, other) != 0 }
     }
 }
 
@@ -203,14 +201,12 @@ impl NSString {
     #[inline]
     pub fn compare(&self, other: &NSString) -> NSComparisonResult {
         extern "C" {
-            fn objc_msgSend(obj: *mut c_void, sel: SEL, other: *mut c_void) -> NSComparisonResult;
+            fn objc_msgSend(obj: &Object, sel: SEL, other: &Object) -> NSComparisonResult;
         }
 
-        let obj = self.as_ptr();
         let sel = selector!(compare:);
-        let other = other.as_ptr();
 
-        unsafe { objc_msgSend(obj, sel, other) }
+        unsafe { objc_msgSend(self, sel, other) }
     }
 
     /// Compares the string and a given string using a localized comparison.
@@ -219,14 +215,12 @@ impl NSString {
     #[inline]
     pub fn localized_compare(&self, other: &NSString) -> NSComparisonResult {
         extern "C" {
-            fn objc_msgSend(obj: *mut c_void, sel: SEL, other: *mut c_void) -> NSComparisonResult;
+            fn objc_msgSend(obj: &Object, sel: SEL, other: &Object) -> NSComparisonResult;
         }
 
-        let obj = self.as_ptr();
         let sel = selector!(localizedCompare:);
-        let other = other.as_ptr();
 
-        unsafe { objc_msgSend(obj, sel, other) }
+        unsafe { objc_msgSend(self, sel, other) }
     }
 
     /// Compares the string with a given string using `NSCaseInsensitiveSearch`.
@@ -235,14 +229,12 @@ impl NSString {
     #[inline]
     pub fn case_insensitive_compare(&self, other: &NSString) -> NSComparisonResult {
         extern "C" {
-            fn objc_msgSend(obj: *mut c_void, sel: SEL, other: *mut c_void) -> NSComparisonResult;
+            fn objc_msgSend(obj: &Object, sel: SEL, other: &Object) -> NSComparisonResult;
         }
 
-        let obj = self.as_ptr();
         let sel = selector!(caseInsensitiveCompare:);
-        let other = other.as_ptr();
 
-        unsafe { objc_msgSend(obj, sel, other) }
+        unsafe { objc_msgSend(self, sel, other) }
     }
 
     /// Compares the string with a given string using a case-insensitive,
@@ -252,14 +244,12 @@ impl NSString {
     #[inline]
     pub fn localized_case_insensitive_compare(&self, other: &NSString) -> NSComparisonResult {
         extern "C" {
-            fn objc_msgSend(obj: *mut c_void, sel: SEL, other: *mut c_void) -> NSComparisonResult;
+            fn objc_msgSend(obj: &Object, sel: SEL, other: &Object) -> NSComparisonResult;
         }
 
-        let obj = self.as_ptr();
         let sel = selector!(localizedCaseInsensitiveCompare:);
-        let other = other.as_ptr();
 
-        unsafe { objc_msgSend(obj, sel, other) }
+        unsafe { objc_msgSend(self, sel, other) }
     }
 
     /// Compares strings as sorted by the Finder.
@@ -274,14 +264,12 @@ impl NSString {
     #[inline]
     pub fn localized_standard_compare(&self, other: &NSString) -> NSComparisonResult {
         extern "C" {
-            fn objc_msgSend(obj: *mut c_void, sel: SEL, other: *mut c_void) -> NSComparisonResult;
+            fn objc_msgSend(obj: &Object, sel: SEL, other: &Object) -> NSComparisonResult;
         }
 
-        let obj = self.as_ptr();
         let sel = selector!(localizedStandardCompare:);
-        let other = other.as_ptr();
 
-        unsafe { objc_msgSend(obj, sel, other) }
+        unsafe { objc_msgSend(self, sel, other) }
     }
 
     /// Returns `true` if the given string matches the beginning characters of
@@ -291,14 +279,12 @@ impl NSString {
     #[inline]
     pub fn has_prefix(&self, prefix: &NSString) -> bool {
         extern "C" {
-            fn objc_msgSend(obj: *mut c_void, sel: SEL, prefix: *mut c_void) -> BOOL;
+            fn objc_msgSend(obj: &Object, sel: SEL, prefix: &Object) -> BOOL;
         }
 
-        let obj = self.as_ptr();
         let sel = selector!(hasPrefix:);
-        let prefix = prefix.as_ptr();
 
-        unsafe { objc_msgSend(obj, sel, prefix) != 0 }
+        unsafe { objc_msgSend(self, sel, prefix) != 0 }
     }
 
     /// Returns `true` if the given string matches the ending characters of this
@@ -308,14 +294,12 @@ impl NSString {
     #[inline]
     pub fn has_suffix(&self, suffix: &NSString) -> bool {
         extern "C" {
-            fn objc_msgSend(obj: *mut c_void, sel: SEL, suffix: *mut c_void) -> BOOL;
+            fn objc_msgSend(obj: &Object, sel: SEL, suffix: &Object) -> BOOL;
         }
 
-        let obj = self.as_ptr();
         let sel = selector!(hasSuffix:);
-        let suffix = suffix.as_ptr();
 
-        unsafe { objc_msgSend(obj, sel, suffix) != 0 }
+        unsafe { objc_msgSend(self, sel, suffix) != 0 }
     }
 }
 
