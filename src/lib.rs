@@ -7,9 +7,12 @@
 #![warn(missing_docs)]
 
 #[macro_use]
+#[cfg(feature = "objc")]
 pub mod objc;
 
+#[cfg(feature = "core_foundation")]
 pub mod core_foundation;
+#[cfg(feature = "foundation")]
 pub mod foundation;
 
 // This module is not for public use. It is an implementation detail of macros

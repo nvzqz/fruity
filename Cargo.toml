@@ -15,5 +15,10 @@ keywords = ["apple", "cocoa", "objc", "foundation", "uikit"]
 default = ["link"]
 link = []
 
+# Libraries and frameworks
+objc = []
+core_foundation = []
+foundation = ["objc", "core_foundation"]
+
 [package.metadata.docs.rs]
 targets = ["x86_64-apple-darwin"]
