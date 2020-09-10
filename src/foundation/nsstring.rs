@@ -1,6 +1,6 @@
 use super::NSComparisonResult;
 use crate::objc::{Class, NSObject, NSUInteger, Object, BOOL, NO, SEL};
-use std::{cmp::Ordering, ops::Deref};
+use std::{cmp::Ordering, ops::Deref, os::raw::c_char, ffi::CStr, str};
 
 /// Returns the selector with a given name.
 ///
@@ -176,6 +176,112 @@ impl NSString {
     #[inline]
     pub fn mutable_copy(&self) -> NSMutableString {
         NSMutableString(Self(NSObject::mutable_copy(self)))
+    }
+
+    /// Returns a null-terminated UTF-8 representation of this string.
+    ///
+    /// This C string is a pointer to a structure inside this string object,
+    /// which may have a lifetime shorter than the string object and will
+    /// certainly not have a longer lifetime. Therefore, you should copy the C
+    /// string if it needs to be stored outside of the memory context in which
+    /// you use this property.
+    ///
+    /// See [documentation](https://developer.apple.com/documentation/foundation/nsstring/1411189-utf8string).
+    #[inline]
+    pub fn to_utf8_ptr(&self) -> *const c_char {
+        extern "C" {
+            fn objc_msgSend(obj: &Object, sel: SEL) -> *const c_char;
+        }
+
+        let sel = selector!(UTF8String);
+
+        unsafe { objc_msgSend(self, sel) }
+    }
+
+    /// Returns the contents of this string object as a native UTF-8 string
+    /// slice.
+    ///
+    /// This internally uses [`to_utf8_ptr`](#method.to_utf8_ptr). See its
+    /// documentation for details.
+    ///
+    /// # Safety
+    ///
+    /// The lifetime of the returned string slice may be shorter than this
+    /// object. Therefore, long use cases should copy the bytes of the returned
+    /// string slice or use [`to_string`](#method.to_string).
+    #[inline]
+    pub unsafe fn to_str(&self) -> &str {
+        let s = self.to_str_with_nul();
+
+        // `CStr::to_bytes` does a checked slice conversion that emits a length
+        // failure panic that'll never get called.
+        s.get_unchecked(..s.len() - 1)
+    }
+
+    /// Returns the contents of this string object as a native UTF-8 string
+    /// slice, containing a trailing 0 byte.
+    ///
+    /// This internally uses [`to_utf8_ptr`](#method.to_utf8_ptr). See its
+    /// documentation for details.
+    ///
+    /// # Safety
+    ///
+    /// The lifetime of the returned string slice may be shorter than this
+    /// object. Therefore, long use cases should copy the bytes of the returned
+    /// string slice or use [`to_string_with_nul`](#method.to_string_with_nul).
+    pub unsafe fn to_str_with_nul(&self) -> &str {
+        let cstr = CStr::from_ptr(self.to_utf8_ptr());
+        str::from_utf8_unchecked(cstr.to_bytes_with_nul())
+    }
+
+    /// Returns the contents of this string object as a native UTF-8 string
+    /// buffer.
+    ///
+    /// This internally uses [`to_utf8_ptr`](#method.to_utf8_ptr). See its
+    /// documentation for details.
+    ///
+    /// # Performance Considerations
+    ///
+    /// Because of how
+    /// [`-[NSString UTF8String]`](https://developer.apple.com/documentation/foundation/nsstring/1411189-utf8string)
+    /// works, this method will likely allocate twice as much memory needed for
+    /// the length of the resulting buffer. If your use case is short-lived
+    /// enough, consider using [`to_str`](#method.to_str) to save memory and
+    /// time.
+    #[inline]
+    pub fn to_string(&self) -> String {
+        // This method relies on `to_string_with_nul` because that method
+        // generates a lot of code that is best to only exist once.
+
+        let mut string = self.to_string_with_nul();
+        let len = string.len() - 1;
+
+        // This approach is slightly faster than `String::pop`.
+        //
+        // SAFETY: The null character takes 1 byte in UTF-8.
+        unsafe { string.as_mut_vec().set_len(len) };
+
+        string
+    }
+
+    /// Returns the contents of this string object as a native UTF-8 string
+    /// buffer, containing a trailing 0 byte.
+    ///
+    /// This internally uses [`to_utf8_ptr`](#method.to_utf8_ptr). See its
+    /// documentation for details.
+    ///
+    /// # Performance Considerations
+    ///
+    /// Because of how
+    /// [`-[NSString UTF8String]`](https://developer.apple.com/documentation/foundation/nsstring/1411189-utf8string)
+    /// works, this method will likely allocate twice as much memory needed for
+    /// the length of the resulting buffer. If your use case is short-lived
+    /// enough, consider using [`to_str_with_nul`](#method.to_str_with_nul) to
+    /// save memory and time.
+    pub fn to_string_with_nul(&self) -> String {
+        // SAFETY: This use of the string is reasonably short-lived enough for
+        // its lifetime to be long enough.
+        unsafe { self.to_str() }.into()
     }
 
     /// Returns a selector with this string as its name.
