@@ -1,6 +1,6 @@
 use super::NSComparisonResult;
 use crate::objc::{Class, NSObject, NSUInteger, Object, BOOL, NO, SEL};
-use std::{cmp::Ordering, ffi::CStr, ops::Deref, os::raw::c_char, ptr::NonNull, str};
+use std::{cmp::Ordering, ffi::CStr, fmt, ops::Deref, os::raw::c_char, ptr::NonNull, str};
 
 /// Returns the selector with a given name.
 ///
@@ -85,6 +85,26 @@ impl From<&mut str> for NSString {
     #[inline]
     fn from(s: &mut str) -> Self {
         Self::from_str(s)
+    }
+}
+
+impl fmt::Debug for NSString {
+    #[inline]
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        // SAFETY: The lifetime of `str` is very short.
+        let str = unsafe { self.to_str() };
+
+        str.fmt(f)
+    }
+}
+
+impl fmt::Display for NSString {
+    #[inline]
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        // SAFETY: The lifetime of `str` is very short.
+        let str = unsafe { self.to_str() };
+
+        str.fmt(f)
     }
 }
 
@@ -521,6 +541,20 @@ impl From<&mut str> for NSMutableString {
     #[inline]
     fn from(s: &mut str) -> Self {
         Self::from_str(s)
+    }
+}
+
+impl fmt::Debug for NSMutableString {
+    #[inline]
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        (self as &NSString).fmt(f)
+    }
+}
+
+impl fmt::Display for NSMutableString {
+    #[inline]
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        (self as &NSString).fmt(f)
     }
 }
 
