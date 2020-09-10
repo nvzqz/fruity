@@ -1,5 +1,5 @@
 use super::{Class, NSUInteger, BOOL, SEL};
-use std::{ffi::c_void, fmt, ptr::NonNull};
+use std::{ffi::c_void, fmt, ops::Deref, ptr::NonNull};
 
 /// A non-null smart pointer to any object instance, including classes.
 ///
@@ -93,6 +93,15 @@ impl id {
 #[repr(transparent)]
 #[derive(Clone, Debug)]
 pub struct NSObject(id);
+
+impl Deref for NSObject {
+    type Target = id;
+
+    #[inline]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
 
 impl AsRef<NSObject> for NSObject {
     #[inline]
