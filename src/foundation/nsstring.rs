@@ -1,6 +1,6 @@
 use super::NSComparisonResult;
 use crate::objc::{Class, NSObject, NSUInteger, Object, BOOL, NO, SEL};
-use std::{cmp::Ordering, ops::Deref, os::raw::c_char, ffi::CStr, str};
+use std::{cmp::Ordering, ffi::CStr, ops::Deref, os::raw::c_char, ptr::NonNull, str};
 
 /// Returns the selector with a given name.
 ///
@@ -97,6 +97,26 @@ impl NSString {
             static CLASS: Class;
         }
         unsafe { &CLASS }
+    }
+
+    /// Creates an immutable string object from a raw nullable pointer.
+    ///
+    /// # Safety
+    ///
+    /// The pointer must point to a valid `NSString` instance.
+    #[inline]
+    pub const unsafe fn from_ptr(ptr: *mut Object) -> Self {
+        Self(NSObject::from_ptr(ptr))
+    }
+
+    /// Creates an immutable object from a raw non-null pointer.
+    ///
+    /// # Safety
+    ///
+    /// The pointer must point to a valid `NSString` instance.
+    #[inline]
+    pub const unsafe fn from_non_null_ptr(ptr: NonNull<Object>) -> Self {
+        Self(NSObject::from_non_null_ptr(ptr))
     }
 
     // Shared non-inlined `from_str` implementation.
@@ -513,6 +533,26 @@ impl NSMutableString {
             static CLASS: Class;
         }
         unsafe { &CLASS }
+    }
+
+    /// Creates a mutable string object from a raw nullable pointer.
+    ///
+    /// # Safety
+    ///
+    /// The pointer must point to a valid `NSMutableString` instance.
+    #[inline]
+    pub const unsafe fn from_ptr(ptr: *mut Object) -> Self {
+        Self(NSString::from_ptr(ptr))
+    }
+
+    /// Creates a mutable object from a raw non-null pointer.
+    ///
+    /// # Safety
+    ///
+    /// The pointer must point to a valid `NSMutableString` instance.
+    #[inline]
+    pub const unsafe fn from_non_null_ptr(ptr: NonNull<Object>) -> Self {
+        Self(NSString::from_non_null_ptr(ptr))
     }
 
     /// Creates a mutable string object from copying a slice.

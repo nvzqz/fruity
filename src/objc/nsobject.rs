@@ -35,6 +35,26 @@ impl NSObject {
         unsafe { &CLASS }
     }
 
+    /// Creates an object from a raw nullable pointer.
+    ///
+    /// # Safety
+    ///
+    /// The pointer must point to a valid `NSObject` instance.
+    #[inline]
+    pub const unsafe fn from_ptr(ptr: *mut Object) -> Self {
+        Self(id::from_ptr(ptr))
+    }
+
+    /// Creates an object from a raw non-null pointer.
+    ///
+    /// # Safety
+    ///
+    /// The pointer must point to a valid `NSObject` instance.
+    #[inline]
+    pub const unsafe fn from_non_null_ptr(ptr: NonNull<Object>) -> Self {
+        Self(id::from_non_null_ptr(ptr))
+    }
+
     /// Returns a pointer to this object's data.
     #[inline]
     pub fn as_id(&self) -> &id {
