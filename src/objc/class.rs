@@ -1,9 +1,9 @@
-use super::{NSObject, BOOL, SEL};
+use super::{NSObject, Object, BOOL, SEL};
 use std::{
-    cell::UnsafeCell,
     cmp,
     ffi::CStr,
     fmt, hash,
+    ops::Deref,
     os::raw::{c_char, c_int},
     panic::RefUnwindSafe,
     ptr,
@@ -21,19 +21,30 @@ use std::{
 /// A nullable class is defined as `Option<&Class>`, which is semantically
 /// equivalent to `Class _Nullable`.
 #[repr(C)]
-pub struct Class {
-    // Compile-time classes are stored in the `__DATA` link section, which is
-    // mutable. It is normally undefined behavior for shared references to point
-    // to mutable data. We can inform Rust that this data is internally mutable
-    // by using `UnsafeCell`.
-    _priv: UnsafeCell<[u8; 0]>,
-}
-
-// This type is used globally, so we must be able to share it across threads.
-unsafe impl Sync for Class {}
+pub struct Class(
+    // `Object` stores static data in the `__DATA` section, which is needed to
+    // store class data. Internally, this is accomplished with `UnsafeCell`.
+    Object,
+);
 
 // Although this uses `UnsafeCell`, it does not point to any Rust types.
 impl RefUnwindSafe for Class {}
+
+impl Deref for Class {
+    type Target = Object;
+
+    #[inline]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+
+impl AsRef<Object> for Class {
+    #[inline]
+    fn as_ref(&self) -> &Object {
+        self
+    }
+}
 
 impl fmt::Debug for Class {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -107,6 +118,12 @@ impl Class {
         let sel = selector!(alloc);
 
         unsafe { objc_msgSend(self, sel) }
+    }
+
+    /// Returns a reference to this class as an Objective-C object.
+    #[inline]
+    pub const fn as_object(&self) -> &Object {
+        &self.0
     }
 
     /// Returns `true` if this class implements or inherits a method that can
