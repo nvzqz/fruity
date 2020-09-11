@@ -170,8 +170,13 @@
 //! [crate]: https://crates.io/crates/fruity
 //! [`Cargo.toml`]: https://doc.rust-lang.org/cargo/reference/manifest.html
 
-// This crate is only available for 32 and 64 bit systems.
-#![cfg(any(target_pointer_width = "32", target_pointer_width = "64"))]
+// This crate is only available for 32/64 bit x86 and ARM systems.
+#![cfg(any(
+    target_arch = "x86",
+    target_arch = "x86_64",
+    target_arch = "arm",
+    target_arch = "aarch64",
+))]
 #![deny(improper_ctypes)]
 #![warn(missing_docs)]
 

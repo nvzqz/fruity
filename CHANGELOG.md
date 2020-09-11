@@ -7,6 +7,11 @@ The format is based on [Keep a Changelog] and this project adheres to
 
 ## [Unreleased]
 
+### Changed
+
+- **\[breaking\]** Increased crate `#[cfg]` strictness from any 32/64 bit to
+  only target x86 and ARM.
+
 ## [0.2.0] - 2020-09-11
 
 ### Changed
