@@ -29,7 +29,7 @@
 //!
 //! ```toml
 //! [dependencies.fruity]
-//! version = "0.1.0"
+//! version = "0.2.0"
 //! ```
 //!
 //! ## Feature Flags
@@ -43,7 +43,7 @@
 //!
 //! ```toml
 //! [dependencies.fruity]
-//! version = "0.1.0"
+//! version = "0.2.0"
 //! features = ["foundation"]
 //! ```
 //!

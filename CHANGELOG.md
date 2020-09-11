@@ -7,6 +7,8 @@ The format is based on [Keep a Changelog] and this project adheres to
 
 ## [Unreleased]
 
+## [0.2.0] - 2020-09-11
+
 ### Changed
 
 - **\[breaking\]** Placed each library/framework module behind a feature flag.
@@ -34,4 +36,5 @@ Initial release.
 
 [#1]: https://github.com/nvzqz/fruity/issues/1
 
-[Unreleased]: https://github.com/nvzqz/fruity/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/nvzqz/fruity/compare/v0.2.0...HEAD
+[0.2.0]:      https://github.com/nvzqz/fruity/compare/v0.1.0...v0.2.0

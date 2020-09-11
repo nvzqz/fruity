@@ -28,7 +28,7 @@ by adding the following to your project's [`Cargo.toml`]:
 
 ```toml
 [dependencies.fruity]
-version = "0.1.0"
+version = "0.2.0"
 ```
 
 ### Feature Flags
@@ -38,17 +38,17 @@ Each module for a library or framework has its own
 with the same name.
 
 For example, this is how you enable the
-[`foundation`](https://docs.rs/fruity/0.1.0/fruity/foundation/index.html)
+[`foundation`](https://docs.rs/fruity/0.2.0/fruity/foundation/index.html)
 module:
 
 ```toml
 [dependencies.fruity]
-version = "0.1.0"
+version = "0.2.0"
 features = ["foundation"]
 ```
 
 This feature transitively enables the
-[`objc`](https://docs.rs/fruity/0.1.0/fruity/objc/index.html)
+[`objc`](https://docs.rs/fruity/0.2.0/fruity/objc/index.html)
 feature/module.
 
 ## Goals
@@ -85,14 +85,14 @@ This is true for the following:
 - **Getting a static class.**
 
   Getters like
-  [`NSString::class`](https://docs.rs/fruity/0.1.0/fruity/foundation/struct.NSString.html#method.class)
+  [`NSString::class`](https://docs.rs/fruity/0.2.0/fruity/foundation/struct.NSString.html#method.class)
   retrieve the class directly through its symbol. This is instantaneous,
   especially when compared to calling into the Objective-C runtime via
   [`objc_getClass`](https://developer.apple.com/documentation/objectivec/1418952-objc_getclass).
 
 - **Creating an `NSString` from a Rust string literal.**
 
-  The [`nsstring!`](https://docs.rs/fruity/0.1.0/fruity/macro.nsstring.html)
+  The [`nsstring!`](https://docs.rs/fruity/0.2.0/fruity/macro.nsstring.html)
   macro creates an `NSString` literal (i.e. `@"string"`) at compile time. There
   is no runtime dispatch/allocation/initialization cost.
 
