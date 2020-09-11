@@ -1,6 +1,15 @@
 //! Rusty bindings for Apple libraries, brought to you by
 //! [@NikolaiVazquez](https://twitter.com/NikolaiVazquez).
 //!
+//! # Donate
+//!
+//! If this project is useful to you, consider
+//! [sponsoring me](https://github.com/sponsors/nvzqz) or
+//! [donating directly](https://www.paypal.me/nvzqz)!
+//!
+//! Doing so enables me to create high-quality open source software like this.
+//! ❤️
+//!
 //! # Feature Flags
 //!
 //! Each module for a library or framework has its own
