@@ -1,6 +1,17 @@
 //! Rusty bindings for Apple libraries, brought to you by
 //! [@NikolaiVazquez](https://twitter.com/NikolaiVazquez).
 //!
+//! # Index
+//!
+//! 1. [Donate](#donate)
+//! 2. [Goals](#goals)
+//!    1. [Idiomatic Rust](#idiomatic-rust)
+//!    2. [Zero Cost](#zero-cost)
+//! 3. [Feature Flags](#feature-flags)
+//! 4. [License](#license)
+//! 5. [Modules](#modules)
+//! 6. [Macros](#macros)
+//!
 //! # Donate
 //!
 //! If this project is useful to you, consider
