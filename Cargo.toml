@@ -12,9 +12,6 @@ categories = ["api-bindings", "development-tools::ffi", "os"]
 keywords = ["apple", "cocoa", "objc", "foundation", "uikit"]
 
 [features]
-default = ["link"]
-link = []
-
 # Libraries and frameworks
 objc = []
 core_foundation = []
