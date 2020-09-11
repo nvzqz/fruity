@@ -28,6 +28,26 @@ to fake inheritance.
 Using Fruity to interface with Objective-C libraries should have as little
 runtime cost as writing the equivalent code directly in Objective-C.
 
+## Feature Flags
+
+Each module for a library or framework has its own
+[feature flag](https://doc.rust-lang.org/cargo/reference/features.html)
+with the same name.
+
+For example, this is how you enable the
+[`foundation`](https://docs.rs/fruity/0.1.0/fruity/foundation/index.html)
+module via [`Cargo.toml`]:
+
+```toml
+[dependencies.fruity]
+version = "0.1.0"
+features = ["foundation"]
+```
+
+This feature transitively enables the
+[`objc`](https://docs.rs/fruity/0.1.0/fruity/objc/index.html)
+feature/module.
+
 ## License
 
 This project is released under either:
@@ -36,3 +56,5 @@ This project is released under either:
 - [Apache License (Version 2.0)](https://github.com/nvzqz/fruity/blob/main/LICENSE-APACHE)
 
 at your choosing.
+
+[`Cargo.toml`]: https://doc.rust-lang.org/cargo/reference/manifest.html
