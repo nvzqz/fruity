@@ -10,6 +10,20 @@ homepage = "https://github.com/nvzqz/fruity"
 documentation = "https://docs.rs/fruity"
 categories = ["api-bindings", "development-tools::ffi", "os"]
 keywords = ["apple", "cocoa", "objc", "foundation", "uikit"]
+include = [
+    # Manifest
+    "Cargo.toml",
+
+    # Source files
+    "src",
+    "tests",
+    "examples",
+
+    # Documents
+    "README*",
+    "CHANGELOG*",
+    "LICENSE*",
+]
 
 [features]
 # Libraries and frameworks
