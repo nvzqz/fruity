@@ -21,5 +21,5 @@ pub use nsobject::*;
 pub use obj::*;
 pub use sel::*;
 
-#[cfg_attr(feature = "link", link(name = "objc", kind = "dylib"))]
+#[link(name = "objc", kind = "dylib")]
 extern "C" {}
