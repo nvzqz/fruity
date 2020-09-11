@@ -66,7 +66,44 @@ to fake inheritance.
 ### Zero Cost
 
 Using Fruity to interface with Objective-C libraries should have as little
-runtime cost as writing the equivalent code directly in Objective-C.
+runtime cost as writing the same code directly in Objective-C.
+
+This is true for the following:
+
+- **Calling object methods.**
+
+  Method dispatch is always direct and does not need the error checking overhead
+  of other wrappers that use the
+  [`objc::msg_send!`](https://docs.rs/objc/0.2.*/objc/macro.msg_send.html)
+  macro. This also reduces the size of your program by not emitting panics that
+  would otherwise never get called.
+
+  This library is carefully written to ensure that calls to
+  [`objc_msgSend`](https://developer.apple.com/documentation/objectivec/1456712-objc_msgsend)
+  are always done with the correct object type, method selector, and arguments.
+
+- **Getting a static class.**
+
+  Getters like
+  [`NSString::class`](https://docs.rs/fruity/0.1.0/fruity/foundation/struct.NSString.html#method.class)
+  retrieve the class directly through its symbol. This is instantaneous,
+  especially when compared to calling into the Objective-C runtime via
+  [`objc_getClass`](https://developer.apple.com/documentation/objectivec/1418952-objc_getclass).
+
+- **Creating an `NSString` from a Rust string literal.**
+
+  The [`nsstring!`](https://docs.rs/fruity/0.1.0/fruity/macro.nsstring.html)
+  macro creates an `NSString` literal (i.e. `@"string"`) at compile time. There
+  is no runtime dispatch/allocation/initialization cost.
+
+Some parts of this library still aren't zero cost. Your help would be much
+appreciated here!
+
+These are:
+
+- **The `selector!` macro.** See
+  [issue #2](https://github.com/nvzqz/fruity/issues/2)
+  for details.
 
 ## License
 
