@@ -6,10 +6,11 @@ Rusty bindings for Apple libraries, brought to you by
 ## Index
 
 1. [Donate](#donate)
-2. [Goals](#goals)
+2. [Usage](#usage)
+   1. [Feature Flags](#feature-flags)
+3. [Goals](#goals)
    1. [Idiomatic Rust](#idiomatic-rust)
    2. [Zero Cost](#zero-cost)
-3. [Feature Flags](#feature-flags)
 4. [License](#license)
 
 ## Donate
@@ -19,6 +20,36 @@ If this project is useful to you, consider
 [donating directly](https://www.paypal.me/nvzqz)!
 
 Doing so enables me to create high-quality open source software like this. ❤️
+
+## Usage
+
+This library is available [on crates.io][crate] and can be used in your project
+by adding the following to your project's [`Cargo.toml`]:
+
+```toml
+[dependencies.fruity]
+version = "0.1.0"
+```
+
+### Feature Flags
+
+Each module for a library or framework has its own
+[feature flag](https://doc.rust-lang.org/cargo/reference/features.html)
+with the same name.
+
+For example, this is how you enable the
+[`foundation`](https://docs.rs/fruity/0.1.0/fruity/foundation/index.html)
+module:
+
+```toml
+[dependencies.fruity]
+version = "0.1.0"
+features = ["foundation"]
+```
+
+This feature transitively enables the
+[`objc`](https://docs.rs/fruity/0.1.0/fruity/objc/index.html)
+feature/module.
 
 ## Goals
 
@@ -37,26 +68,6 @@ to fake inheritance.
 Using Fruity to interface with Objective-C libraries should have as little
 runtime cost as writing the equivalent code directly in Objective-C.
 
-## Feature Flags
-
-Each module for a library or framework has its own
-[feature flag](https://doc.rust-lang.org/cargo/reference/features.html)
-with the same name.
-
-For example, this is how you enable the
-[`foundation`](https://docs.rs/fruity/0.1.0/fruity/foundation/index.html)
-module via [`Cargo.toml`]:
-
-```toml
-[dependencies.fruity]
-version = "0.1.0"
-features = ["foundation"]
-```
-
-This feature transitively enables the
-[`objc`](https://docs.rs/fruity/0.1.0/fruity/objc/index.html)
-feature/module.
-
 ## License
 
 This project is released under either the
@@ -64,4 +75,5 @@ This project is released under either the
 [Apache License (Version 2.0)](https://github.com/nvzqz/fruity/blob/main/LICENSE-APACHE),
 at your choosing.
 
+[crate]: https://crates.io/crates/fruity
 [`Cargo.toml`]: https://doc.rust-lang.org/cargo/reference/manifest.html
