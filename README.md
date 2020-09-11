@@ -57,11 +57,65 @@ feature/module.
 
 Fruity makes interfacing with these C and Objective-C APIs feel natural in Rust.
 
-Most of these types are classes that inherit from each other. Because Rust does
-not have inheritance and instead prefers composition, this crate uses [`Deref`]
-to fake inheritance.
+- **Automatic Reference Counting.**
 
-[`Deref`]: https://doc.rust-lang.org/std/ops/trait.Deref.html
+  Fruity takes advantage of Rust's
+  [ownership model](https://doc.rust-lang.org/book/ch04-01-what-is-ownership.html)
+  to handle object reference counting for you.
+
+  [`NSObject`](https://docs.rs/fruity/0.2.0/fruity/objc/struct.NSObject.html)
+  is a smart pointer that calls
+  [`retain`](https://developer.apple.com/documentation/objectivec/1418956-nsobject/1571946-retain)
+  on [`Clone`](https://doc.rust-lang.org/std/clone/trait.Clone.html) and
+  [`release`](https://developer.apple.com/documentation/objectivec/1418956-nsobject/1571957-release)
+  on [`Drop`](https://doc.rust-lang.org/std/ops/trait.Drop.html). This is
+  exactly how Rust's
+  [`Arc<T>`](https://doc.rust-lang.org/std/sync/struct.Arc.html) works.
+
+- **`Option<NSObject>`.**
+
+  In Objective-C, all objects are nullable unless marked with `_Nonnull`. This
+  often leads to either very defensive checks or careless ignoring of null
+  objects.
+
+  Fruity reverses that and instead makes all objects (such as
+  [`NSObject`](https://docs.rs/fruity/0.2.0/fruity/objc/struct.NSObject.html))
+  non-null by default. An object can be made nullable by wrapping it with
+  [`Option<T>`](https://doc.rust-lang.org/std/option/enum.Option.html).
+
+  To make FFI safe and easy, the following Objective-C and Rust types are
+  ABI-compatible:
+
+  - `NSObject * _Nonnull` and `NSObject`
+
+  - `NSObject * _Nullable` and `Option<NSObject>`
+
+  This is because
+  [`NSObject`](https://docs.rs/fruity/0.2.0/fruity/objc/struct.NSObject.html)
+  is a
+  [`#[repr(transparent)]`](https://doc.rust-lang.org/nomicon/other-reprs.html#reprtransparent)
+  wrapper around a
+  [`NonNull<T>`](https://doc.rust-lang.org/std/ptr/struct.NonNull.html)
+  pointer.
+
+- **`Result<T, NSError>`.**
+
+  In Objective-C, methods take a pointer to where an
+  [`NSError`](https://developer.apple.com/documentation/foundation/nserror)
+  is placed upon failure. This makes it easy to avoid error handling and assume
+  the happy path, which can lead to bugs when errors occur.
+
+  Fruity instead returns a
+  [`Result`](https://doc.rust-lang.org/std/result/enum.Result.html), which
+  is the canonical way to handle errors in Rust. This ensures that errors must
+  be acknowledged in some way.
+
+- **Natural inheritance.**
+
+  Most of these types are classes that inherit from each other. Because true
+  inheritance is not possible in Rust, Fruity uses
+  [`Deref`](https://doc.rust-lang.org/std/ops/trait.Deref.html)
+  to model Objective-C subclassing.
 
 ### Zero Cost
 
