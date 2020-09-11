@@ -59,11 +59,9 @@
 //!
 //! # License
 //!
-//! This project is released under either:
-//!
-//! - [MIT License](https://github.com/nvzqz/fruity/blob/main/LICENSE-MIT)
-//! - [Apache License (Version 2.0)](https://github.com/nvzqz/fruity/blob/main/LICENSE-APACHE)
-//!
+//! This project is released under either the
+//! [MIT License](https://github.com/nvzqz/fruity/blob/main/LICENSE-MIT) or
+//! [Apache License (Version 2.0)](https://github.com/nvzqz/fruity/blob/main/LICENSE-APACHE),
 //! at your choosing.
 //!
 //! [`Cargo.toml`]: https://doc.rust-lang.org/cargo/reference/manifest.html
