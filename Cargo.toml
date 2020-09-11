@@ -33,3 +33,4 @@ foundation = ["objc"]
 
 [package.metadata.docs.rs]
 targets = ["x86_64-apple-darwin"]
+all-features = true
