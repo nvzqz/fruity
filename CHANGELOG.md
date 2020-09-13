@@ -32,6 +32,9 @@ The format is based on [Keep a Changelog] and this project adheres to
   - Geometry types: `CGFloat`, `CGPoint`, `CGSize`, `CGRect`, `CGRectEdge`, and
     `CGVector`.
 
+    These are aliased in `foundation` as: `NSPoint`, `NSSize`, `NSRect`, and
+    `NSRectEdge`.
+
 ### Changed
 
 - **\[breaking\]** Increased crate `#[cfg]` strictness from any 32/64 bit to

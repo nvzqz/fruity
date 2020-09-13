@@ -47,8 +47,8 @@
 //! features = ["foundation"]
 //! ```
 //!
-//! This feature transitively enables the [`objc`](objc/index.html)
-//! feature/module.
+//! This feature transitively enables the [`objc`](objc/index.html) and
+//! [`core_graphics`](core_graphics/index.html) features/modules.
 //!
 //! # Goals
 //!

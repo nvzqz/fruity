@@ -30,7 +30,7 @@ include = [
 objc = []
 core_foundation = []
 core_graphics = []
-foundation = ["objc"]
+foundation = ["objc", "core_graphics"]
 
 [package.metadata.docs.rs]
 targets = ["x86_64-apple-darwin"]
