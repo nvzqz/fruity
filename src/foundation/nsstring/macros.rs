@@ -9,12 +9,16 @@
 ///
 /// # Examples
 ///
-/// This macro takes a `"string"` literal as the argument:
+/// This macro takes a either a `"string"` literal or `const` string slice as
+/// the argument:
 ///
 /// ```
 /// let hello = fruity::nsstring!("hello");
-///
 /// assert_eq!(hello.to_string(), "hello");
+///
+/// const WORLD: &str = "world";
+/// let world = fruity::nsstring!(WORLD);
+/// assert_eq!(world.to_string(), WORLD);
 /// ```
 ///
 /// The result of this macro can even be used to create `static` values:
@@ -29,13 +33,29 @@
 /// Note that the result cannot be used in a `const` because it refers to
 /// static data outside of this library.
 ///
-/// # Validity Checking
+/// # Unicode Strings
 ///
-/// Because the string data must be a valid C string, having null bytes inside
-/// it causes a compile error:
+/// In Objective-C, non-ASCII strings are represented as UTF-16. However, `&str`
+/// is encoded as UTF-8.
+///
+/// Because of this, using a non-ASCII string is a compile error:
 ///
 /// ```compile_fail
-/// let s = fruity::nsstring!("ab\0cd");
+/// let non_ascii = fruity::nsstring!("straße");
+/// ```
+///
+/// This is tracked in [issue #3](https://github.com/nvzqz/fruity/issues/3).
+///
+/// # Null-Terminated Strings
+///
+/// If the input string already ends with a 0 byte, then this macro does not
+/// append one.
+///
+/// ```
+/// let cstr = fruity::nsstring!("example\0");
+/// let normal = fruity::nsstring!("example");
+///
+/// assert_eq!(cstr, normal);
 /// ```
 ///
 /// # Runtime Cost
@@ -64,36 +84,71 @@ macro_rules! nsstring {
         // The only names directly used are expressions, whose names shadow any
         // other names outside of this macro.
 
-        // This can be in the `__cstring` link section, but it doesn't need to.
-        const STR: &str = $crate::_priv::std::concat!($s, "\0");
+        // TODO(#3): Convert `INPUT` to UTF-16 if it contains non-ASCII bytes.
+        const INPUT: &str = $s;
 
-        // Assert that `STR` is a valid C string:
-        // 1. It ends with null.
-        // 2. It has no interior nulls.
-        const _: [(); 1] = [(); $crate::_priv::is_cstr(STR) as usize];
+        // Assert that `INPUT` is ASCII. Unicode strings are not currently
+        // supported.
+        const _: [(); 1] = [(); $crate::_priv::str::is_cf_ascii(INPUT) as usize];
 
-        #[link_section = "__DATA,__cfstring,regular"]
-        static DATA: $crate::_priv::__CFString = $crate::_priv::__CFString {
-            isa: unsafe {
-                extern "C" {
-                    static __CFConstantStringClassReference: $crate::_priv::std::ffi::c_void;
-                }
-                &__CFConstantStringClassReference
-            },
+        // This is defined in CoreFoundation, but we don't emit a link attribute
+        // here because it is already linked via Foundation.
+        //
+        // Although this is a "private" (underscored) symbol, it is directly
+        // referenced in Objective-C binaries. So it's safe for us to reference.
+        extern "C" {
+            static __CFConstantStringClassReference: $crate::_priv::std::ffi::c_void;
+        }
 
-            // This is a magic constant I came across when inspecting
-            // Objective-C binaries. This is probably the CFTypeID?
-            flags: 0x07c8,
+        // This is composed of:
+        // - 07: The `CFTypeID` for `CFString`
+        // - C8: Flags for a constant ASCII string with a trailing null byte.
+        const FLAGS: usize = 0x07c8;
 
-            data: STR.as_ptr(),
+        // If input already ends with a 0 byte, then we don't need to add it.
+        let data = if $crate::_priv::str::is_nul_terminated(INPUT) {
+            #[link_section = "__DATA,__cfstring,regular"]
+            static DATA: $crate::_priv::__CFString = $crate::_priv::__CFString {
+                isa: unsafe { &__CFConstantStringClassReference },
+                flags: FLAGS,
+                data: INPUT.as_ptr(),
+                // The length does not include the null byte.
+                len: INPUT.len() - 1,
+            };
 
-            // The length does not include the null byte.
-            len: STR.len() - 1,
+            &DATA
+        } else {
+            // Create a new constant with 0 appended to INPUT.
+
+            #[repr(C)]
+            struct Bytes {
+                input: [u8; INPUT.len()],
+                nul: u8,
+            }
+
+            const BYTES: Bytes = Bytes {
+                input: unsafe { *$crate::_priv::std::mem::transmute::<_, &_>(INPUT.as_ptr()) },
+                nul: 0,
+            };
+
+            const INPUT_WITH_NUL: &[u8; INPUT.len() + 1] =
+                unsafe { $crate::_priv::std::mem::transmute(&BYTES) };
+
+            #[link_section = "__DATA,__cfstring,regular"]
+            static DATA: $crate::_priv::__CFString = $crate::_priv::__CFString {
+                isa: unsafe { &__CFConstantStringClassReference },
+                flags: FLAGS,
+                data: INPUT_WITH_NUL.as_ptr(),
+                // The length does not include the null byte.
+                len: INPUT.len(),
+            };
+
+            &DATA
         };
 
         #[allow(unused_unsafe)]
         let nsstring =
-            unsafe { $crate::foundation::NSString::from_ptr(&DATA as *const _ as *mut _) };
+            unsafe { $crate::foundation::NSString::from_ptr(data as *const _ as *mut _) };
 
         nsstring
     }};
