@@ -50,13 +50,7 @@ impl Deref for NSString {
 impl PartialEq for NSString {
     #[inline]
     fn eq(&self, other: &Self) -> bool {
-        extern "C" {
-            fn objc_msgSend(obj: &Object, sel: SEL, other: &Object) -> BOOL;
-        }
-
-        let sel = selector!(isEqualToString:);
-
-        unsafe { objc_msgSend(self, sel, other) != 0 }
+        unsafe { _msg_send![self, isEqualToString:(other as &Object) => BOOL] != 0 }
     }
 }
 
@@ -231,13 +225,7 @@ impl NSString {
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsstring/1411189-utf8string).
     #[inline]
     pub fn to_utf8_ptr(&self) -> *const c_char {
-        extern "C" {
-            fn objc_msgSend(obj: &Object, sel: SEL) -> *const c_char;
-        }
-
-        let sel = selector!(UTF8String);
-
-        unsafe { objc_msgSend(self, sel) }
+        unsafe { _msg_send![self, UTF8String] }
     }
 
     /// Returns the contents of this string object as a native UTF-8 string
@@ -348,13 +336,7 @@ impl NSString {
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsstring/1414082-compare).
     #[inline]
     pub fn compare(&self, other: &NSString) -> NSComparisonResult {
-        extern "C" {
-            fn objc_msgSend(obj: &Object, sel: SEL, other: &Object) -> NSComparisonResult;
-        }
-
-        let sel = selector!(compare:);
-
-        unsafe { objc_msgSend(self, sel, other) }
+        unsafe { _msg_send![self, compare:(other as &Object)] }
     }
 
     /// Compares the string and a given string using a localized comparison.
@@ -362,13 +344,7 @@ impl NSString {
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsstring/1416999-localizedcompare).
     #[inline]
     pub fn localized_compare(&self, other: &NSString) -> NSComparisonResult {
-        extern "C" {
-            fn objc_msgSend(obj: &Object, sel: SEL, other: &Object) -> NSComparisonResult;
-        }
-
-        let sel = selector!(localizedCompare:);
-
-        unsafe { objc_msgSend(self, sel, other) }
+        unsafe { _msg_send![self, localizedCompare:(other as &Object)] }
     }
 
     /// Compares the string with a given string using `NSCaseInsensitiveSearch`.
@@ -376,13 +352,7 @@ impl NSString {
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsstring/1414769-caseinsensitivecompare).
     #[inline]
     pub fn case_insensitive_compare(&self, other: &NSString) -> NSComparisonResult {
-        extern "C" {
-            fn objc_msgSend(obj: &Object, sel: SEL, other: &Object) -> NSComparisonResult;
-        }
-
-        let sel = selector!(caseInsensitiveCompare:);
-
-        unsafe { objc_msgSend(self, sel, other) }
+        unsafe { _msg_send![self, caseInsensitiveCompare:(other as &Object)] }
     }
 
     /// Compares the string with a given string using a case-insensitive,
@@ -391,13 +361,7 @@ impl NSString {
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsstring/1417333-localizedcaseinsensitivecompare).
     #[inline]
     pub fn localized_case_insensitive_compare(&self, other: &NSString) -> NSComparisonResult {
-        extern "C" {
-            fn objc_msgSend(obj: &Object, sel: SEL, other: &Object) -> NSComparisonResult;
-        }
-
-        let sel = selector!(localizedCaseInsensitiveCompare:);
-
-        unsafe { objc_msgSend(self, sel, other) }
+        unsafe { _msg_send![self, localizedCaseInsensitiveCompare:(other as &Object)] }
     }
 
     /// Compares strings as sorted by the Finder.
@@ -411,13 +375,7 @@ impl NSString {
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsstring/1409742-localizedstandardcompare).
     #[inline]
     pub fn localized_standard_compare(&self, other: &NSString) -> NSComparisonResult {
-        extern "C" {
-            fn objc_msgSend(obj: &Object, sel: SEL, other: &Object) -> NSComparisonResult;
-        }
-
-        let sel = selector!(localizedStandardCompare:);
-
-        unsafe { objc_msgSend(self, sel, other) }
+        unsafe { _msg_send![self, localizedStandardCompare:(other as &Object)] }
     }
 
     /// Returns `true` if the given string matches the beginning characters of
@@ -426,13 +384,7 @@ impl NSString {
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsstring/1410309-hasprefix).
     #[inline]
     pub fn has_prefix(&self, prefix: &NSString) -> bool {
-        extern "C" {
-            fn objc_msgSend(obj: &Object, sel: SEL, prefix: &Object) -> BOOL;
-        }
-
-        let sel = selector!(hasPrefix:);
-
-        unsafe { objc_msgSend(self, sel, prefix) != 0 }
+        unsafe { _msg_send![self, hasPrefix:(prefix as &Object) => BOOL] != 0 }
     }
 
     /// Returns `true` if the given string matches the ending characters of this
@@ -441,13 +393,7 @@ impl NSString {
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsstring/1416529-hassuffix).
     #[inline]
     pub fn has_suffix(&self, suffix: &NSString) -> bool {
-        extern "C" {
-            fn objc_msgSend(obj: &Object, sel: SEL, suffix: &Object) -> BOOL;
-        }
-
-        let sel = selector!(hasSuffix:);
-
-        unsafe { objc_msgSend(self, sel, suffix) != 0 }
+        unsafe { _msg_send![self, hasSuffix:(suffix as &Object) => BOOL] != 0 }
     }
 }
 

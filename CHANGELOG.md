@@ -19,6 +19,11 @@ The format is based on [Keep a Changelog] and this project adheres to
   The compiler currently does not coalesce string prefixes and instead emits the
   same prefix data twice.
 
+- Correct dispatching of the appropriate `objc_msgSend` based on return type.
+
+- Internal convenience `_msg_send!` macro for dispatching `objc_msgSend` and
+  associating arguments with the appropriate selector part.
+
 ### Changed
 
 - **\[breaking\]** Increased crate `#[cfg]` strictness from any 32/64 bit to

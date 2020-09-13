@@ -79,13 +79,7 @@ impl NSObject {
     /// See [documentation](https://developer.apple.com/documentation/objectivec/1418956-nsobject/1418583-respondstoselector).
     #[inline]
     pub fn responds_to_selector(&self, selector: SEL) -> bool {
-        extern "C" {
-            fn objc_msgSend(obj: &Object, sel: SEL, selector: SEL) -> BOOL;
-        }
-
-        let sel = selector!(respondsToSelector:);
-
-        unsafe { objc_msgSend(self, sel, selector) != 0 }
+        unsafe { _msg_send![self, respondsToSelector:selector => BOOL] != 0 }
     }
 
     /// Returns `true` if this object is an instance or subclass of `class`.
@@ -93,13 +87,7 @@ impl NSObject {
     /// See [documentation](https://developer.apple.com/documentation/objectivec/1418956-nsobject/1418511-iskindofclass)
     #[inline]
     pub fn is_kind_of_class(&self, class: &Class) -> bool {
-        extern "C" {
-            fn objc_msgSend(obj: &Object, sel: SEL, class: &Class) -> BOOL;
-        }
-
-        let sel = selector!(isKindOfClass:);
-
-        unsafe { objc_msgSend(self, sel, class) != 0 }
+        unsafe { _msg_send![self, isKindOfClass:class => BOOL] != 0 }
     }
 
     /// Returns `true` if this object is an instance of `class`.
@@ -107,13 +95,7 @@ impl NSObject {
     /// See [documentation](https://developer.apple.com/documentation/objectivec/1418956-nsobject/1418766-ismemberofclass)
     #[inline]
     pub fn is_member_of_class(&self, class: &Class) -> bool {
-        extern "C" {
-            fn objc_msgSend(obj: &Object, sel: SEL, class: &Class) -> BOOL;
-        }
-
-        let sel = selector!(isMemberOfClass:);
-
-        unsafe { objc_msgSend(self, sel, class) != 0 }
+        unsafe { _msg_send![self, isMemberOfClass:class => BOOL] != 0 }
     }
 
     /// Returns an integer that can be used as a table address in a hash table
@@ -122,13 +104,7 @@ impl NSObject {
     /// See [documentation](https://developer.apple.com/documentation/objectivec/1418956-nsobject/1418859-hash).
     #[inline]
     pub fn hash(&self) -> NSUInteger {
-        extern "C" {
-            fn objc_msgSend(obj: &Object, sel: SEL) -> NSUInteger;
-        }
-
-        let sel = selector!(hash);
-
-        unsafe { objc_msgSend(self, sel) }
+        unsafe { _msg_send![self, hash] }
     }
 
     /// Returns a copy of this object using
@@ -137,13 +113,7 @@ impl NSObject {
     /// See [documentation](https://developer.apple.com/documentation/objectivec/nsobject/1418807-copy).
     #[inline]
     pub fn copy(&self) -> NSObject {
-        extern "C" {
-            fn objc_msgSend(obj: &Object, sel: SEL) -> NSObject;
-        }
-
-        let sel = selector!(copy);
-
-        unsafe { objc_msgSend(self, sel) }
+        unsafe { _msg_send![self, copy] }
     }
 
     /// Returns a copy of this object using
@@ -152,12 +122,6 @@ impl NSObject {
     /// See [documentation](https://developer.apple.com/documentation/objectivec/nsobject/1418978-mutablecopy).
     #[inline]
     pub fn mutable_copy(&self) -> NSObject {
-        extern "C" {
-            fn objc_msgSend(obj: &Object, sel: SEL) -> NSObject;
-        }
-
-        let sel = selector!(mutableCopy);
-
-        unsafe { objc_msgSend(self, sel) }
+        unsafe { _msg_send![self, mutableCopy] }
     }
 }

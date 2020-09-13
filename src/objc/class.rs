@@ -111,13 +111,7 @@ impl Class {
 
     #[inline]
     pub(crate) fn alloc(&self) -> NSObject {
-        extern "C" {
-            fn objc_msgSend(class: &Class, sel: SEL) -> NSObject;
-        }
-
-        let sel = selector!(alloc);
-
-        unsafe { objc_msgSend(self, sel) }
+        unsafe { _msg_send![self, alloc] }
     }
 
     /// Returns a reference to this class as an Objective-C object.
@@ -132,13 +126,7 @@ impl Class {
     /// See [documentation](https://developer.apple.com/documentation/objectivec/1418956-nsobject/1418583-respondstoselector).
     #[inline]
     pub fn responds_to_selector(&self, selector: SEL) -> bool {
-        extern "C" {
-            fn objc_msgSend(class: &Class, sel: SEL, selector: SEL) -> BOOL;
-        }
-
-        let sel = selector!(respondsToSelector:);
-
-        unsafe { objc_msgSend(self, sel, selector) != 0 }
+        unsafe { _msg_send![self, respondsToSelector:selector => BOOL] != 0 }
     }
 
     /// Returns `true` if instances of this class implement or inherit a method
@@ -147,13 +135,7 @@ impl Class {
     /// See [documentation](https://developer.apple.com/documentation/objectivec/nsobject/1418555-instancesrespondtoselector).
     #[inline]
     pub fn instances_respond_to_selector(&self, selector: SEL) -> bool {
-        extern "C" {
-            fn objc_msgSend(class: &Class, sel: SEL, selector: SEL) -> BOOL;
-        }
-
-        let sel = selector!(instancesRespondToSelector:);
-
-        unsafe { objc_msgSend(self, sel, selector) != 0 }
+        unsafe { _msg_send![self, instancesRespondToSelector:selector => BOOL] != 0 }
     }
 
     /// Returns the name of this class.

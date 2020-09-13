@@ -8,6 +8,9 @@
 #[macro_use]
 mod sel;
 
+#[macro_use]
+mod msg;
+
 mod bool;
 mod class;
 mod int;

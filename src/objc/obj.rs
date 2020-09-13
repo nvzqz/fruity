@@ -29,6 +29,26 @@ impl fmt::Debug for Object {
 }
 
 impl Object {
+    // Do not call these methods directly. Use the `_msg_send!` macro instead.
+    #[inline]
+    pub(crate) unsafe fn _msg_send<T>(&self, sel: SEL) -> T
+    where
+        T: 'static,
+    {
+        self._msg_send_with(sel, ())
+    }
+
+    #[inline]
+    pub(crate) unsafe fn _msg_send_with<A, T>(&self, sel: SEL, args: A) -> T
+    where
+        A: super::msg::MsgArgs,
+        T: 'static,
+    {
+        A::msg_send(self, sel, args)
+    }
+}
+
+impl Object {
     /// Casts `self` to a raw nullable pointer.
     #[inline]
     pub fn as_ptr(&self) -> *mut Object {
@@ -44,13 +64,7 @@ impl Object {
     /// Returns the class that this object is an instance of.
     #[inline]
     pub fn get_class(&self) -> &'static Class {
-        extern "C" {
-            fn objc_msgSend(obj: &Object, sel: SEL) -> &'static Class;
-        }
-
-        let sel = selector!(class);
-
-        unsafe { objc_msgSend(self, sel) }
+        unsafe { _msg_send![self, class] }
     }
 }
 
