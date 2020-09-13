@@ -5,7 +5,7 @@ mod get_fn;
 
 macro_rules! _msg_send {
     ($obj:expr, $sel:ident $(=> $ret:ty)?) => {
-        $obj._msg_send $(::<_, $ret>)? (selector!($sel))
+        $obj._msg_send $(::<$ret>)? (selector!($sel))
     };
     ($obj:expr, $($arg_name:ident : $arg:expr)+ $(=> $ret:ty)?) => {
         $obj._msg_send_with $(::<_, $ret>)? (
