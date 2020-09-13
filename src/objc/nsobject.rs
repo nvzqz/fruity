@@ -96,7 +96,7 @@ impl NSObject {
     /// See [documentation](https://developer.apple.com/documentation/objectivec/1418956-nsobject/1418583-respondstoselector).
     #[inline]
     pub fn responds_to_selector(&self, selector: SEL) -> bool {
-        unsafe { _msg_send![self, respondsToSelector:selector => BOOL] != 0 }
+        unsafe { _msg_send![self, respondsToSelector: selector => BOOL] != 0 }
     }
 
     /// Returns `true` if this object is an instance or subclass of `class`.
@@ -104,7 +104,7 @@ impl NSObject {
     /// See [documentation](https://developer.apple.com/documentation/objectivec/1418956-nsobject/1418511-iskindofclass)
     #[inline]
     pub fn is_kind_of_class(&self, class: &Class) -> bool {
-        unsafe { _msg_send![self, isKindOfClass:class => BOOL] != 0 }
+        unsafe { _msg_send![self, isKindOfClass: class => BOOL] != 0 }
     }
 
     /// Returns `true` if this object is an instance of `class`.
@@ -112,7 +112,7 @@ impl NSObject {
     /// See [documentation](https://developer.apple.com/documentation/objectivec/1418956-nsobject/1418766-ismemberofclass)
     #[inline]
     pub fn is_member_of_class(&self, class: &Class) -> bool {
-        unsafe { _msg_send![self, isMemberOfClass:class => BOOL] != 0 }
+        unsafe { _msg_send![self, isMemberOfClass: class => BOOL] != 0 }
     }
 
     /// Returns an integer that can be used as a table address in a hash table

@@ -50,7 +50,7 @@ impl Deref for NSString {
 impl PartialEq for NSString {
     #[inline]
     fn eq(&self, other: &Self) -> bool {
-        unsafe { _msg_send![self, isEqualToString:(other as &Object) => BOOL] != 0 }
+        unsafe { _msg_send![self, isEqualToString: other as &Object => BOOL] != 0 }
     }
 }
 
@@ -354,7 +354,7 @@ impl NSString {
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsstring/1414082-compare).
     #[inline]
     pub fn compare(&self, other: &NSString) -> NSComparisonResult {
-        unsafe { _msg_send![self, compare:(other as &Object)] }
+        unsafe { _msg_send![self, compare: other as &Object] }
     }
 
     /// Compares the string and a given string using a localized comparison.
@@ -362,7 +362,7 @@ impl NSString {
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsstring/1416999-localizedcompare).
     #[inline]
     pub fn localized_compare(&self, other: &NSString) -> NSComparisonResult {
-        unsafe { _msg_send![self, localizedCompare:(other as &Object)] }
+        unsafe { _msg_send![self, localizedCompare: other as &Object] }
     }
 
     /// Compares the string with a given string using `NSCaseInsensitiveSearch`.
@@ -370,7 +370,7 @@ impl NSString {
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsstring/1414769-caseinsensitivecompare).
     #[inline]
     pub fn case_insensitive_compare(&self, other: &NSString) -> NSComparisonResult {
-        unsafe { _msg_send![self, caseInsensitiveCompare:(other as &Object)] }
+        unsafe { _msg_send![self, caseInsensitiveCompare: other as &Object] }
     }
 
     /// Compares the string with a given string using a case-insensitive,
@@ -379,7 +379,7 @@ impl NSString {
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsstring/1417333-localizedcaseinsensitivecompare).
     #[inline]
     pub fn localized_case_insensitive_compare(&self, other: &NSString) -> NSComparisonResult {
-        unsafe { _msg_send![self, localizedCaseInsensitiveCompare:(other as &Object)] }
+        unsafe { _msg_send![self, localizedCaseInsensitiveCompare: other as &Object] }
     }
 
     /// Compares strings as sorted by the Finder.
@@ -393,7 +393,7 @@ impl NSString {
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsstring/1409742-localizedstandardcompare).
     #[inline]
     pub fn localized_standard_compare(&self, other: &NSString) -> NSComparisonResult {
-        unsafe { _msg_send![self, localizedStandardCompare:(other as &Object)] }
+        unsafe { _msg_send![self, localizedStandardCompare: other as &Object] }
     }
 
     /// Returns `true` if the given string matches the beginning characters of
@@ -402,7 +402,7 @@ impl NSString {
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsstring/1410309-hasprefix).
     #[inline]
     pub fn has_prefix(&self, prefix: &NSString) -> bool {
-        unsafe { _msg_send![self, hasPrefix:(prefix as &Object) => BOOL] != 0 }
+        unsafe { _msg_send![self, hasPrefix: prefix as &Object => BOOL] != 0 }
     }
 
     /// Returns `true` if the given string matches the ending characters of this
@@ -411,7 +411,7 @@ impl NSString {
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsstring/1416529-hassuffix).
     #[inline]
     pub fn has_suffix(&self, suffix: &NSString) -> bool {
-        unsafe { _msg_send![self, hasSuffix:(suffix as &Object) => BOOL] != 0 }
+        unsafe { _msg_send![self, hasSuffix: suffix as &Object => BOOL] != 0 }
     }
 }
 

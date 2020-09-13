@@ -470,7 +470,7 @@ impl NSNumber {
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsnumber/1413562-compare)
     #[inline]
     pub fn compare(&self, other: &NSNumber) -> NSComparisonResult {
-        unsafe { _msg_send![self, compare:(other as &Object)] }
+        unsafe { _msg_send![self, compare: other as &Object] }
     }
 
     /// Returns the number object's value expressed as a human-readable string.
