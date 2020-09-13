@@ -104,6 +104,13 @@ impl fmt::Display for NSString {
     }
 }
 
+impl fmt::Pointer for NSString {
+    #[inline]
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        self.as_ptr().fmt(f)
+    }
+}
+
 impl NSString {
     /// Returns the `NSString` class.
     #[inline]
@@ -503,6 +510,13 @@ impl fmt::Display for NSMutableString {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         (self as &NSString).fmt(f)
+    }
+}
+
+impl fmt::Pointer for NSMutableString {
+    #[inline]
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        self.as_ptr().fmt(f)
     }
 }
 

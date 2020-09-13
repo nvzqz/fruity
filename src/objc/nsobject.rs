@@ -1,5 +1,5 @@
 use super::{id, Class, NSUInteger, Object, BOOL, SEL};
-use std::{ops::Deref, ptr::NonNull};
+use std::{fmt, ops::Deref, ptr::NonNull};
 
 /// The root class for most Objective-C objects.
 ///
@@ -21,6 +21,13 @@ impl AsRef<NSObject> for NSObject {
     #[inline]
     fn as_ref(&self) -> &Self {
         self
+    }
+}
+
+impl fmt::Pointer for NSObject {
+    #[inline]
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        self.as_ptr().fmt(f)
     }
 }
 
