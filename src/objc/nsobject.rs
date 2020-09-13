@@ -80,6 +80,16 @@ impl NSObject {
         self.0.as_non_null_ptr()
     }
 
+    /// Returns this object's reference count.
+    ///
+    /// This method is only useful for debugging certain objects.
+    ///
+    /// See [documentation](https://developer.apple.com/documentation/objectivec/1418956-nsobject/1571952-retaincount).
+    #[inline]
+    pub fn retain_count(&self) -> usize {
+        unsafe { _msg_send![self, retainCount] }
+    }
+
     /// Returns `true` if this object implements or inherits a method that can
     /// respond to a specified message.
     ///
