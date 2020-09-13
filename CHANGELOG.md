@@ -24,6 +24,8 @@ The format is based on [Keep a Changelog] and this project adheres to
 - Internal convenience `_msg_send!` macro for dispatching `objc_msgSend` and
   associating arguments with the appropriate selector part.
 
+- `NSNumber` class from Foundation.
+
 ### Changed
 
 - **\[breaking\]** Increased crate `#[cfg]` strictness from any 32/64 bit to
