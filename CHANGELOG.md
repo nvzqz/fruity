@@ -29,6 +29,9 @@ The format is based on [Keep a Changelog] and this project adheres to
 - `core_graphics` module for [Core Graphics](https://developer.apple.com/documentation/coregraphics)
   framework.
 
+  - Geometry types: `CGFloat`, `CGPoint`, `CGSize`, `CGRect`, `CGRectEdge`, and
+    `CGVector`.
+
 ### Changed
 
 - **\[breaking\]** Increased crate `#[cfg]` strictness from any 32/64 bit to
