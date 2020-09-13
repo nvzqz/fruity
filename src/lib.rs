@@ -186,6 +186,8 @@ pub mod objc;
 
 #[cfg(feature = "core_foundation")]
 pub mod core_foundation;
+#[cfg(feature = "core_graphics")]
+pub mod core_graphics;
 #[cfg(feature = "foundation")]
 pub mod foundation;
 

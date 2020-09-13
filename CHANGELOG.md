@@ -26,6 +26,9 @@ The format is based on [Keep a Changelog] and this project adheres to
 
 - `NSNumber` class from Foundation.
 
+- `core_graphics` module for [Core Graphics](https://developer.apple.com/documentation/coregraphics)
+  framework.
+
 ### Changed
 
 - **\[breaking\]** Increased crate `#[cfg]` strictness from any 32/64 bit to

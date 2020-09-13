@@ -29,6 +29,7 @@ include = [
 # Libraries and frameworks
 objc = []
 core_foundation = []
+core_graphics = []
 foundation = ["objc"]
 
 [package.metadata.docs.rs]
