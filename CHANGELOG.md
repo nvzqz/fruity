@@ -24,7 +24,7 @@ The format is based on [Keep a Changelog] and this project adheres to
 - Internal convenience `_msg_send!` macro for dispatching `objc_msgSend` and
   associating arguments with the appropriate selector part.
 
-- Foundation types: `NSNumber`, `NSEdgeInsets`.
+- Foundation types: `NSNumber`, `NSEdgeInsets`, `NSRange`.
 
 - `core_graphics` module for [Core Graphics](https://developer.apple.com/documentation/coregraphics)
   framework.

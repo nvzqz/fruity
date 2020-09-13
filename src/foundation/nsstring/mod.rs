@@ -1,4 +1,4 @@
-use super::NSComparisonResult;
+use super::{NSComparisonResult, NSRange};
 use crate::objc::{Class, NSObject, NSUInteger, Object, BOOL, NO, SEL};
 use std::{cmp::Ordering, ffi::CStr, fmt, ops::Deref, os::raw::c_char, ptr::NonNull, str};
 
@@ -201,6 +201,17 @@ impl NSString {
         let free_when_done = NO;
 
         objc_msgSend(obj, sel, bytes, length, encoding, free_when_done)
+    }
+
+    /// Returns a string representation of `range`.
+    ///
+    /// See [documentation](https://developer.apple.com/documentation/foundation/1415155-nsstringfromrange).
+    #[inline]
+    pub fn from_nsrange(range: NSRange) -> Self {
+        extern "C" {
+            fn NSStringFromRange(range: NSRange) -> NSString;
+        }
+        unsafe { NSStringFromRange(range) }
     }
 
     /// Returns a copy of this object using
@@ -422,6 +433,12 @@ impl From<NSMutableString> for NSString {
     #[inline]
     fn from(obj: NSMutableString) -> Self {
         obj.0
+    }
+}
+
+impl From<NSRange> for NSString {
+    fn from(range: NSRange) -> Self {
+        Self::from_nsrange(range)
     }
 }
 

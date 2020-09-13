@@ -11,11 +11,13 @@
 mod cmp;
 mod geometry;
 mod nsnumber;
+mod nsrange;
 mod nsstring;
 
 pub use cmp::*;
 pub use geometry::*;
 pub use nsnumber::*;
+pub use nsrange::*;
 pub use nsstring::*;
 
 #[link(name = "Foundation", kind = "framework")]
