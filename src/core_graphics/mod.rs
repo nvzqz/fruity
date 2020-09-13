@@ -5,6 +5,8 @@
 //! This module corresponds to the **`core_graphics`**
 //! [feature flag](../index.html#feature-flags).
 
+#![cfg(feature = "core_graphics")]
+
 #[link(name = "CoreGraphics", kind = "framework")]
 extern "C" {}
 

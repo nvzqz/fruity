@@ -5,6 +5,8 @@
 //! This module corresponds to the **`objc`**
 //! [feature flag](../index.html#feature-flags).
 
+#![cfg(feature = "objc")]
+
 #[macro_use]
 mod sel;
 

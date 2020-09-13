@@ -8,6 +8,8 @@
 //! It also transitively enables [`objc`](../objc/index.html) and
 //! [`core_graphics`](../core_graphics/index.html).
 
+#![cfg(feature = "foundation")]
+
 mod cmp;
 mod geometry;
 mod nsnumber;
