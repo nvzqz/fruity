@@ -1,4 +1,4 @@
-use super::{CGFloat, CGPoint, CGSize};
+use super::{CGAffineTransform, CGFloat, CGPoint, CGSize};
 use std::mem;
 
 /// The location and dimensions of a rectangle.
@@ -304,6 +304,17 @@ impl CGRect {
             fn CGRectIntegral(rect: CGRect) -> CGRect;
         }
         unsafe { CGRectIntegral(self) }
+    }
+
+    /// Returns the result of applying an affine transformation to `self`.
+    ///
+    /// See [documentation](https://developer.apple.com/documentation/coregraphics/1455875-cgrectapplyaffinetransform).
+    #[inline]
+    pub fn apply(self, transform: CGAffineTransform) -> Self {
+        extern "C" {
+            fn CGRectApplyAffineTransform(rect: CGRect, transform: CGAffineTransform) -> CGRect;
+        }
+        unsafe { CGRectApplyAffineTransform(self, transform) }
     }
 
     /// Returns `self` with its origin offset.

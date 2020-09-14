@@ -32,6 +32,9 @@ core_foundation = []
 core_graphics = []
 foundation = ["objc", "core_graphics"]
 
+[dev-dependencies]
+rand = "0.7.3"
+
 [package.metadata.docs.rs]
 targets = ["x86_64-apple-darwin"]
 all-features = true

@@ -1,4 +1,4 @@
-use super::CGFloat;
+use super::{CGAffineTransform, CGFloat};
 
 /// A point in a two-dimensional coordinate system.
 ///
@@ -37,5 +37,19 @@ impl CGPoint {
     #[inline]
     pub const fn from_i16s(x: i16, y: i16) -> Self {
         Self::new(x as _, y as _)
+    }
+
+    /// Returns the result of applying an affine transformation to `self`.
+    ///
+    /// See [documentation](https://developer.apple.com/documentation/coregraphics/1454251-cgpointapplyaffinetransform).
+    #[inline]
+    pub fn apply(self, transform: CGAffineTransform) -> Self {
+        extern "C" {
+            // Looking at the disassembly, it appears that this operation is
+            // simple enough to implement inline.
+            fn CGPointApplyAffineTransform(point: CGPoint, transform: CGAffineTransform)
+                -> CGPoint;
+        }
+        unsafe { CGPointApplyAffineTransform(self, transform) }
     }
 }

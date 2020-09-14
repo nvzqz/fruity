@@ -1,4 +1,4 @@
-use super::CGFloat;
+use super::{CGAffineTransform, CGFloat};
 
 /// Width and height values.
 ///
@@ -37,5 +37,16 @@ impl CGSize {
     #[inline]
     pub const fn from_i16s(height: i16, width: i16) -> Self {
         Self::new(height as _, width as _)
+    }
+
+    /// Returns the result of applying an affine transformation to `self`.
+    ///
+    /// See [documentation](https://developer.apple.com/documentation/coregraphics/1454806-cgsizeapplyaffinetransform).
+    #[inline]
+    pub fn apply(self, transform: CGAffineTransform) -> Self {
+        extern "C" {
+            fn CGSizeApplyAffineTransform(size: CGSize, transform: CGAffineTransform) -> CGSize;
+        }
+        unsafe { CGSizeApplyAffineTransform(self, transform) }
     }
 }

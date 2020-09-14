@@ -29,8 +29,8 @@ The format is based on [Keep a Changelog] and this project adheres to
 - `core_graphics` module for [Core Graphics](https://developer.apple.com/documentation/coregraphics)
   framework.
 
-  - Geometry types: `CGFloat`, `CGPoint`, `CGSize`, `CGRect`, `CGRectEdge`, and
-    `CGVector`.
+  - Geometry types: `CGFloat`, `CGPoint`, `CGSize`, `CGRect`, `CGRectEdge`,
+    `CGVector`, and `CGAffineTransform`.
 
     These are aliased in `foundation` as: `NSPoint`, `NSSize`, `NSRect`, and
     `NSRectEdge`.
