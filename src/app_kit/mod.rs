@@ -14,5 +14,9 @@
     )
 ))]
 
+mod version;
+
+pub use version::*;
+
 #[link(name = "AppKit", kind = "framework")]
 extern "C" {}

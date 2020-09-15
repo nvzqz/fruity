@@ -40,6 +40,11 @@ The format is based on [Keep a Changelog] and this project adheres to
     These are aliased in `foundation` as: `NSPoint`, `NSSize`, `NSRect`, and
     `NSRectEdge`.
 
+- `app_kit` module for [AppKit](https://developer.apple.com/documentation/appkit)
+  framework.
+
+  - `NSAppKitVersion` type and version constants through 10.15.
+
 ### Fixed
 
 - The `ns_string!` macro now transcodes non-ASCII strings to UTF-16, instead of
