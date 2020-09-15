@@ -1,13 +1,13 @@
-mod cgaffinetransform;
-mod cgfloat;
-mod cgpoint;
-mod cgrect;
-mod cgsize;
-mod cgvector;
+mod cg_affine_transform;
+mod cg_float;
+mod cg_point;
+mod cg_rect;
+mod cg_size;
+mod cg_vector;
 
-pub use cgaffinetransform::*;
-pub use cgfloat::*;
-pub use cgpoint::*;
-pub use cgrect::*;
-pub use cgsize::*;
-pub use cgvector::*;
+pub use cg_affine_transform::*;
+pub use cg_float::*;
+pub use cg_point::*;
+pub use cg_rect::*;
+pub use cg_size::*;
+pub use cg_vector::*;

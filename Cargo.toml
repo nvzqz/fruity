@@ -27,12 +27,12 @@ include = [
 
 [features]
 # Libraries and frameworks
-appkit = ["foundation"]
+app_kit = ["foundation"]
 objc = []
 core_foundation = []
 core_graphics = []
 foundation = ["objc", "core_graphics"]
-uikit = ["foundation"]
+ui_kit = ["foundation"]
 
 [dev-dependencies]
 rand = "0.7.3"

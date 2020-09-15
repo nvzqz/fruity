@@ -147,7 +147,7 @@
 //!
 //! - **Creating an `NSString` from a Rust string literal.**
 //!
-//!   The [`nsstring!`](macro.nsstring.html)
+//!   The [`ns_string!`](macro.ns_string.html)
 //!   macro creates an `NSString` literal (i.e. `@"string"`) at compile time.
 //!   There is no runtime dispatch/allocation/initialization cost.
 //!
@@ -188,8 +188,8 @@ pub mod _priv;
 #[macro_use]
 pub mod objc;
 
-pub mod appkit;
+pub mod app_kit;
 pub mod core_foundation;
 pub mod core_graphics;
 pub mod foundation;
-pub mod uikit;
+pub mod ui_kit;

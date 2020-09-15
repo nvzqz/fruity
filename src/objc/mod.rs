@@ -16,13 +16,13 @@ mod msg;
 mod bool;
 mod class;
 mod int;
-mod nsobject;
+mod ns_object;
 mod obj;
 
 pub use self::bool::*;
 pub use class::*;
 pub use int::*;
-pub use nsobject::*;
+pub use ns_object::*;
 pub use obj::*;
 pub use sel::*;
 

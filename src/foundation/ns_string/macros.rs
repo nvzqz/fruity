@@ -13,11 +13,11 @@
 /// the argument:
 ///
 /// ```
-/// let hello = fruity::nsstring!("hello");
+/// let hello = fruity::ns_string!("hello");
 /// assert_eq!(hello.to_string(), "hello");
 ///
 /// const WORLD: &str = "world";
-/// let world = fruity::nsstring!(WORLD);
+/// let world = fruity::ns_string!(WORLD);
 /// assert_eq!(world.to_string(), WORLD);
 /// ```
 ///
@@ -25,7 +25,7 @@
 ///
 /// ```
 /// # use fruity::foundation::NSString;
-/// static WORLD: NSString = fruity::nsstring!("world");
+/// static WORLD: NSString = fruity::ns_string!("world");
 ///
 /// assert_eq!(WORLD.to_string(), "world");
 /// ```
@@ -42,7 +42,7 @@
 ///
 /// ```
 /// # use fruity::foundation::NSString;
-/// static HELLO_RU: NSString = fruity::nsstring!("Привет");
+/// static HELLO_RU: NSString = fruity::ns_string!("Привет");
 ///
 /// assert_eq!(HELLO_RU.to_string(), "Привет");
 /// ```
@@ -56,8 +56,8 @@
 /// append one.
 ///
 /// ```
-/// let cstr = fruity::nsstring!("example\0");
-/// let normal = fruity::nsstring!("example");
+/// let cstr = fruity::ns_string!("example\0");
+/// let normal = fruity::ns_string!("example");
 ///
 /// assert_eq!(cstr, normal);
 /// ```
@@ -66,7 +66,7 @@
 ///
 /// ```
 /// # // TODO: Add `to_string()` test when a Rust strings with nulls can be retrieved.
-/// let example = fruity::nsstring!("exa\0mple");
+/// let example = fruity::ns_string!("exa\0mple");
 /// ```
 ///
 /// # Runtime Cost
@@ -86,7 +86,7 @@
 /// This is implemented entirely with `const` evaluation. It is not a procedural
 /// macro that requires dependencies for parsing.
 #[macro_export]
-macro_rules! nsstring {
+macro_rules! ns_string {
     ($s:expr) => {{
         // Note that this always uses full paths to items from `$crate`. This
         // does not import any items because doing so could cause ambiguity if
@@ -186,9 +186,9 @@ macro_rules! nsstring {
         };
 
         #[allow(unused_unsafe)]
-        let nsstring = unsafe { $crate::foundation::NSString::from_ptr(cfstring_ptr as _) };
+        let ns_string = unsafe { $crate::foundation::NSString::from_ptr(cfstring_ptr as _) };
 
-        nsstring
+        ns_string
     }};
 }
 
@@ -197,10 +197,10 @@ mod tests {
     use super::super::NSString;
 
     #[test]
-    fn nsstring() {
+    fn ns_string() {
         macro_rules! test {
             ($($s:expr,)+) => {$({
-                static STRING: NSString = nsstring!($s);
+                static STRING: NSString = ns_string!($s);
                 assert_eq!(STRING.to_string(), $s);
             })+};
         }

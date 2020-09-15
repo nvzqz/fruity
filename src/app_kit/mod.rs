@@ -2,11 +2,11 @@
 //!
 //! # Feature Flag
 //!
-//! This module corresponds to the **`appkit`**
+//! This module corresponds to the **`app_kit`**
 //! [feature flag](../index.html#feature-flags).
 
 #![cfg(all(
-    feature = "appkit",
+    feature = "app_kit",
     any(
         target_os = "macos",
         // Enabled by `build.rs` for `x86_64-apple-ios-macabi`.

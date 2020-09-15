@@ -9,13 +9,13 @@ The format is based on [Keep a Changelog] and this project adheres to
 
 ### Added
 
-- The `nsstring!` macro can now take `const X: &str` as input, not just string
+- The `ns_string!` macro can now take `const X: &str` as input, not just string
   literals.
 
-- The `nsstring!` macro now allows interior null bytes, transcoding the string
+- The `ns_string!` macro now allows interior null bytes, transcoding the string
   to UTF-16.
 
-- The `nsstring!` macro now allows trailing null bytes and uses the constant
+- The `ns_string!` macro now allows trailing null bytes and uses the constant
   as-is.
 
   This makes it possible for input data to not get emitted in the binary twice.
@@ -42,7 +42,7 @@ The format is based on [Keep a Changelog] and this project adheres to
 
 ### Fixed
 
-- The `nsstring!` macro now transcodes non-ASCII strings to UTF-16, instead of
+- The `ns_string!` macro now transcodes non-ASCII strings to UTF-16, instead of
   allowing UTF-8 data where only ASCII data is expected.
 
   Transcoding was implemented by [@thomcc]. Iterator technique was provided by
@@ -52,10 +52,12 @@ The format is based on [Keep a Changelog] and this project adheres to
 
 ### Changed
 
+- **\[breaking\]** Renamed `nsstring!` macro to `ns_string!`.
+
 - **\[breaking\]** Increased crate `#[cfg]` strictness from any 32/64 bit to
   only target x86 and ARM.
 
-- **\[breaking\]**  The `nsstring!` macro can only take ASCII strings.
+- **\[breaking\]**  The `ns_string!` macro can only take ASCII strings.
 
   The canonical Unicode representation is UTF-16, so any non-ASCII strings must
   be transcoded to UTF-16. See issue [#3].

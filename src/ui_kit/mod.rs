@@ -2,11 +2,11 @@
 //!
 //! # Feature Flag
 //!
-//! This module corresponds to the **`uikit`**
+//! This module corresponds to the **`ui_kit`**
 //! [feature flag](../index.html#feature-flags).
 
 #![cfg(all(
-    feature = "uikit",
+    feature = "ui_kit",
     not(target_os = "macos"),
 ))]
 

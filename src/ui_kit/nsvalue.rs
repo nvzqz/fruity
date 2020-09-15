@@ -5,13 +5,13 @@ use crate::{
 
 /// Core Graphics geometry values.
 ///
-/// Requires the **`uikit`** feature flag.
+/// Requires the **`ui_kit`** feature flag.
 impl NSValue {
     /// Creates a new value object containing the specified point.
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsvalue/1624531-valuewithcgpoint).
     #[inline]
-    pub fn value_with_cgpoint(value: CGPoint) -> Self {
+    pub fn value_with_cg_point(value: CGPoint) -> Self {
         unsafe { _msg_send![Self::class(), valueWithCGPoint: value] }
     }
 
@@ -19,7 +19,7 @@ impl NSValue {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsvalue/1624534-cgpointvalue).
     #[inline]
-    pub fn cgpoint_value(&self) -> CGPoint {
+    pub fn cg_point_value(&self) -> CGPoint {
         unsafe { _msg_send![self, CGPointValue] }
     }
 
@@ -27,7 +27,7 @@ impl NSValue {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsvalue/1624511-valuewithcgsize).
     #[inline]
-    pub fn value_with_cgsize(value: CGSize) -> Self {
+    pub fn value_with_cg_size(value: CGSize) -> Self {
         unsafe { _msg_send![Self::class(), valueWithCGSize: value] }
     }
 
@@ -35,7 +35,7 @@ impl NSValue {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsvalue/1624489-cgsizevalue).
     #[inline]
-    pub fn cgsize_value(&self) -> CGSize {
+    pub fn cg_size_value(&self) -> CGSize {
         unsafe { _msg_send![self, CGSizeValue] }
     }
 
@@ -43,7 +43,7 @@ impl NSValue {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsvalue/1624529-valuewithcgrect).
     #[inline]
-    pub fn value_with_cgrect(value: CGRect) -> Self {
+    pub fn value_with_cg_rect(value: CGRect) -> Self {
         unsafe { _msg_send![Self::class(), valueWithCGRect: value] }
     }
 
@@ -51,7 +51,7 @@ impl NSValue {
     ///
     /// See [documentation](https://developer.apple.com/documentation/coreimage/civector/1438108-cgrectvalue).
     #[inline]
-    pub fn cgrect_value(&self) -> CGRect {
+    pub fn cg_rect_value(&self) -> CGRect {
         unsafe { _msg_send![self, CGRectValue] }
     }
 
@@ -59,7 +59,7 @@ impl NSValue {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsvalue/1624493-valuewithcgvector).
     #[inline]
-    pub fn value_with_cgvector(value: CGVector) -> Self {
+    pub fn value_with_cg_vector(value: CGVector) -> Self {
         unsafe { _msg_send![Self::class(), valueWithCGVector: value] }
     }
 
@@ -67,7 +67,7 @@ impl NSValue {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsvalue/1624486-cgvectorvalue).
     #[inline]
-    pub fn cgvector_value(&self) -> CGVector {
+    pub fn cg_vector_value(&self) -> CGVector {
         unsafe { _msg_send![self, CGVectorValue] }
     }
 
@@ -76,7 +76,7 @@ impl NSValue {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsvalue/1624503-valuewithcgaffinetransform).
     #[inline]
-    pub fn value_with_cgaffine_transform(value: CGAffineTransform) -> Self {
+    pub fn value_with_cg_affine_transform(value: CGAffineTransform) -> Self {
         unsafe { _msg_send![Self::class(), valueWithCGAffineTransform: value] }
     }
 
@@ -84,7 +84,7 @@ impl NSValue {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsvalue/1624512-cgaffinetransformvalue).
     #[inline]
-    pub fn cgaffine_transform_value(&self) -> CGAffineTransform {
+    pub fn cg_affine_transform_value(&self) -> CGAffineTransform {
         unsafe { _msg_send![self, CGAffineTransformValue] }
     }
 }

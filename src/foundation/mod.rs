@@ -12,19 +12,19 @@
 
 mod cmp;
 mod geometry;
-mod nsnull;
-mod nsnumber;
-mod nsrange;
-mod nsstring;
-mod nsvalue;
+mod ns_null;
+mod ns_number;
+mod ns_range;
+mod ns_string;
+mod ns_value;
 
 pub use cmp::*;
 pub use geometry::*;
-pub use nsnull::*;
-pub use nsnumber::*;
-pub use nsrange::*;
-pub use nsstring::*;
-pub use nsvalue::*;
+pub use ns_null::*;
+pub use ns_number::*;
+pub use ns_range::*;
+pub use ns_string::*;
+pub use ns_value::*;
 
 /// A value indicating that a requested item couldn't be found or doesn’t exist.
 ///
