@@ -110,6 +110,7 @@ impl Class {
     }
 
     #[inline]
+    #[allow(unused)] // Used by `foundation`
     pub(crate) fn alloc(&self) -> NSObject {
         unsafe { _msg_send![self, alloc] }
     }
