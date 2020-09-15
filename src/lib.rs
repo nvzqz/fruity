@@ -180,90 +180,14 @@
 #![deny(improper_ctypes)]
 #![warn(missing_docs)]
 
+// This module is not for public use. It is an implementation detail of macros
+// exposed by this crate.
+#[doc(hidden)]
+pub mod _priv;
+
 #[macro_use]
 pub mod objc;
 
 pub mod core_foundation;
 pub mod core_graphics;
 pub mod foundation;
-
-// This module is not for public use. It is an implementation detail of macros
-// exposed by this crate.
-#[doc(hidden)]
-pub mod _priv {
-    pub use std;
-
-    #[repr(C)]
-    pub struct __CFString {
-        pub isa: *const std::ffi::c_void,
-        pub flags: usize,
-        pub data: *const u8,
-        pub len: usize,
-    }
-
-    unsafe impl Send for __CFString {}
-    unsafe impl Sync for __CFString {}
-
-    pub mod str {
-        /// Returns `true` if `s` ends with a 0 byte.
-        pub const fn is_nul_terminated(s: &str) -> bool {
-            match s.as_bytes() {
-                [.., 0] => true,
-                _ => false,
-            }
-        }
-
-        /// Returns `true` if `s` contains only non-null ASCII bytes.
-        pub const fn is_cf_ascii(s: &str) -> bool {
-            // Remove the trailing null byte if there is one.
-            let bytes = match s.as_bytes() {
-                [b @ .., 0] => b,
-                b => b,
-            };
-
-            let mut i = 0;
-            loop {
-                if i == bytes.len() {
-                    return true;
-                }
-
-                let byte = bytes[i];
-                if !byte.is_ascii() || byte == 0 {
-                    return false;
-                }
-
-                i += 1;
-            }
-        }
-
-        #[cfg(test)]
-        mod tests {
-
-            #[test]
-            fn is_cf_ascii() {
-                let cases: &[_] = &[
-                    ("\0", true),
-                    ("\0\0", false),
-                    ("\0\0\0", false),
-                    ("", true),
-                    ("a", true),
-                    ("ä", false),
-                    ("a\0", true),
-                    ("\0a\0", false),
-                    ("a\0\0", false),
-                    ("\0ä\0", false),
-                    ("ä\0\0", false),
-                ];
-
-                for &(s, is_cf_ascii) in cases {
-                    assert_eq!(
-                        super::is_cf_ascii(s),
-                        is_cf_ascii,
-                        "invalid result for {:?}",
-                        s
-                    );
-                }
-            }
-        }
-    }
-}

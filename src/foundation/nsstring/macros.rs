@@ -35,16 +35,20 @@
 ///
 /// # Unicode Strings
 ///
-/// In Objective-C, non-ASCII strings are represented as UTF-16. However, `&str`
-/// is encoded as UTF-8.
+/// In Objective-C, non-ASCII strings are UTF-16. However, Rust strings are
+/// UTF-8.
 ///
-/// Because of this, using a non-ASCII string is a compile error:
+/// This macro transcodes non-ASCII strings to UTF-16:
 ///
-/// ```compile_fail
-/// let non_ascii = fruity::nsstring!("straße");
+/// ```
+/// # use fruity::foundation::NSString;
+/// static HELLO_RU: NSString = fruity::nsstring!("Привет");
+///
+/// assert_eq!(HELLO_RU.to_string(), "Привет");
 /// ```
 ///
-/// This is tracked in [issue #3](https://github.com/nvzqz/fruity/issues/3).
+/// Note that because this is implemented with `const` evaluation, massive
+/// strings can increase compile time and even hit the `const` evaluation limit.
 ///
 /// # Null-Terminated Strings
 ///
@@ -56,6 +60,13 @@
 /// let normal = fruity::nsstring!("example");
 ///
 /// assert_eq!(cstr, normal);
+/// ```
+///
+/// Interior null bytes are allowed and are not stripped:
+///
+/// ```
+/// # // TODO: Add `to_string()` test when a Rust strings with nulls can be retrieved.
+/// let example = fruity::nsstring!("exa\0mple");
 /// ```
 ///
 /// # Runtime Cost
@@ -84,72 +95,127 @@ macro_rules! nsstring {
         // The only names directly used are expressions, whose names shadow any
         // other names outside of this macro.
 
-        // TODO(#3): Convert `INPUT` to UTF-16 if it contains non-ASCII bytes.
-        const INPUT: &str = $s;
-
-        // Assert that `INPUT` is ASCII. Unicode strings are not currently
-        // supported.
-        const _: [(); 1] = [(); $crate::_priv::str::is_cf_ascii(INPUT) as usize];
-
         // This is defined in CoreFoundation, but we don't emit a link attribute
         // here because it is already linked via Foundation.
         //
         // Although this is a "private" (underscored) symbol, it is directly
         // referenced in Objective-C binaries. So it's safe for us to reference.
         extern "C" {
-            static __CFConstantStringClassReference: $crate::_priv::std::ffi::c_void;
+            static __CFConstantStringClassReference: $crate::_priv::c_void;
         }
 
-        // This is composed of:
-        // - 07: The `CFTypeID` for `CFString`
-        // - C8: Flags for a constant ASCII string with a trailing null byte.
-        const FLAGS: usize = 0x07c8;
+        let cfstring_ptr: *const $crate::_priv::c_void = {
+            // Remove any trailing null early.
+            const INPUT: &[u8] = $crate::_priv::cfstring::trim_trailing_nul($s);
 
-        // If input already ends with a 0 byte, then we don't need to add it.
-        let data = if $crate::_priv::str::is_nul_terminated(INPUT) {
-            #[link_section = "__DATA,__cfstring,regular"]
-            static DATA: $crate::_priv::__CFString = $crate::_priv::__CFString {
-                isa: unsafe { &__CFConstantStringClassReference },
-                flags: FLAGS,
-                data: INPUT.as_ptr(),
-                // The length does not include the null byte.
-                len: INPUT.len() - 1,
-            };
+            if $crate::_priv::cfstring::is_ascii(INPUT) {
+                // The ASCII bytes with a trailing null byte.
+                #[repr(C)]
+                struct Ascii {
+                    data: [u8; INPUT.len()],
+                    nul: u8,
+                }
 
-            &DATA
-        } else {
-            // Create a new constant with 0 appended to INPUT.
+                const ASCII: Ascii = Ascii {
+                    data: unsafe { *$crate::_priv::std::mem::transmute::<_, &_>(INPUT.as_ptr()) },
+                    nul: 0,
+                };
 
-            #[repr(C)]
-            struct Bytes {
-                input: [u8; INPUT.len()],
-                nul: u8,
+                const ASCII_ARRAY: &[u8; INPUT.len() + 1] =
+                    unsafe { $crate::_priv::std::mem::transmute(&ASCII) };
+
+                #[link_section = "__DATA,__cfstring,regular"]
+                static CFSTRING: $crate::_priv::cfstring::CFStringAscii =
+                    $crate::_priv::cfstring::CFStringAscii::new(
+                        unsafe { &__CFConstantStringClassReference },
+                        ASCII_ARRAY.as_ptr(),
+                        // The length does not include the trailing null.
+                        INPUT.len(),
+                    );
+
+                CFSTRING.as_ptr()
+            } else {
+                // The full UTF-16 contents along with the written length.
+                const UTF16_FULL: (&[u16; INPUT.len()], usize) = {
+                    let mut out = [0u16; INPUT.len()];
+                    let mut iter = $crate::_priv::cfstring::utf16::EncodeUtf16Iter::new(INPUT);
+                    let mut written = 0;
+
+                    while let Some((state, chars)) = iter.next() {
+                        iter = state;
+                        out[written] = chars.repr[0];
+                        written += 1;
+
+                        if chars.len > 1 {
+                            out[written] = chars.repr[1];
+                            written += 1;
+                        }
+                    }
+
+                    (&{ out }, written)
+                };
+
+                // The written UTF-16 contents with a trailing null code point.
+                #[repr(C)]
+                struct Utf16 {
+                    data: [u16; UTF16_FULL.1],
+                    nul: u16,
+                }
+
+                const UTF16: Utf16 = Utf16 {
+                    data: unsafe {
+                        *$crate::_priv::std::mem::transmute::<_, &_>(UTF16_FULL.0.as_ptr())
+                    },
+                    nul: 0,
+                };
+
+                const UTF16_ARRAY: &[u16; UTF16_FULL.1 + 1] =
+                    unsafe { $crate::_priv::std::mem::transmute(&UTF16) };
+
+                #[link_section = "__DATA,__cfstring,regular"]
+                static CFSTRING: $crate::_priv::cfstring::CFStringUtf16 =
+                    $crate::_priv::cfstring::CFStringUtf16::new(
+                        unsafe { &__CFConstantStringClassReference },
+                        UTF16_ARRAY.as_ptr(),
+                        // The length does not include the trailing null.
+                        UTF16_FULL.1,
+                    );
+
+                CFSTRING.as_ptr()
             }
-
-            const BYTES: Bytes = Bytes {
-                input: unsafe { *$crate::_priv::std::mem::transmute::<_, &_>(INPUT.as_ptr()) },
-                nul: 0,
-            };
-
-            const INPUT_WITH_NUL: &[u8; INPUT.len() + 1] =
-                unsafe { $crate::_priv::std::mem::transmute(&BYTES) };
-
-            #[link_section = "__DATA,__cfstring,regular"]
-            static DATA: $crate::_priv::__CFString = $crate::_priv::__CFString {
-                isa: unsafe { &__CFConstantStringClassReference },
-                flags: FLAGS,
-                data: INPUT_WITH_NUL.as_ptr(),
-                // The length does not include the null byte.
-                len: INPUT.len(),
-            };
-
-            &DATA
         };
 
         #[allow(unused_unsafe)]
-        let nsstring =
-            unsafe { $crate::foundation::NSString::from_ptr(data as *const _ as *mut _) };
+        let nsstring = unsafe { $crate::foundation::NSString::from_ptr(cfstring_ptr as _) };
 
         nsstring
     }};
+}
+
+#[cfg(test)]
+mod tests {
+    use super::super::NSString;
+
+    #[test]
+    fn nsstring() {
+        macro_rules! test {
+            ($($s:expr,)+) => {$({
+                static STRING: NSString = nsstring!($s);
+                assert_eq!(STRING.to_string(), $s);
+            })+};
+        }
+
+        test! {
+            "asdf",
+            "🦀",
+            "🏳️‍🌈",
+            "𝄞music",
+            "abcd【e】fg",
+            "abcd⒠fg",
+            "ääääh",
+            "lööps, bröther?",
+            "\u{fffd} \u{fffd} \u{fffd}",
+            "讓每個人都能打造出。",
+        }
+    }
 }

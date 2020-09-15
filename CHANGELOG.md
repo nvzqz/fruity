@@ -12,6 +12,9 @@ The format is based on [Keep a Changelog] and this project adheres to
 - The `nsstring!` macro can now take `const X: &str` as input, not just string
   literals.
 
+- The `nsstring!` macro now allows interior null bytes, transcoding the string
+  to UTF-16.
+
 - The `nsstring!` macro now allows trailing null bytes and uses the constant
   as-is.
 
@@ -34,6 +37,16 @@ The format is based on [Keep a Changelog] and this project adheres to
 
     These are aliased in `foundation` as: `NSPoint`, `NSSize`, `NSRect`, and
     `NSRectEdge`.
+
+### Fixed
+
+- The `nsstring!` macro now transcodes non-ASCII strings to UTF-16, instead of
+  allowing UTF-8 data where only ASCII data is expected.
+
+  Transcoding was implemented by [@thomcc]. Iterator technique was provided by
+  [@rodrimati1992].
+
+  See issue [#3].
 
 ### Changed
 
@@ -71,6 +84,9 @@ Initial release.
 
 [Keep a Changelog]:    http://keepachangelog.com/en/1.0.0/
 [Semantic Versioning]: http://semver.org/spec/v2.0.0.html
+
+[@thomcc]: https://github.com/thomcc
+[@rodrimati1992]: https://github.com/rodrimati1992
 
 [#3]: https://github.com/nvzqz/fruity/issues/3
 [#1]: https://github.com/nvzqz/fruity/issues/1
