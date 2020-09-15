@@ -53,6 +53,38 @@ impl SEL {
         sel_registerName(name)
     }
 
+    /// Creates a selector from a raw pointer.
+    ///
+    /// # Safety
+    ///
+    /// The pointer must point to valid selector data.
+    #[inline]
+    pub const unsafe fn from_ptr(ptr: *const c_void) -> Self {
+        Self(NonNull::new_unchecked(ptr as _))
+    }
+
+    /// Creates a selector from a raw non-null pointer.
+    ///
+    /// # Safety
+    ///
+    /// The pointer must point to valid selector data.
+    #[inline]
+    pub const unsafe fn from_non_null_ptr(ptr: NonNull<c_void>) -> Self {
+        Self(ptr)
+    }
+
+    /// Returns a raw nullable pointer to this selector's data.
+    #[inline]
+    pub const fn as_ptr(&self) -> *const c_void {
+        self.0.as_ptr()
+    }
+
+    /// Returns a raw non-null pointer to this selector's data.
+    #[inline]
+    pub const fn as_non_null_ptr(&self) -> NonNull<c_void> {
+        self.0
+    }
+
     /// Returns the name of the method this selector refers to.
     #[inline]
     pub fn name(self) -> &'static CStr {
