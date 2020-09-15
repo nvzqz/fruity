@@ -48,10 +48,13 @@ impl Deref for NSString {
     }
 }
 
+// Causes a linker error if not static.
+static DEFAULT: NSString = ns_string!("");
+
 impl Default for NSString {
     #[inline]
     fn default() -> Self {
-        ns_string!("")
+        DEFAULT.clone()
     }
 }
 
@@ -462,7 +465,7 @@ impl Deref for NSMutableString {
 impl Default for NSMutableString {
     #[inline]
     fn default() -> Self {
-        NSString::default().mutable_copy()
+        DEFAULT.mutable_copy()
     }
 }
 
