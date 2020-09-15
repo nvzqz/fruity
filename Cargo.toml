@@ -27,6 +27,7 @@ include = [
 
 [features]
 # Libraries and frameworks
+appkit = ["foundation"]
 objc = []
 core_foundation = []
 core_graphics = []

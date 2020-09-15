@@ -188,6 +188,7 @@ pub mod _priv;
 #[macro_use]
 pub mod objc;
 
+pub mod appkit;
 pub mod core_foundation;
 pub mod core_graphics;
 pub mod foundation;
