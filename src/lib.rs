@@ -192,3 +192,4 @@ pub mod appkit;
 pub mod core_foundation;
 pub mod core_graphics;
 pub mod foundation;
+pub mod uikit;

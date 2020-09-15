@@ -32,6 +32,7 @@ objc = []
 core_foundation = []
 core_graphics = []
 foundation = ["objc", "core_graphics"]
+uikit = ["foundation"]
 
 [dev-dependencies]
 rand = "0.7.3"
