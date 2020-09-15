@@ -29,6 +29,8 @@ The format is based on [Keep a Changelog] and this project adheres to
 
 - Foundation types: `NSNumber`, `NSEdgeInsets`, `NSRange`, `NSValue`, `NSNull`.
 
+- Foundation constants: `NSNotFound`.
+
 - `core_graphics` module for [Core Graphics](https://developer.apple.com/documentation/coregraphics)
   framework.
 

@@ -26,5 +26,11 @@ pub use nsrange::*;
 pub use nsstring::*;
 pub use nsvalue::*;
 
+/// A value indicating that a requested item couldn't be found or doesn’t exist.
+///
+/// See [documentation](https://developer.apple.com/documentation/foundation/nsnotfound).
+#[allow(non_upper_case_globals)]
+pub const NSNotFound: crate::objc::NSInteger = crate::objc::NSIntegerMax;
+
 #[link(name = "Foundation", kind = "framework")]
 extern "C" {}
