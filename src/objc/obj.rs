@@ -46,6 +46,14 @@ impl Object {
     {
         A::msg_send(self, sel, args)
     }
+
+    #[inline]
+    pub(crate) fn _retain(&self) -> NonNull<Object> {
+        extern "C" {
+            fn objc_retain(obj: &Object) -> NonNull<Object>;
+        }
+        unsafe { objc_retain(self) }
+    }
 }
 
 impl Object {
@@ -108,10 +116,7 @@ impl Drop for id {
 impl Clone for id {
     #[inline]
     fn clone(&self) -> Self {
-        extern "C" {
-            fn objc_retain(obj: &Object) -> NonNull<Object>;
-        }
-        Self(unsafe { objc_retain(self) })
+        Self(self._retain())
     }
 }
 
