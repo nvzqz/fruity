@@ -2,6 +2,7 @@ use super::{NSComparisonResult, NSRange};
 use crate::objc::{Class, NSObject, NSUInteger, Object, BOOL, NO, SEL};
 use std::{cmp::Ordering, ffi::CStr, fmt, ops::Deref, os::raw::c_char, ptr::NonNull, str};
 
+#[macro_use]
 mod macros;
 
 /// Returns the selector with a given name.
@@ -44,6 +45,13 @@ impl Deref for NSString {
     #[inline]
     fn deref(&self) -> &NSObject {
         &self.0
+    }
+}
+
+impl Default for NSString {
+    #[inline]
+    fn default() -> Self {
+        ns_string!("")
     }
 }
 

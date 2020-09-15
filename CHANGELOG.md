@@ -47,6 +47,8 @@ The format is based on [Keep a Changelog] and this project adheres to
 
 - Pointer methods for `SEL`.
 
+- Implemented `Default` for `NSString`.
+
 ### Fixed
 
 - The `ns_string!` macro now transcodes non-ASCII strings to UTF-16, instead of
