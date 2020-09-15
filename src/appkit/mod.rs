@@ -7,7 +7,11 @@
 
 #![cfg(all(
     feature = "appkit",
-    target_os = "macos",
+    any(
+        target_os = "macos",
+        // Enabled by `build.rs` for `x86_64-apple-ios-macabi`.
+        mac_catalyst,
+    )
 ))]
 
 #[link(name = "AppKit", kind = "framework")]
