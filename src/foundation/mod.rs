@@ -12,6 +12,7 @@
 
 mod cmp;
 mod geometry;
+mod nsnull;
 mod nsnumber;
 mod nsrange;
 mod nsstring;
@@ -19,6 +20,7 @@ mod nsvalue;
 
 pub use cmp::*;
 pub use geometry::*;
+pub use nsnull::*;
 pub use nsnumber::*;
 pub use nsrange::*;
 pub use nsstring::*;
