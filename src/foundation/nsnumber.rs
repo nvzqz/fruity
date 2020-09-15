@@ -1,8 +1,7 @@
-use super::{NSComparisonResult, NSString};
+use super::{NSComparisonResult, NSString, NSValue};
 use crate::objc::{Class, NSInteger, NSObject, NSUInteger, Object, BOOL};
 use std::{
     cmp::Ordering,
-    ffi::CStr,
     fmt,
     ops::Deref,
     os::raw::{
@@ -20,20 +19,27 @@ use std::{
 /// See [documentation](https://developer.apple.com/documentation/foundation/nsnumber).
 #[repr(transparent)]
 #[derive(Clone)]
-pub struct NSNumber(NSObject);
+pub struct NSNumber(NSValue);
 
-impl From<NSNumber> for NSObject {
+impl From<NSNumber> for NSValue {
     #[inline]
     fn from(obj: NSNumber) -> Self {
         obj.0
     }
 }
 
+impl From<NSNumber> for NSObject {
+    #[inline]
+    fn from(obj: NSNumber) -> Self {
+        NSValue::from(obj).into()
+    }
+}
+
 impl Deref for NSNumber {
-    type Target = NSObject;
+    type Target = NSValue;
 
     #[inline]
-    fn deref(&self) -> &NSObject {
+    fn deref(&self) -> &NSValue {
         &self.0
     }
 }
@@ -218,7 +224,7 @@ impl NSNumber {
     /// The pointer must point to a valid `NSNumber` instance.
     #[inline]
     pub const unsafe fn from_ptr(ptr: *mut Object) -> Self {
-        Self(NSObject::from_ptr(ptr))
+        Self(NSValue::from_ptr(ptr))
     }
 
     /// Creates an immutable object from a raw non-null pointer.
@@ -228,7 +234,7 @@ impl NSNumber {
     /// The pointer must point to a valid `NSNumber` instance.
     #[inline]
     pub const unsafe fn from_non_null_ptr(ptr: NonNull<Object>) -> Self {
-        Self(NSObject::from_non_null_ptr(ptr))
+        Self(NSValue::from_non_null_ptr(ptr))
     }
 }
 
@@ -440,23 +446,6 @@ impl NSNumber {
         } else {
             None
         }
-    }
-
-    // TODO: Create `NSValue` and move `objc_type` methods into it.
-
-    /// Returns a pointer to a C string containing the Objective-C type of the
-    /// data contained in the value object.
-    ///
-    /// See [documentation](https://developer.apple.com/documentation/foundation/nsvalue/1412365-objctype).
-    #[inline]
-    pub fn objc_type(&self) -> *const c_char {
-        unsafe { _msg_send![self, objCType] }
-    }
-
-    /// Returns [`objc_type`](#method.objc_type) as a C string reference.
-    #[inline]
-    pub fn objc_type_cstr(&self) -> &CStr {
-        unsafe { CStr::from_ptr(self.objc_type()) }
     }
 
     /// Returns an `NSComparisonResult` value that indicates whether the number

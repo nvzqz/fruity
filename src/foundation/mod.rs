@@ -15,12 +15,14 @@ mod geometry;
 mod nsnumber;
 mod nsrange;
 mod nsstring;
+mod nsvalue;
 
 pub use cmp::*;
 pub use geometry::*;
 pub use nsnumber::*;
 pub use nsrange::*;
 pub use nsstring::*;
+pub use nsvalue::*;
 
 #[link(name = "Foundation", kind = "framework")]
 extern "C" {}

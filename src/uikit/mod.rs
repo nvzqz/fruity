@@ -10,5 +10,7 @@
     not(target_os = "macos"),
 ))]
 
+mod nsvalue;
+
 #[link(name = "UIKit", kind = "framework")]
 extern "C" {}
