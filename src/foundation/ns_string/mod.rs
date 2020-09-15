@@ -459,6 +459,13 @@ impl Deref for NSMutableString {
     }
 }
 
+impl Default for NSMutableString {
+    #[inline]
+    fn default() -> Self {
+        NSString::default().mutable_copy()
+    }
+}
+
 impl PartialEq for NSMutableString {
     #[inline]
     fn eq(&self, other: &Self) -> bool {
