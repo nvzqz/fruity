@@ -1,5 +1,5 @@
 use super::{NSEdgeInsets, NSPoint, NSRange, NSRect, NSSize};
-use crate::objc::{Class, NSObject, NSUInteger, Object};
+use crate::objc::{Class, NSObject, NSUInteger, Object, ObjectType};
 use std::{
     ffi::CStr,
     fmt, mem,
@@ -16,6 +16,8 @@ use std::{
 #[repr(transparent)]
 #[derive(Clone)]
 pub struct NSValue(NSObject);
+
+unsafe impl ObjectType for NSValue {}
 
 impl From<NSValue> for NSObject {
     #[inline]

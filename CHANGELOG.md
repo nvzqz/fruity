@@ -9,6 +9,8 @@ The format is based on [Keep a Changelog] and this project adheres to
 
 ### Added
 
+- `ObjectType` trait to generalize over object references.
+
 - The `ns_string!` macro can now take `const X: &str` as input, not just string
   literals.
 

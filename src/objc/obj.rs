@@ -1,6 +1,29 @@
 use super::{Class, SEL};
 use std::{cell::UnsafeCell, fmt, ops::Deref, ptr::NonNull};
 
+/// An object reference type.
+///
+/// # Safety
+///
+/// Implementors of this trait *must* have a memory representation equivalent to
+/// [`NonNull`]`<`[`Object`]`>`.
+///
+/// [`NonNull`]: https://doc.rust-lang.org/std/ptr/struct.NonNull.html
+/// [`Object`]: struct.Object.html
+pub unsafe trait ObjectType: Sized {
+    /// Returns a reference to the underlying object instance.
+    #[inline]
+    fn as_object(&self) -> &Object {
+        &**self.as_id()
+    }
+
+    /// Casts `self` to an untyped object pointer.
+    #[inline]
+    fn as_id(&self) -> &id {
+        unsafe { &*(self as *const _ as *const _) }
+    }
+}
+
 /// An opaque object instance.
 ///
 /// This is designed to be used behind a reference. In the future, this will be
@@ -17,6 +40,8 @@ pub struct Object {
     // `UnsafeCell`.
     _data: UnsafeCell<[u8; 0]>,
 }
+
+unsafe impl ObjectType for &Object {}
 
 // This type is used globally, so we must be able to share it across threads.
 unsafe impl Sync for Object {}
@@ -90,6 +115,13 @@ impl Object {
 #[repr(transparent)]
 #[allow(non_camel_case_types)]
 pub struct id(NonNull<Object>);
+
+unsafe impl ObjectType for id {
+    #[inline]
+    fn as_id(&self) -> &id {
+        self
+    }
+}
 
 unsafe impl Send for id {}
 unsafe impl Sync for id {}

@@ -1,4 +1,4 @@
-use super::{id, Class, NSUInteger, Object, BOOL, SEL};
+use super::{id, Class, NSUInteger, Object, ObjectType, BOOL, SEL};
 use std::{fmt, ops::Deref, ptr::NonNull};
 
 /// The root class for most Objective-C objects.
@@ -7,6 +7,8 @@ use std::{fmt, ops::Deref, ptr::NonNull};
 #[repr(transparent)]
 #[derive(Clone, Debug)]
 pub struct NSObject(id);
+
+unsafe impl ObjectType for NSObject {}
 
 impl Deref for NSObject {
     type Target = id;

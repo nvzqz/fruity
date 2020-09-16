@@ -1,4 +1,4 @@
-use crate::objc::{Class, NSObject, Object};
+use crate::objc::{Class, NSObject, Object, ObjectType};
 use std::{fmt, ops::Deref};
 
 /// A singleton object used to represent null values in collection objects that
@@ -8,6 +8,13 @@ use std::{fmt, ops::Deref};
 #[repr(transparent)]
 #[derive(Copy, Clone)]
 pub struct NSNull(&'static Object);
+
+unsafe impl ObjectType for NSNull {
+    #[inline]
+    fn as_object(&self) -> &'static Object {
+        self.0
+    }
+}
 
 impl From<NSNull> for NSObject {
     #[inline]

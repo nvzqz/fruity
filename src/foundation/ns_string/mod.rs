@@ -1,5 +1,5 @@
 use super::{NSComparisonResult, NSRange};
-use crate::objc::{Class, NSObject, NSUInteger, Object, BOOL, NO, SEL};
+use crate::objc::{Class, NSObject, NSUInteger, Object, ObjectType, BOOL, NO, SEL};
 use std::{cmp::Ordering, ffi::CStr, fmt, ops::Deref, os::raw::c_char, ptr::NonNull, str};
 
 #[macro_use]
@@ -31,6 +31,8 @@ pub fn NSSelectorFromString(string: &NSString) -> Option<SEL> {
 #[repr(transparent)]
 #[derive(Clone)]
 pub struct NSString(NSObject);
+
+unsafe impl ObjectType for NSString {}
 
 impl From<NSString> for NSObject {
     #[inline]
@@ -432,6 +434,8 @@ impl NSString {
 #[repr(transparent)]
 #[derive(Clone)]
 pub struct NSMutableString(NSString);
+
+unsafe impl ObjectType for NSMutableString {}
 
 impl From<NSMutableString> for NSObject {
     #[inline]

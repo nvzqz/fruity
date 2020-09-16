@@ -1,5 +1,5 @@
 use super::{NSComparisonResult, NSString, NSValue};
-use crate::objc::{Class, NSInteger, NSObject, NSUInteger, Object, BOOL};
+use crate::objc::{Class, NSInteger, NSObject, NSUInteger, Object, ObjectType, BOOL};
 use std::{
     cmp::Ordering,
     fmt,
@@ -20,6 +20,8 @@ use std::{
 #[repr(transparent)]
 #[derive(Clone)]
 pub struct NSNumber(NSValue);
+
+unsafe impl ObjectType for NSNumber {}
 
 impl From<NSNumber> for NSValue {
     #[inline]

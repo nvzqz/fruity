@@ -1,4 +1,4 @@
-use super::{NSObject, Object, BOOL, SEL};
+use super::{NSObject, Object, ObjectType, BOOL, SEL};
 use std::{
     cmp,
     ffi::CStr,
@@ -26,6 +26,13 @@ pub struct Class(
     // store class data. Internally, this is accomplished with `UnsafeCell`.
     Object,
 );
+
+unsafe impl ObjectType for &Class {
+    #[inline]
+    fn as_object(&self) -> &Object {
+        &self.0
+    }
+}
 
 // Although this uses `UnsafeCell`, it does not point to any Rust types.
 impl RefUnwindSafe for Class {}
