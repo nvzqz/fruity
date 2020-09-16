@@ -26,6 +26,13 @@ impl AsRef<NSObject> for NSObject {
     }
 }
 
+impl<T: ObjectType> PartialEq<T> for NSObject {
+    #[inline]
+    fn eq(&self, other: &T) -> bool {
+        unsafe { _msg_send![self, isEqual: other.as_object() => BOOL] != 0 }
+    }
+}
+
 impl fmt::Pointer for NSObject {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
