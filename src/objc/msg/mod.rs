@@ -15,6 +15,18 @@ macro_rules! _msg_send {
     };
 }
 
+macro_rules! _msg_send_cached {
+    ($obj:expr, $sel:ident $(=> $ret:ty)?) => {
+        $obj._msg_send $(::<$ret>)? (_cached_selector!($sel))
+    };
+    ($obj:expr, $($arg_name:ident : $arg:expr)+ $(=> $ret:ty)?) => {
+        $obj._msg_send_with $(::<_, $ret>)? (
+            _cached_selector!($($arg_name :)+),
+            ($($arg,)+)
+        )
+    };
+}
+
 // This trait is intentionally undocumented to ensure it is not publicly
 // exported.
 #[deny(missing_docs)]

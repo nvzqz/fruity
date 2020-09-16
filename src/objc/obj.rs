@@ -97,7 +97,7 @@ impl Object {
     /// Returns the class that this object is an instance of.
     #[inline]
     pub fn get_class(&self) -> &'static Class {
-        unsafe { _msg_send![self, class] }
+        unsafe { _msg_send_cached![self, class] }
     }
 }
 

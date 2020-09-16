@@ -97,3 +97,14 @@ macro_rules! selector {
         }
     };
 }
+
+macro_rules! _cached_selector {
+    ($sel:ident) => {
+        $crate::objc::sel::cached::$sel
+            .load_or_store_with(|| $crate::selector!($sel))
+    };
+    ($($sel:ident :)+) => {
+        $crate::objc::sel::cached $(::$sel)+ ::SELECTOR
+            .load_or_store_with(|| $crate::selector!($($sel :)+))
+    };
+}

@@ -9,6 +9,9 @@ use std::{
 #[macro_use]
 mod macros;
 
+pub(crate) mod atomic;
+pub(crate) mod cached;
+
 /// A method selector.
 ///
 /// Selectors can be safely created using the

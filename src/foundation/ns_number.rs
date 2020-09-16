@@ -49,7 +49,7 @@ impl Deref for NSNumber {
 impl PartialEq for NSNumber {
     #[inline]
     fn eq(&self, other: &Self) -> bool {
-        unsafe { _msg_send![self, isEqualToNumber: other as &Object => BOOL] != 0 }
+        unsafe { _msg_send_cached![self, isEqualToNumber: other as &Object => BOOL] != 0 }
     }
 }
 

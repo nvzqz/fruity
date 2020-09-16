@@ -63,7 +63,7 @@ impl Default for NSString {
 impl PartialEq for NSString {
     #[inline]
     fn eq(&self, other: &Self) -> bool {
-        unsafe { _msg_send![self, isEqualToString: other as &Object => BOOL] != 0 }
+        unsafe { _msg_send_cached![self, isEqualToString: other as &Object => BOOL] != 0 }
     }
 }
 

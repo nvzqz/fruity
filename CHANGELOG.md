@@ -29,6 +29,9 @@ The format is based on [Keep a Changelog] and this project adheres to
 - Internal convenience `_msg_send!` macro for dispatching `objc_msgSend` and
   associating arguments with the appropriate selector part.
 
+  - Also `_msg_send_cached!` that internally caches the selector in a global
+    atomic pointer.
+
 - Foundation types: `NSNumber`, `NSEdgeInsets`, `NSRange`, `NSValue`, `NSNull`.
 
 - Foundation constants: `NSNotFound`.

@@ -8,7 +8,7 @@
 #![cfg(feature = "objc")]
 
 #[macro_use]
-mod sel;
+pub(crate) mod sel;
 
 #[macro_use]
 mod msg;
@@ -24,7 +24,7 @@ pub use class::*;
 pub use int::*;
 pub use ns_object::*;
 pub use obj::*;
-pub use sel::*;
+pub use sel::SEL;
 
 #[link(name = "objc", kind = "dylib")]
 extern "C" {}
