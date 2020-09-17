@@ -26,7 +26,7 @@ impl AtomicSEL {
             unsafe { SEL::from_non_null_ptr(ptr) }
         } else {
             let selector = make_sel();
-            self.0.store(selector.as_ptr() as _, Ordering::SeqCst);
+            self.0.store(selector.as_ptr() as _, Ordering::Relaxed);
             selector
         }
     }
