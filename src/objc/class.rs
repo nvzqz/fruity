@@ -119,6 +119,11 @@ impl Class {
     #[inline]
     #[allow(unused)] // Used by `foundation`
     pub(crate) unsafe fn alloc<T: ObjectType>(&self) -> T {
+        // TODO: Add `cfg` use `objc_msgSend` on older platforms where this
+        // symbol does not exist, such as macOS 10.10+.
+        //
+        // This may require reading the `-mmacosx-version-min` flag somehow.
+
         extern "C" {
             fn objc_alloc();
         }
