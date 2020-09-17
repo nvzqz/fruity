@@ -1,8 +1,8 @@
-use super::{NSObject, Object, ObjectType, BOOL, SEL};
+use super::{Object, ObjectType, BOOL, SEL};
 use std::{
     cmp,
     ffi::CStr,
-    fmt, hash,
+    fmt, hash, mem,
     ops::Deref,
     os::raw::{c_char, c_int},
     panic::RefUnwindSafe,
@@ -118,10 +118,13 @@ impl Class {
 
     #[inline]
     #[allow(unused)] // Used by `foundation`
-    pub(crate) fn alloc(&self) -> NSObject {
+    pub(crate) unsafe fn alloc<T: ObjectType>(&self) -> T {
         extern "C" {
-            fn objc_alloc(class: &Class) -> NSObject;
+            fn objc_alloc();
         }
+        let objc_alloc: unsafe extern "C" fn() = objc_alloc;
+        let objc_alloc: unsafe extern "C" fn(&Class) -> T = mem::transmute(objc_alloc);
+
         unsafe { objc_alloc(self) }
     }
 

@@ -8,7 +8,6 @@
 
 use super::atomic::AtomicSEL;
 
-pub(crate) static alloc: AtomicSEL = AtomicSEL::null();
 pub(crate) static class: AtomicSEL = AtomicSEL::null();
 pub(crate) static copy: AtomicSEL = AtomicSEL::null();
 pub(crate) static mutableCopy: AtomicSEL = AtomicSEL::null();

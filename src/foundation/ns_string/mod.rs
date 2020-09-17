@@ -159,7 +159,7 @@ impl NSString {
     //
     // This allows for reducing the code size of the final binary.
     unsafe fn _from_str(s: &str, class: &Class) -> NSString {
-        let value: Self = Self(class.alloc());
+        let value: Self = class.alloc();
 
         extern "C" {
             fn objc_msgSend(
@@ -193,7 +193,7 @@ impl NSString {
     /// The returned string object or its clones must not outlive the referenced
     /// string slice.
     pub unsafe fn from_str_no_copy(s: &str) -> NSString {
-        let value: Self = Self(Self::class().alloc());
+        let value: Self = Self::class().alloc();
 
         extern "C" {
             fn objc_msgSend(
@@ -603,7 +603,7 @@ impl NSMutableString {
     /// The returned string object or its clones must not outlive the referenced
     /// string slice.
     pub unsafe fn from_str_no_copy(s: &mut str) -> NSMutableString {
-        let value: Self = Self(NSString(Self::class().alloc()));
+        let value: Self = Self::class().alloc();
 
         extern "C" {
             fn objc_msgSend(
