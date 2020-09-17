@@ -119,7 +119,10 @@ impl Class {
     #[inline]
     #[allow(unused)] // Used by `foundation`
     pub(crate) fn alloc(&self) -> NSObject {
-        unsafe { _msg_send_cached![self, alloc] }
+        extern "C" {
+            fn objc_alloc(class: &Class) -> NSObject;
+        }
+        unsafe { objc_alloc(self) }
     }
 
     /// Returns a reference to this class as an Objective-C object.
