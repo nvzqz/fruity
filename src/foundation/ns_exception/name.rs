@@ -9,7 +9,7 @@ use std::{fmt, ptr::NonNull};
 /// See [documentation](https://developer.apple.com/documentation/foundation/nsexceptionname).
 #[repr(transparent)]
 #[derive(Clone, Ord, PartialOrd, Eq, PartialEq)]
-pub struct NSExceptionName(NSString);
+pub struct NSExceptionName(pub NSString);
 
 unsafe impl ObjectType for NSExceptionName {}
 
@@ -58,12 +58,6 @@ impl fmt::Pointer for NSExceptionName {
 }
 
 impl NSExceptionName {
-    /// Creates a new instance wrapping `name`.
-    #[inline]
-    pub const fn new(name: NSString) -> Self {
-        Self(name)
-    }
-
     /// Creates an immutable string object from a raw nullable pointer.
     ///
     /// # Safety
