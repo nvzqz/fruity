@@ -20,10 +20,25 @@ impl From<NSExceptionName> for NSString {
     }
 }
 
+impl From<NSString> for NSExceptionName {
+    #[inline]
+    fn from(obj: NSString) -> Self {
+        Self(obj)
+    }
+}
+
 impl AsRef<NSString> for NSExceptionName {
     #[inline]
     fn as_ref(&self) -> &NSString {
         &self.0
+    }
+}
+
+impl AsRef<NSExceptionName> for NSString {
+    #[inline]
+    fn as_ref(&self) -> &NSExceptionName {
+        // SAFETY: Both types have equivalent memory representations.
+        unsafe { &*(self as *const _ as *const _) }
     }
 }
 
