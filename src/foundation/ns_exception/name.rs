@@ -562,7 +562,7 @@ impl NSExceptionName {
         /// orientations.
         ///
         /// See [documentation](https://developer.apple.com/documentation/uikit/uiapplicationinvalidinterfaceorientationexception).
-        invalid_interface_orientation UIApplicationInvalidInterfaceOrientationException
+        ui_application_invalid_interface_orientation UIApplicationInvalidInterfaceOrientationException
     }
 
     name! {
@@ -570,6 +570,6 @@ impl NSExceptionName {
         /// inconsistent with the view hierarchy.
         ///
         /// See [documentation](https://developer.apple.com/documentation/uikit/uiviewcontrollerhierarchyinconsistencyexception).
-        view_controller_hierarchy_inconsistency UIViewControllerHierarchyInconsistencyException
+        ui_view_controller_hierarchy_inconsistency UIViewControllerHierarchyInconsistencyException
     }
 }
