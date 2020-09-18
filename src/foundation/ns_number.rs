@@ -72,77 +72,77 @@ impl Ord for NSNumber {
 impl From<bool> for NSNumber {
     #[inline]
     fn from(value: bool) -> Self {
-        Self::number_with_bool(value)
+        Self::with_bool(value)
     }
 }
 
 impl From<c_double> for NSNumber {
     #[inline]
     fn from(value: c_double) -> Self {
-        Self::number_with_double(value)
+        Self::with_double(value)
     }
 }
 
 impl From<c_float> for NSNumber {
     #[inline]
     fn from(value: c_float) -> Self {
-        Self::number_with_float(value)
+        Self::with_float(value)
     }
 }
 
 impl From<NSInteger> for NSNumber {
     #[inline]
     fn from(value: NSInteger) -> Self {
-        Self::number_with_integer(value)
+        Self::with_integer(value)
     }
 }
 
 impl From<NSUInteger> for NSNumber {
     #[inline]
     fn from(value: NSUInteger) -> Self {
-        Self::number_with_unsigned_integer(value)
+        Self::with_unsigned_integer(value)
     }
 }
 
 impl From<c_char> for NSNumber {
     #[inline]
     fn from(value: c_char) -> Self {
-        Self::number_with_char(value)
+        Self::with_char(value)
     }
 }
 
 impl From<c_uchar> for NSNumber {
     #[inline]
     fn from(value: c_uchar) -> Self {
-        Self::number_with_unsigned_char(value)
+        Self::with_unsigned_char(value)
     }
 }
 
 impl From<c_int> for NSNumber {
     #[inline]
     fn from(value: c_int) -> Self {
-        Self::number_with_int(value)
+        Self::with_int(value)
     }
 }
 
 impl From<c_uint> for NSNumber {
     #[inline]
     fn from(value: c_uint) -> Self {
-        Self::number_with_unsigned_int(value)
+        Self::with_unsigned_int(value)
     }
 }
 
 impl From<c_long> for NSNumber {
     #[inline]
     fn from(value: c_long) -> Self {
-        Self::number_with_long(value)
+        Self::with_long(value)
     }
 }
 
 impl From<c_ulong> for NSNumber {
     #[inline]
     fn from(value: c_ulong) -> Self {
-        Self::number_with_unsigned_long(value)
+        Self::with_unsigned_long(value)
     }
 }
 
@@ -153,14 +153,14 @@ impl From<c_ulong> for NSNumber {
 impl From<c_short> for NSNumber {
     #[inline]
     fn from(value: c_short) -> Self {
-        Self::number_with_short(value)
+        Self::with_short(value)
     }
 }
 
 impl From<c_ushort> for NSNumber {
     #[inline]
     fn from(value: c_ushort) -> Self {
-        Self::number_with_unsigned_short(value)
+        Self::with_unsigned_short(value)
     }
 }
 
@@ -249,7 +249,7 @@ impl NSNumber {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsnumber/1551475-numberwithbool).
     #[inline]
-    pub fn number_with_bool(value: bool) -> Self {
+    pub fn with_bool(value: bool) -> Self {
         unsafe { _msg_send![Self::class(), numberWithBool: value as BOOL] }
     }
 
@@ -257,7 +257,7 @@ impl NSNumber {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsnumber/1551471-numberwithfloat)
     #[inline]
-    pub fn number_with_float(value: c_float) -> Self {
+    pub fn with_float(value: c_float) -> Self {
         unsafe { _msg_send![Self::class(), numberWithFloat: value] }
     }
 
@@ -265,7 +265,7 @@ impl NSNumber {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsnumber/1551463-numberwithdouble)
     #[inline]
-    pub fn number_with_double(value: c_double) -> Self {
+    pub fn with_double(value: c_double) -> Self {
         unsafe { _msg_send![Self::class(), numberWithDouble: value] }
     }
 
@@ -273,7 +273,7 @@ impl NSNumber {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsnumber/1551464-numberwithchar)
     #[inline]
-    pub fn number_with_char(value: c_char) -> Self {
+    pub fn with_char(value: c_char) -> Self {
         unsafe { _msg_send![Self::class(), numberWithChar: value] }
     }
 
@@ -281,7 +281,7 @@ impl NSNumber {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsnumber/1551476-numberwithshort)
     #[inline]
-    pub fn number_with_short(value: c_short) -> Self {
+    pub fn with_short(value: c_short) -> Self {
         unsafe { _msg_send![Self::class(), numberWithShort: value] }
     }
 
@@ -289,7 +289,7 @@ impl NSNumber {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsnumber/1551470-numberwithint)
     #[inline]
-    pub fn number_with_int(value: c_int) -> Self {
+    pub fn with_int(value: c_int) -> Self {
         unsafe { _msg_send![Self::class(), numberWithInt: value] }
     }
 
@@ -297,7 +297,7 @@ impl NSNumber {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsnumber/1551474-numberwithlong)
     #[inline]
-    pub fn number_with_long(value: c_long) -> Self {
+    pub fn with_long(value: c_long) -> Self {
         unsafe { _msg_send![Self::class(), numberWithLong: value] }
     }
 
@@ -305,7 +305,7 @@ impl NSNumber {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsnumber/1551462-numberwithlonglong)
     #[inline]
-    pub fn number_with_longlong(value: c_longlong) -> Self {
+    pub fn with_longlong(value: c_longlong) -> Self {
         unsafe { _msg_send![Self::class(), numberWithLongLong: value] }
     }
 
@@ -313,7 +313,7 @@ impl NSNumber {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsnumber/1551473-numberwithinteger)
     #[inline]
-    pub fn number_with_integer(value: NSInteger) -> Self {
+    pub fn with_integer(value: NSInteger) -> Self {
         unsafe { _msg_send![Self::class(), numberWithInteger: value] }
     }
 
@@ -321,7 +321,7 @@ impl NSNumber {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsnumber/1551468-numberwithunsignedchar)
     #[inline]
-    pub fn number_with_unsigned_char(value: c_uchar) -> Self {
+    pub fn with_unsigned_char(value: c_uchar) -> Self {
         unsafe { _msg_send![Self::class(), numberWithUnsignedChar: value] }
     }
 
@@ -329,7 +329,7 @@ impl NSNumber {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsnumber/1551467-numberwithunsignedshort)
     #[inline]
-    pub fn number_with_unsigned_short(value: c_ushort) -> Self {
+    pub fn with_unsigned_short(value: c_ushort) -> Self {
         unsafe { _msg_send![Self::class(), numberWithUnsignedShort: value] }
     }
 
@@ -337,7 +337,7 @@ impl NSNumber {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsnumber/1551472-numberwithunsignedint)
     #[inline]
-    pub fn number_with_unsigned_int(value: c_uint) -> Self {
+    pub fn with_unsigned_int(value: c_uint) -> Self {
         unsafe { _msg_send![Self::class(), numberWithUnsignedInt: value] }
     }
 
@@ -345,7 +345,7 @@ impl NSNumber {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsnumber/1551477-numberwithunsignedlong)
     #[inline]
-    pub fn number_with_unsigned_long(value: c_ulong) -> Self {
+    pub fn with_unsigned_long(value: c_ulong) -> Self {
         unsafe { _msg_send![Self::class(), numberWithUnsignedLong: value] }
     }
 
@@ -353,7 +353,7 @@ impl NSNumber {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsnumber/1551465-numberwithunsignedlonglong)
     #[inline]
-    pub fn number_with_unsigned_longlong(value: c_ulonglong) -> Self {
+    pub fn with_unsigned_longlong(value: c_ulonglong) -> Self {
         unsafe { _msg_send![Self::class(), numberWithUnsignedLongLong: value] }
     }
 
@@ -361,7 +361,7 @@ impl NSNumber {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsnumber/1551469-numberwithunsignedinteger)
     #[inline]
-    pub fn number_with_unsigned_integer(value: NSUInteger) -> Self {
+    pub fn with_unsigned_integer(value: NSUInteger) -> Self {
         unsafe { _msg_send![Self::class(), numberWithUnsignedInteger: value] }
     }
 }
