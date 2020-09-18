@@ -10,6 +10,8 @@
 
 #![cfg(feature = "foundation")]
 
+pub mod error_codes;
+
 mod cmp;
 mod geometry;
 mod ns_error;
