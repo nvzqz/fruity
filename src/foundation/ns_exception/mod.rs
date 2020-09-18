@@ -118,7 +118,11 @@ impl NSException {
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsexception/1416135-raise).
     #[inline]
     pub fn raise(&self) -> ! {
-        unsafe { _msg_send![self, raise] }
+        extern "C" {
+            // TODO: Define unwind ABI.
+            fn objc_exception_throw(exception: &Object) -> !;
+        }
+        unsafe { objc_exception_throw(self) }
     }
 }
 
