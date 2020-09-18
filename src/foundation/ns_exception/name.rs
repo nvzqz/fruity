@@ -50,6 +50,13 @@ impl fmt::Debug for NSExceptionName {
     }
 }
 
+impl fmt::Display for NSExceptionName {
+    #[inline]
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        self.0.fmt(f)
+    }
+}
+
 impl fmt::Pointer for NSExceptionName {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
