@@ -33,7 +33,7 @@ The format is based on [Keep a Changelog] and this project adheres to
     atomic pointer.
 
 - Foundation types: `NSNumber`, `NSEdgeInsets`, `NSRange`, `NSValue`, `NSNull`,
-  `NSException`.
+  `NSException`, `NSExceptionName`.
 
 - Foundation constants: `NSNotFound`.
 

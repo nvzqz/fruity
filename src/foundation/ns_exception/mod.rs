@@ -2,6 +2,10 @@ use super::NSString;
 use crate::objc::{Class, NSObject, Object, ObjectType};
 use std::{fmt, ops::Deref, ptr::NonNull};
 
+mod name;
+
+pub use name::NSExceptionName;
+
 /// A function pointer that can be used to perform last-minute logging before
 /// the program terminates.
 ///
@@ -124,7 +128,7 @@ impl NSException {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsexception/1410925-name).
     #[inline]
-    pub fn name(&self) -> NSString {
+    pub fn name(&self) -> NSExceptionName {
         unsafe { _msg_send![self, name] }
     }
 
