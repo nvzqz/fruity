@@ -32,7 +32,8 @@ The format is based on [Keep a Changelog] and this project adheres to
   - Also `_msg_send_cached!` that internally caches the selector in a global
     atomic pointer.
 
-- Foundation types: `NSNumber`, `NSEdgeInsets`, `NSRange`, `NSValue`, `NSNull`.
+- Foundation types: `NSNumber`, `NSEdgeInsets`, `NSRange`, `NSValue`, `NSNull`,
+  `NSException`.
 
 - Foundation constants: `NSNotFound`.
 

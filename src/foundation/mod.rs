@@ -12,6 +12,7 @@
 
 mod cmp;
 mod geometry;
+mod ns_exception;
 mod ns_null;
 mod ns_number;
 mod ns_range;
@@ -20,6 +21,7 @@ mod ns_value;
 
 pub use cmp::*;
 pub use geometry::*;
+pub use ns_exception::*;
 pub use ns_null::*;
 pub use ns_number::*;
 pub use ns_range::*;
