@@ -81,7 +81,7 @@ impl NSValue {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsvalue/1551466-valuewithbytes).
     #[inline]
-    pub unsafe fn value_with_bytes(value: *const c_void, objc_type: *const c_char) -> Self {
+    pub unsafe fn with_bytes(value: *const c_void, objc_type: *const c_char) -> Self {
         _msg_send![
             Self::class(),
             valueWithBytes: value
@@ -156,7 +156,7 @@ impl NSValue {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsvalue/1415975-valuewithpointer).
     #[inline]
-    pub fn value_with_ptr(ptr: *const c_void) -> Self {
+    pub fn with_ptr(ptr: *const c_void) -> Self {
         unsafe { _msg_send![Self::class(), valueWithPointer: ptr] }
     }
 
@@ -178,7 +178,7 @@ impl NSValue {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsvalue/1408098-valuewithnonretainedobject).
     #[inline]
-    pub fn value_with_nonretained_object(obj: *mut Object) -> Self {
+    pub fn with_nonretained_object(obj: *mut Object) -> Self {
         unsafe { _msg_send![Self::class(), valueWithNonretainedObject: obj] }
     }
 
@@ -200,7 +200,7 @@ impl NSValue {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsvalue/1410315-valuewithrange).
     #[inline]
-    pub fn value_with_range(value: NSRange) -> Self {
+    pub fn with_range(value: NSRange) -> Self {
         unsafe { _msg_send![Self::class(), valueWithRange: value] }
     }
 
@@ -219,7 +219,7 @@ impl NSValue {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsvalue/1391106-valuewithpoint).
     #[inline]
-    pub fn value_with_point(value: NSPoint) -> Self {
+    pub fn with_point(value: NSPoint) -> Self {
         unsafe { _msg_send![Self::class(), valueWithPoint: value] }
     }
 
@@ -235,7 +235,7 @@ impl NSValue {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsvalue/1391199-valuewithsize).
     #[inline]
-    pub fn value_with_size(value: NSSize) -> Self {
+    pub fn with_size(value: NSSize) -> Self {
         unsafe { _msg_send![Self::class(), valueWithSize: value] }
     }
 
@@ -251,7 +251,7 @@ impl NSValue {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsvalue/1391281-valuewithrect).
     #[inline]
-    pub fn value_with_rect(value: NSRect) -> Self {
+    pub fn with_rect(value: NSRect) -> Self {
         unsafe { _msg_send![Self::class(), valueWithRect: value] }
     }
 
@@ -267,7 +267,7 @@ impl NSValue {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsvalue/1391181-valuewithedgeinsets).
     #[inline]
-    pub fn value_with_edge_insets(value: NSEdgeInsets) -> Self {
+    pub fn with_edge_insets(value: NSEdgeInsets) -> Self {
         unsafe { _msg_send![Self::class(), valueWithEdgeInsets: value] }
     }
 
