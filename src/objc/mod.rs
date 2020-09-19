@@ -13,6 +13,7 @@ pub(crate) mod sel;
 #[macro_use]
 mod msg;
 
+mod autoreleasepool;
 mod bool;
 mod class;
 mod int;
@@ -21,6 +22,7 @@ mod obj;
 mod unretained;
 
 pub use self::bool::*;
+pub use autoreleasepool::*;
 pub use class::*;
 pub use int::*;
 pub use ns_object::*;

@@ -1,6 +1,8 @@
 {
     "cSpell.words": [
         "Unretained",
+        "autorelease",
+        "autoreleasepool",
         "obj",
         "objc",
         "repr",

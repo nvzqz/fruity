@@ -27,6 +27,8 @@ The format is based on [Keep a Changelog] and this project adheres to
   The compiler currently does not coalesce string prefixes and instead emits the
   same prefix data twice.
 
+- Equivalent to `@autoreleasepool` that drains on panic.
+
 - Correct dispatching of the appropriate `objc_msgSend` based on return type.
 
 - Internal convenience `_msg_send!` macro for dispatching `objc_msgSend` and
