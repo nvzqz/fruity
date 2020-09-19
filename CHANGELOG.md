@@ -58,6 +58,9 @@ The format is based on [Keep a Changelog] and this project adheres to
 
   - `NSAppKitVersion` type and version constants through 10.15.
 
+- `dispatch` module for [Dispatch](https://developer.apple.com/documentation/dispatch)
+  library.
+
 - Pointer methods for `SEL`.
 
 - Implemented `PartialEq` for `NSObject`.

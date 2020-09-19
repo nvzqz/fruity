@@ -191,5 +191,6 @@ pub mod objc;
 pub mod app_kit;
 pub mod core_foundation;
 pub mod core_graphics;
+pub mod dispatch;
 pub mod foundation;
 pub mod ui_kit;
