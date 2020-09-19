@@ -30,10 +30,7 @@ impl Drop for DispatchObject {
 impl Clone for DispatchObject {
     #[inline]
     fn clone(&self) -> Self {
-        extern "C" {
-            fn dispatch_retain(obj: dispatch_object_t);
-        }
-        unsafe { dispatch_retain(self.0) };
+        self._retain();
         Self(self.0)
     }
 }
@@ -71,6 +68,14 @@ impl DispatchObject {
     #[inline]
     pub const unsafe fn from_non_null_ptr(ptr: NonNull<c_void>) -> Self {
         Self(ptr.cast())
+    }
+
+    #[inline]
+    pub(crate) fn _retain(&self) {
+        extern "C" {
+            fn dispatch_retain(obj: dispatch_object_t);
+        }
+        unsafe { dispatch_retain(self.0) };
     }
 
     /// Casts `self` to a raw nullable pointer.
