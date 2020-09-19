@@ -1,4 +1,9 @@
-use std::{ffi::c_void, fmt, ptr::NonNull};
+use super::{dispatch_queue_t, DispatchQueue};
+use std::{
+    ffi::c_void,
+    fmt,
+    ptr::{self, NonNull},
+};
 
 #[allow(non_camel_case_types)]
 type dispatch_object_t = NonNull<c_void>;
@@ -129,7 +134,28 @@ impl DispatchObject {
         unsafe { dispatch_suspend(self.0) }
     }
 
-    // TODO: `dispatch_set_target_queue`
+    /// Specifies the dispatch queue on which to perform work associated with
+    /// `self`.
+    ///
+    /// Documentation:
+    /// [Swift](https://developer.apple.com/documentation/dispatch/dispatchobject/1452989-settarget) |
+    /// [Objective-C](https://developer.apple.com/documentation/dispatch/1452989-dispatch_set_target_queue)
+    #[inline]
+    pub fn set_target<Q>(&self, queue: Q)
+    where
+        for<'q> Q: Into<Option<&'q DispatchQueue>>,
+    {
+        extern "C" {
+            fn dispatch_set_target_queue(object: dispatch_object_t, queue: dispatch_queue_t);
+        }
+
+        let target = match queue.into() {
+            Some(queue) => queue._as_queue(),
+            None => ptr::null_mut(),
+        };
+
+        unsafe { dispatch_set_target_queue(self.0, target) };
+    }
 
     /// Returns the application-defined context of an object.
     ///

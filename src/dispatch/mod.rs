@@ -23,9 +23,11 @@ extern "C" {}
 mod autorelease_frequency;
 mod object;
 mod qos;
+mod queue;
 mod time;
 
 pub use autorelease_frequency::*;
 pub use object::*;
 pub use qos::*;
+pub use queue::*;
 pub use time::*;

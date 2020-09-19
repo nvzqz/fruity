@@ -61,8 +61,9 @@ The format is based on [Keep a Changelog] and this project adheres to
 - `dispatch` module for [Dispatch](https://developer.apple.com/documentation/dispatch)
   library.
 
-  - Types: `DispatchObject`, `DispatchTime`, `DispatchQos`, `DispatchQosClass`,
-    `DispatchAutoreleaseFrequency`.
+  - Types: `DispatchObject`, `DispatchQueue`, `DispatchQueueBuilder`,
+    `DispatchQueuePriority`, `DispatchQueueAttributes`, `DispatchTime`,
+    `DispatchQos`, `DispatchQosClass`, `DispatchAutoreleaseFrequency`.
 
 - Pointer methods for `SEL`.
 

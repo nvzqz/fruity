@@ -121,6 +121,22 @@ Fruity makes interfacing with these C and Objective-C APIs feel natural in Rust.
   [`Deref`](https://doc.rust-lang.org/std/ops/trait.Deref.html)
   to model Objective-C subclassing.
 
+- **Builder Pattern.**
+
+  Types like
+  [`DispatchQueue`](https://docs.rs/fruity/0.3.0/fruity/dispatch/struct.DispatchQueue.html)
+  have many configurable inputs to create an instance. Many of these inputs have
+  standard default values, so it is cumbersome to specify them all each time.
+  Swift solves this by having default parameters in
+  [`init`](https://developer.apple.com/documentation/dispatch/dispatchqueue/2300059-init).
+  However, Rust does not have default function parameters.
+
+  Fruity instead solves this using the
+  [builder pattern](https://doc.rust-lang.org/1.0.0/style/ownership/builders.html).
+  See
+  [`DispatchQueueBuilder`](https://docs.rs/fruity/0.3.0/fruity/dispatch/struct.DispatchQueueBuilder.html)
+  as an example. This reduces and simplifies code for creating dispatch queues.
+
 ### Zero Cost
 
 Using Fruity to interface with Objective-C libraries should have as little
