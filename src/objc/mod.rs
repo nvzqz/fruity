@@ -18,6 +18,7 @@ mod class;
 mod int;
 mod ns_object;
 mod obj;
+mod unretained;
 
 pub use self::bool::*;
 pub use class::*;
@@ -25,6 +26,7 @@ pub use int::*;
 pub use ns_object::*;
 pub use obj::*;
 pub use sel::SEL;
+pub use unretained::*;
 
 #[link(name = "objc", kind = "dylib")]
 extern "C" {}

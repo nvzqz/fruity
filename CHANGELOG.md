@@ -11,6 +11,9 @@ The format is based on [Keep a Changelog] and this project adheres to
 
 - `ObjectType` trait to generalize over object references.
 
+- `Unretained<T>` wrapper type that's semantically a `&T` but with the memory
+  representation of `T` when `T` implements `ObjectType`.
+
 - The `ns_string!` macro can now take `const X: &str` as input, not just string
   literals.
 
