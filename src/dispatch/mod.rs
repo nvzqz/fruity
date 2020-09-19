@@ -20,10 +20,12 @@
 #[cfg_attr(not(target_vendor = "apple"), link(name = "dispatch", kind = "dylib"))]
 extern "C" {}
 
+mod autorelease_frequency;
 mod object;
 mod qos;
 mod time;
 
+pub use autorelease_frequency::*;
 pub use object::*;
 pub use qos::*;
 pub use time::*;
