@@ -21,7 +21,9 @@
 extern "C" {}
 
 mod object;
+mod qos;
 mod time;
 
 pub use object::*;
+pub use qos::*;
 pub use time::*;
