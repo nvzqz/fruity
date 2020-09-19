@@ -3,6 +3,7 @@
         "Unretained",
         "autorelease",
         "autoreleasepool",
+        "nanos",
         "obj",
         "objc",
         "repr",

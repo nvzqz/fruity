@@ -21,5 +21,7 @@
 extern "C" {}
 
 mod object;
+mod time;
 
 pub use object::*;
+pub use time::*;

@@ -61,7 +61,7 @@ The format is based on [Keep a Changelog] and this project adheres to
 - `dispatch` module for [Dispatch](https://developer.apple.com/documentation/dispatch)
   library.
 
-  - Types: `DispatchObject`.
+  - Types: `DispatchObject`, `DispatchTime`.
 
 - Pointer methods for `SEL`.
 
