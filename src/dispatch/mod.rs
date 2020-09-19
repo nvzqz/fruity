@@ -4,6 +4,14 @@
 //!
 //! This module corresponds to the **`dispatch`**
 //! [feature flag](../index.html#feature-flags).
+//!
+//! # Additional Features
+//!
+//! When the [`objc`](../objc/index.html) module is enabled, object types in
+//! this module implement [`ObjectType`](../objc/trait.ObjectType.html). This
+//! enables them to be stored in types like
+//! [`NSArray`](../foundation/struct.NSArray.html) and
+//! [`NSDictionary`](../foundation/struct.NSDictionary.html).
 
 #![cfg(feature = "dispatch")]
 
@@ -11,3 +19,7 @@
 #[cfg_attr(target_vendor = "apple", link(name = "System", kind = "dylib"))]
 #[cfg_attr(not(target_vendor = "apple"), link(name = "dispatch", kind = "dylib"))]
 extern "C" {}
+
+mod object;
+
+pub use object::*;
