@@ -74,6 +74,7 @@ impl DispatchQos {
 /// This is semantically equivalent to Swift's
 /// [`DispatchQoS.QoSClass`](https://developer.apple.com/documentation/dispatch/dispatchqos/qosclass).
 #[derive(Copy, Clone, Debug, Ord, PartialOrd, Eq, PartialEq, Hash)]
+#[repr(u32)] // unsigned int
 pub enum DispatchQosClass {
     /// The quality-of-service class for user-interactive tasks, such as
     /// animations, event handling, or updating your app's user interface.
