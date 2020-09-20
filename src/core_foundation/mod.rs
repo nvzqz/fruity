@@ -16,6 +16,13 @@ mod cmp;
 pub use cf_type::*;
 pub use cmp::*;
 
+/// A constant that indicates that a search operation did not succeed in
+/// locating the target value.
+///
+/// See [documentation](https://developer.apple.com/documentation/corefoundation/kcfnotfound).
+#[allow(non_upper_case_globals)]
+pub const kCFNotFound: CFIndex = -1;
+
 /// Type for hash codes returned by
 /// [`CFType::hash`](struct.CFType.html#method.hash).
 ///
