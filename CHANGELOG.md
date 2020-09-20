@@ -49,6 +49,8 @@ The format is based on [Keep a Changelog] and this project adheres to
 
 - Methods for `NSStringEncoding`: `name`.
 
+- Methods for getting all available `NSStringEncoding`s.
+
 - Foundation error codes.
 
 - `core_graphics` module for [Core Graphics](https://developer.apple.com/documentation/coregraphics)

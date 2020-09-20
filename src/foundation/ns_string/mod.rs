@@ -1,6 +1,14 @@
 use super::{NSComparisonResult, NSRange};
 use crate::objc::{Class, NSObject, NSUInteger, Object, ObjectType, BOOL, NO, SEL};
-use std::{cmp::Ordering, ffi::CStr, fmt, ops::Deref, os::raw::c_char, ptr::NonNull, str};
+use std::{
+    cmp::Ordering,
+    ffi::CStr,
+    fmt,
+    ops::Deref,
+    os::raw::c_char,
+    ptr::{self, NonNull},
+    slice, str,
+};
 
 #[macro_use]
 mod macros;
@@ -158,7 +166,114 @@ impl NSString {
     pub const unsafe fn from_non_null_ptr(ptr: NonNull<Object>) -> Self {
         Self(NSObject::from_non_null_ptr(ptr))
     }
+}
 
+/// Getting available encodings.
+impl NSString {
+    /// Returns a slice containing all supported encodings.
+    ///
+    /// The first time this is called, one pass is done to determine the length
+    /// of the slice. The slice is then cached for subsequent calls.
+    #[inline]
+    pub fn available_encodings_slice() -> &'static [NSStringEncoding] {
+        use std::sync::atomic::{AtomicPtr, AtomicUsize, Ordering};
+
+        static CACHED: (AtomicPtr<NSStringEncoding>, AtomicUsize) = (
+            AtomicPtr::new(ptr::null_mut()),
+            AtomicUsize::new(0), // count
+        );
+
+        #[cold]
+        fn slow_path() -> &'static [NSStringEncoding] {
+            let start = NSString::available_encodings_ptr();
+
+            let mut current = start;
+            let mut count = 0;
+            unsafe {
+                // The end of the buffer is marked by a 0 encoding.
+                while (*current).0 != 0 {
+                    count += 1;
+                    current = current.add(1);
+                }
+            }
+
+            // The pointer must be stored second so that the fast path does not
+            // read a length of 0.
+            //
+            // This is to prevent:
+            //   A: store ptr
+            //   B: read  ptr
+            //   B: read  count
+            //   A: store count
+            CACHED.1.store(count, Ordering::Release);
+            CACHED.0.store(start as *mut _, Ordering::Release);
+
+            unsafe { slice::from_raw_parts(start, count) }
+        }
+
+        let cached_ptr = CACHED.0.load(Ordering::Acquire);
+        if !cached_ptr.is_null() {
+            let count = CACHED.1.load(Ordering::Acquire);
+            return unsafe { slice::from_raw_parts(cached_ptr, count) };
+        }
+
+        slow_path()
+    }
+
+    /// Returns an iterator over all supported encodings.
+    ///
+    /// Unlike [`available_encodings_slice`](#method.available_encodings_slice),
+    /// this is implemented lazily and does not perform caching.
+    #[inline]
+    pub fn available_encodings_iter() -> impl Iterator<Item = NSStringEncoding> {
+        #[repr(transparent)]
+        struct Iter(*const NSStringEncoding);
+
+        unsafe impl Send for Iter {}
+        unsafe impl Sync for Iter {}
+
+        impl Iterator for Iter {
+            type Item = NSStringEncoding;
+
+            #[inline]
+            fn next(&mut self) -> Option<NSStringEncoding> {
+                let encoding = unsafe { *self.0 };
+                if encoding.0 == 0 {
+                    None
+                } else {
+                    unsafe { self.0 = self.0.add(1) };
+                    Some(encoding)
+                }
+            }
+        }
+
+        // No more encodings are emitted after `None`.
+        impl std::iter::FusedIterator for Iter {}
+
+        Iter(Self::available_encodings_ptr())
+    }
+
+    /// Returns a pointer to a buffer containing all supported encodings.
+    ///
+    /// See [documentation](https://developer.apple.com/documentation/foundation/nsstring/1417579-availablestringencodings).
+    #[inline]
+    pub fn available_encodings_ptr() -> *const NSStringEncoding {
+        unsafe { _msg_send![Self::class(), availableStringEncodings] }
+    }
+
+    /// Returns the number of supported encodings.
+    ///
+    /// The first time this is called, one pass is done to determine the number
+    /// of encodings. The count is then cached for subsequent calls. This shares
+    /// the same cache as
+    /// [`available_encodings_slice`](#method.available_encodings_slice).
+    #[inline]
+    pub fn available_encodings_count() -> usize {
+        Self::available_encodings_slice().len()
+    }
+}
+
+impl NSString {
     // Shared non-inlined `from_str` implementation.
     //
     // This allows for reducing the code size of the final binary.
