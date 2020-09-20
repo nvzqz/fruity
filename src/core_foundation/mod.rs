@@ -11,8 +11,10 @@
 extern "C" {}
 
 mod cf_type;
+mod cmp;
 
 pub use cf_type::*;
+pub use cmp::*;
 
 /// Type for hash codes returned by
 /// [`CFType::hash`](struct.CFType.html#method.hash).

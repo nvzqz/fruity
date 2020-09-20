@@ -1,5 +1,8 @@
 use std::cmp::Ordering;
 
+#[cfg(feature = "core_foundation")]
+use crate::core_foundation::CFComparisonResult;
+
 /// Constants that indicate sort order.
 ///
 /// See [documentation](https://developer.apple.com/documentation/foundation/nscomparisonresult).
@@ -32,6 +35,30 @@ impl From<NSComparisonResult> for Ordering {
             NSComparisonResult::OrderedAscending => Self::Less,
             NSComparisonResult::OrderedSame => Self::Equal,
             NSComparisonResult::OrderedDescending => Self::Greater,
+        }
+    }
+}
+
+#[cfg(feature = "core_foundation")]
+impl From<CFComparisonResult> for NSComparisonResult {
+    #[inline]
+    fn from(result: CFComparisonResult) -> Self {
+        match result {
+            CFComparisonResult::LessThan => Self::OrderedAscending,
+            CFComparisonResult::EqualTo => Self::OrderedSame,
+            CFComparisonResult::GreaterThan => Self::OrderedDescending,
+        }
+    }
+}
+
+#[cfg(feature = "core_foundation")]
+impl From<NSComparisonResult> for CFComparisonResult {
+    #[inline]
+    fn from(result: NSComparisonResult) -> Self {
+        match result {
+            NSComparisonResult::OrderedAscending => Self::LessThan,
+            NSComparisonResult::OrderedSame => Self::EqualTo,
+            NSComparisonResult::OrderedDescending => Self::GreaterThan,
         }
     }
 }

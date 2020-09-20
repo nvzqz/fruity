@@ -41,7 +41,7 @@ The format is based on [Keep a Changelog] and this project adheres to
   `NSException`, `NSExceptionName`, `NSError`, `NSErrorDomain`, `NSErrorUserInfoKey`, `NSErrorRecoveryAttempting`.
 
 - Core Foundation types: `CFType`, `CFTypeRef`, `CFTypeID`, `CFIndex`,
-  `CFHashCode`.
+  `CFHashCode`, `CFComparisonResult`.
 
 - Foundation constants: `NSNotFound`.
 
