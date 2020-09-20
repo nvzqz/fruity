@@ -23,6 +23,15 @@ pub use cmp::*;
 #[allow(non_upper_case_globals)]
 pub const kCFNotFound: CFIndex = -1;
 
+/// A bitfield used for passing special allocation and other requests into Core
+/// Foundation functions.
+///
+/// The flag bits are specific to particular opaque types and functions in Core
+/// Foundation.
+///
+/// See [documentation](https://developer.apple.com/documentation/corefoundation/cfoptionflags).
+pub type CFOptionFlags = usize;
+
 /// Type for hash codes returned by
 /// [`CFType::hash`](struct.CFType.html#method.hash).
 ///
