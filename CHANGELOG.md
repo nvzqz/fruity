@@ -40,6 +40,9 @@ The format is based on [Keep a Changelog] and this project adheres to
 - Foundation types: `NSNumber`, `NSEdgeInsets`, `NSRange`, `NSValue`, `NSNull`,
   `NSException`, `NSExceptionName`, `NSError`, `NSErrorDomain`, `NSErrorUserInfoKey`, `NSErrorRecoveryAttempting`.
 
+- Core Foundation types: `CFType`, `CFTypeRef`, `CFTypeID`, `CFIndex`,
+  `CFHashCode`.
+
 - Foundation constants: `NSNotFound`.
 
 - Foundation error codes.
