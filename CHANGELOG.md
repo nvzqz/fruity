@@ -98,6 +98,8 @@ The format is based on [Keep a Changelog] and this project adheres to
   The canonical Unicode representation is UTF-16, so any non-ASCII strings must
   be transcoded to UTF-16. See issue [#3].
 
+- `NSStringEncoding` is formatted like a Rust `enum`. This improves debugging.
+
 ## [0.2.0] - 2020-09-11
 
 ### Changed
