@@ -91,4 +91,13 @@ impl<'a, T> Unretained<'a, T> {
     pub const unsafe fn from_non_null_ptr(ptr: NonNull<Object>) -> Self {
         Self(ptr, PhantomData)
     }
+
+    /// Gets the underlying object value by retaining it in the appropriate way.
+    #[inline]
+    pub fn get(&self) -> T
+    where
+        T: ObjectType + Clone,
+    {
+        T::clone(self)
+    }
 }

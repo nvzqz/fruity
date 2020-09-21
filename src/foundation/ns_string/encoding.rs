@@ -28,8 +28,7 @@ impl NSStringEncoding {
     #[inline]
     pub fn name(&self) -> Option<NSString> {
         // SAFETY: The string is immediately retained.
-        let name = unsafe { self.name_unretained()? };
-        Some(NSString::clone(&name))
+        Some(unsafe { self.name_unretained()? }.get())
     }
 
     // SAFETY: The string is created using "The Get Rule", so it should be
