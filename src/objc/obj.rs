@@ -1,4 +1,4 @@
-use super::{Class, SEL};
+use super::{Class, Unretained, SEL};
 use std::{cell::UnsafeCell, fmt, ops::Deref, ptr::NonNull};
 
 /// An object reference type.
@@ -21,6 +21,12 @@ pub unsafe trait ObjectType: Sized {
     #[inline]
     fn as_id(&self) -> &id {
         unsafe { &*(self as *const _ as *const _) }
+    }
+
+    /// Gets an unretained pointer to `self`.
+    #[inline]
+    fn as_unretained(&self) -> Unretained<'_, Self> {
+        Unretained::from_obj(self)
     }
 }
 

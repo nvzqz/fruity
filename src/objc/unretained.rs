@@ -45,6 +45,13 @@ impl<T: ObjectType> AsRef<T> for Unretained<'_, T> {
     }
 }
 
+impl<'a, T: ObjectType> From<&'a T> for Unretained<'a, T> {
+    #[inline]
+    fn from(obj: &'a T) -> Self {
+        Self::from_obj(obj)
+    }
+}
+
 impl<T> fmt::Pointer for Unretained<'_, T> {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
@@ -52,7 +59,17 @@ impl<T> fmt::Pointer for Unretained<'_, T> {
     }
 }
 
-impl<T> Unretained<'_, T> {
+impl<'a, T> Unretained<'a, T> {
+    /// Creates an unretained pointer to `obj`.
+    #[inline]
+    pub fn from_obj(obj: &'a T) -> Self
+    where
+        T: ObjectType,
+    {
+        // SAFETY: The instance must live as long as `obj`.
+        unsafe { Self::from_ptr(obj.as_object().as_ptr()) }
+    }
+
     /// Creates an unretained object pointer from a raw nullable pointer.
     ///
     /// # Safety
