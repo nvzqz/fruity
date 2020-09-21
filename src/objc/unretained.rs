@@ -51,3 +51,27 @@ impl<T> fmt::Pointer for Unretained<T> {
         self.0.fmt(f)
     }
 }
+
+impl<T> Unretained<T> {
+    /// Creates an unretained object pointer from a raw nullable pointer.
+    ///
+    /// # Safety
+    ///
+    /// The given pointer must point to a valid retained Objective-C object
+    /// instance that will not outlive the created pointer.
+    #[inline]
+    pub const unsafe fn from_ptr(ptr: *mut Object) -> Self {
+        Self::from_non_null_ptr(NonNull::new_unchecked(ptr))
+    }
+
+    /// Creates an unretained object pointer from a raw non-null pointer.
+    ///
+    /// # Safety
+    ///
+    /// The given pointer must point to a valid retained Objective-C object
+    /// instance that will not outlive the created pointer.
+    #[inline]
+    pub const unsafe fn from_non_null_ptr(ptr: NonNull<Object>) -> Self {
+        Self(ptr, PhantomData)
+    }
+}
