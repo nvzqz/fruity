@@ -35,13 +35,15 @@ impl NSStringEncoding {
     // SAFETY: The string is created using "The Get Rule", so it should be
     // retained for long uses.
     #[inline]
-    pub(crate) unsafe fn name_unretained(&self) -> Option<Unretained<NSString>> {
+    pub(crate) unsafe fn name_unretained<'a>(&self) -> Option<Unretained<'a, NSString>> {
         type CFStringEncoding = u32;
 
         extern "C" {
             fn CFStringConvertNSStringEncodingToEncoding(enc: NSStringEncoding)
                 -> CFStringEncoding;
-            fn CFStringGetNameOfEncoding(enc: CFStringEncoding) -> Option<Unretained<NSString>>;
+            fn CFStringGetNameOfEncoding<'a>(
+                enc: CFStringEncoding,
+            ) -> Option<Unretained<'a, NSString>>;
         }
 
         CFStringGetNameOfEncoding(CFStringConvertNSStringEncodingToEncoding(*self))

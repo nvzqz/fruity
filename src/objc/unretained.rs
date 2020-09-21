@@ -11,23 +11,23 @@ use std::{fmt, marker::PhantomData, ops::Deref, ptr::NonNull};
 /// This type can be safely used in a callback function that takes an object
 /// instance without an incremented retain count for the consumer to decrement.
 #[repr(transparent)]
-pub struct Unretained<T>(NonNull<Object>, PhantomData<T>);
+pub struct Unretained<'a, T>(NonNull<Object>, PhantomData<&'a T>);
 
-unsafe impl<T: ObjectType> ObjectType for Unretained<T> {}
+unsafe impl<T: ObjectType> ObjectType for Unretained<'_, T> {}
 
-unsafe impl<T: Sync> Send for Unretained<T> {}
-unsafe impl<T: Sync> Sync for Unretained<T> {}
+unsafe impl<T: Sync> Send for Unretained<'_, T> {}
+unsafe impl<T: Sync> Sync for Unretained<'_, T> {}
 
-impl<T> Clone for Unretained<T> {
+impl<T> Clone for Unretained<'_, T> {
     #[inline]
     fn clone(&self) -> Self {
         *self
     }
 }
 
-impl<T> Copy for Unretained<T> {}
+impl<T> Copy for Unretained<'_, T> {}
 
-impl<T: ObjectType> Deref for Unretained<T> {
+impl<T: ObjectType> Deref for Unretained<'_, T> {
     type Target = T;
 
     #[inline]
@@ -38,21 +38,21 @@ impl<T: ObjectType> Deref for Unretained<T> {
     }
 }
 
-impl<T: ObjectType> AsRef<T> for Unretained<T> {
+impl<T: ObjectType> AsRef<T> for Unretained<'_, T> {
     #[inline]
     fn as_ref(&self) -> &T {
         self
     }
 }
 
-impl<T> fmt::Pointer for Unretained<T> {
+impl<T> fmt::Pointer for Unretained<'_, T> {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         self.0.fmt(f)
     }
 }
 
-impl<T> Unretained<T> {
+impl<T> Unretained<'_, T> {
     /// Creates an unretained object pointer from a raw nullable pointer.
     ///
     /// # Safety
