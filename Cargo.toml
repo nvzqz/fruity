@@ -29,7 +29,7 @@ include = [
 # Libraries and frameworks
 app_kit = ["foundation"]
 objc = []
-core_foundation = []
+core_foundation = ["objc"]
 core_graphics = []
 dispatch = []
 foundation = ["objc", "core_graphics"]

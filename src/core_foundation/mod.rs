@@ -4,6 +4,8 @@
 //!
 //! This module corresponds to the **`core_foundation`**
 //! [feature flag](../index.html#feature-flags).
+//!
+//! It also transitively enables [`objc`](../objc/index.html).
 
 #![cfg(feature = "core_foundation")]
 

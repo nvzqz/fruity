@@ -24,7 +24,6 @@ pub struct CFType {
 }
 
 // SAFETY: `CFTypeRef` is bridged to `id`.
-#[cfg(feature = "objc")]
 unsafe impl crate::objc::ObjectType for &CFType {}
 
 // This type is used globally, so we must be able to share it across threads.
@@ -128,7 +127,6 @@ impl CFType {
 pub struct CFTypeRef(NonNull<CFType>);
 
 // SAFETY: `CFTypeRef` is bridged to `id`.
-#[cfg(feature = "objc")]
 unsafe impl crate::objc::ObjectType for CFTypeRef {}
 
 unsafe impl Send for CFTypeRef {}
@@ -167,7 +165,6 @@ impl Clone for CFTypeRef {
     }
 }
 
-#[cfg(feature = "objc")]
 impl From<CFTypeRef> for crate::objc::id {
     #[inline]
     fn from(cf: CFTypeRef) -> Self {
