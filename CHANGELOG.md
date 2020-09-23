@@ -49,6 +49,12 @@ The format is based on [Keep a Changelog] and this project adheres to
 
 - Methods for `NSStringEncoding`: `name`.
 
+- Methods for efficiently getting an `Option<&str>` from `NSString` if it's
+  UTF-8.
+
+  These do not allocate and construct a new UTF-8 C string if the string does
+  not represent one.
+
 - Methods for getting all available `NSStringEncoding`s.
 
 - Foundation error codes.

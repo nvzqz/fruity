@@ -363,23 +363,71 @@ impl NSString {
     pub fn mutable_copy(&self) -> NSMutableString {
         NSMutableString(Self(NSObject::mutable_copy(self)))
     }
+}
 
-    /// Returns a null-terminated UTF-8 representation of this string.
+/// Getting contents as [UTF-8](https://en.wikipedia.org/wiki/UTF-8).
+impl NSString {
+    /// Returns a null-terminated UTF-8 representation of `self`, or null
+    /// if the internal storage of `self` does not allow this to be returned
+    /// efficiently.
     ///
-    /// This C string is a pointer to a structure inside this string object,
+    /// Unlike [`to_utf8_ptr`](#method.to_utf8_ptr.html), this does not allocate
+    /// and construct a new UTF-8 C string if `self` does not represent one.
+    ///
+    /// This is retrieved using
+    /// [`CFStringGetCStringPtr`](https://developer.apple.com/documentation/corefoundation/1542133-cfstringgetcstringptr)
+    /// and
+    /// [`kCFStringEncodingUTF8`](https://developer.apple.com/documentation/corefoundation/cfstringbuiltinencodings/kcfstringencodingutf8).
+    #[inline]
+    pub fn as_utf8_ptr(&self) -> *const c_char {
+        type CFStringEncoding = u32;
+
+        #[allow(non_upper_case_globals)]
+        const kCFStringEncodingUTF8: CFStringEncoding = 0x08000100;
+
+        extern "C" {
+            fn CFStringGetCStringPtr(s: &Object, encoding: CFStringEncoding) -> *const c_char;
+        }
+
+        unsafe { CFStringGetCStringPtr(self, kCFStringEncodingUTF8) }
+    }
+
+    /// Returns a null-terminated UTF-8 representation of `self`.
+    ///
+    /// This C string is a pointer to a structure inside `self`,
     /// which may have a lifetime shorter than the string object and will
     /// certainly not have a longer lifetime. Therefore, you should copy the C
     /// string if it needs to be stored outside of the memory context in which
     /// you use this property.
     ///
-    /// See [documentation](https://developer.apple.com/documentation/foundation/nsstring/1411189-utf8string).
+    /// This is retrieved using
+    /// [`-[NSString UTF8String]`](https://developer.apple.com/documentation/foundation/nsstring/1411189-utf8string).
     #[inline]
     pub fn to_utf8_ptr(&self) -> *const c_char {
         unsafe { _msg_send![self, UTF8String] }
     }
 
-    /// Returns the contents of this string object as a native UTF-8 string
-    /// slice.
+    /// Returns the contents of `self` as a native UTF-8 string slice, or `None`
+    /// if the internal storage of `self` does not allow this to be returned
+    /// efficiently.
+    ///
+    /// Unlike [`to_str`](#method.to_str.html), this does not allocate and
+    /// construct a new UTF-8 C string if `self` does not represent one.
+    ///
+    /// # Safety
+    ///
+    /// You must ensure that `self` is not mutated during the lifetime of the
+    /// returned string slice.
+    #[inline]
+    pub unsafe fn as_str(&self) -> Option<&str> {
+        let s = self.as_str_with_nul()?;
+
+        // `CStr::to_bytes` does a checked slice conversion that emits a length
+        // failure panic that'll never get called.
+        Some(s.get_unchecked(..s.len() - 1))
+    }
+
+    /// Returns the contents of `self` as a native UTF-8 string slice.
     ///
     /// This internally uses [`to_utf8_ptr`](#method.to_utf8_ptr). See its
     /// documentation for details.
@@ -398,8 +446,31 @@ impl NSString {
         s.get_unchecked(..s.len() - 1)
     }
 
-    /// Returns the contents of this string object as a native UTF-8 string
-    /// slice, containing a trailing 0 byte.
+    /// Returns the contents of `self` as a native UTF-8 string slice ending
+    /// with a 0 byte, or `None` if the internal storage of `self` does not
+    /// allow this to be returned efficiently.
+    ///
+    /// Unlike [`to_str_with_nul`](#method.to_str_with_nul.html), this does not
+    /// allocate and construct a new UTF-8 C string if `self` does not represent
+    /// one.
+    ///
+    /// # Safety
+    ///
+    /// You must ensure that `self` is not mutated during the lifetime of the
+    /// returned string slice.
+    #[inline]
+    pub unsafe fn as_str_with_nul(&self) -> Option<&str> {
+        let cstr = self.as_utf8_ptr();
+        if cstr.is_null() {
+            return None;
+        }
+
+        let cstr = CStr::from_ptr(cstr);
+        Some(str::from_utf8_unchecked(cstr.to_bytes_with_nul()))
+    }
+
+    /// Returns the contents of `self` as a native UTF-8 string slice ending
+    /// with a 0 byte.
     ///
     /// This internally uses [`to_utf8_ptr`](#method.to_utf8_ptr). See its
     /// documentation for details.
@@ -414,8 +485,7 @@ impl NSString {
         str::from_utf8_unchecked(cstr.to_bytes_with_nul())
     }
 
-    /// Returns the contents of this string object as a native UTF-8 string
-    /// buffer.
+    /// Returns the contents of `self` as a native UTF-8 string buffer.
     ///
     /// This internally uses [`to_utf8_ptr`](#method.to_utf8_ptr). See its
     /// documentation for details.
@@ -444,8 +514,8 @@ impl NSString {
         string
     }
 
-    /// Returns the contents of this string object as a native UTF-8 string
-    /// buffer, containing a trailing 0 byte.
+    /// Returns the contents of `self` as a native UTF-8 string buffer ending
+    /// with a 0 byte.
     ///
     /// This internally uses [`to_utf8_ptr`](#method.to_utf8_ptr). See its
     /// documentation for details.
@@ -463,10 +533,12 @@ impl NSString {
         // its lifetime to be long enough.
         unsafe { self.to_str_with_nul() }.into()
     }
+}
 
-    /// Returns a selector with this string as its name.
+impl NSString {
+    /// Returns a selector with `self` as its name.
     ///
-    /// If this string cannot be converted to UTF-8 (this should be only due to
+    /// If `self` cannot be converted to UTF-8 (this should be only due to
     /// insufficient memory), this returns
     /// [`None`](https://doc.rust-lang.org/std/option/enum.Option.html#variant.None).
     ///
@@ -529,7 +601,7 @@ impl NSString {
     }
 
     /// Returns `true` if the given string matches the beginning characters of
-    /// this string.
+    /// `self`.
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsstring/1410309-hasprefix).
     #[inline]
