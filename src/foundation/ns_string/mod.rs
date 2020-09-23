@@ -535,6 +535,45 @@ impl NSString {
     }
 }
 
+/// Getting contents as [UTF-16](https://en.wikipedia.org/wiki/UTF-16).
+impl NSString {
+    /// Returns a pointer to the UTF-16 representation of `self`, or null if the
+    /// internal storage of `self` does not allow this to be returned
+    /// efficiently.
+    ///
+    /// This is retrieved using
+    /// [`CFStringGetCharactersPtr`](https://developer.apple.com/documentation/corefoundation/1542939-cfstringgetcharactersptr)
+    ///
+    /// See [`as_utf8_ptr`](#method.as_utf8_ptr) for the UTF-8 equivalent.
+    #[inline]
+    pub fn as_utf16_ptr(&self) -> *const u16 {
+        extern "C" {
+            fn CFStringGetCharactersPtr(s: &Object) -> *const u16;
+        }
+        unsafe { CFStringGetCharactersPtr(self) }
+    }
+
+    /// Returns the contents of `self` as a UTF-16 string slice, or `None` if
+    /// the internal storage of `self` does not allow this to be returned
+    /// efficiently.
+    ///
+    /// See [`as_str`](#method.as_str) for the UTF-8 equivalent.
+    ///
+    /// # Safety
+    ///
+    /// You must ensure that `self` is not mutated during the lifetime of the
+    /// returned slice.
+    #[inline]
+    pub unsafe fn as_utf16(&self) -> Option<&[u16]> {
+        let ptr = self.as_utf16_ptr();
+        if ptr.is_null() {
+            return None;
+        }
+
+        Some(slice::from_raw_parts(ptr, self.length()))
+    }
+}
+
 impl NSString {
     /// Returns the number of UTF-16 code units in `self`.
     ///

@@ -53,10 +53,10 @@ The format is based on [Keep a Changelog] and this project adheres to
 
   - `length`
 
-  - Efficiently getting an `Option<&str>` from `NSString` if it's UTF-8.
+  - Efficiently getting an `Option<&str>` if it's UTF-8 or an `Option<&[u16]>` if it's UTF-16.
 
-    These do not allocate and construct a new UTF-8 C string if the string does
-    not represent one.
+    Unlike `to_str` and friends, these do not allocate and transcode to a new
+    string if the original string does not represent the encoding.
 
 - Methods for getting all available `NSStringEncoding`s.
 
