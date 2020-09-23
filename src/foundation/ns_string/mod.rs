@@ -536,6 +536,14 @@ impl NSString {
 }
 
 impl NSString {
+    /// Returns the number of UTF-16 code units in `self`.
+    ///
+    /// See [documentation](https://developer.apple.com/documentation/foundation/nsstring/1414212-length).
+    #[inline]
+    pub fn length(&self) -> NSUInteger {
+        unsafe { _msg_send![self, length] }
+    }
+
     /// Returns a selector with `self` as its name.
     ///
     /// If `self` cannot be converted to UTF-8 (this should be only due to
