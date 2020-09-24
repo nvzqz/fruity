@@ -58,6 +58,8 @@ The format is based on [Keep a Changelog] and this project adheres to
     Unlike `to_str` and friends, these do not allocate and transcode to a new
     string if the original string does not represent the encoding.
 
+  - Efficiently comparing against `&str`.
+
 - Methods for getting all available `NSStringEncoding`s.
 
 - Foundation error codes.

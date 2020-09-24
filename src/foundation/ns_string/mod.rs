@@ -95,6 +95,102 @@ impl Ord for NSString {
     }
 }
 
+impl PartialEq<str> for NSString {
+    fn eq(&self, other: &str) -> bool {
+        // SAFETY: This instance is not mutated while the UTF-16 slice exists.
+        if let Some(this) = unsafe { self.as_utf16() } {
+            let mut this_iter = this.iter();
+            let mut other_iter = other.encode_utf16();
+            loop {
+                match (this_iter.next(), other_iter.next()) {
+                    (Some(&this), Some(other)) if this == other => continue,
+                    (None, None) => return true,
+                    (_, _) => return false,
+                }
+            }
+        } else {
+            // If the string is not UTF-16, then it is UTF-8 (or some other
+            // encoding?).
+
+            // SAFETY: `this` is short-lived.
+            let this = unsafe { self.to_str() };
+
+            this == other
+        }
+    }
+}
+
+impl PartialEq<&str> for NSString {
+    #[inline]
+    fn eq(&self, other: &&str) -> bool {
+        *self == **other
+    }
+}
+
+impl PartialEq<NSString> for str {
+    #[inline]
+    fn eq(&self, other: &NSString) -> bool {
+        other == self
+    }
+}
+
+impl PartialEq<NSString> for &str {
+    #[inline]
+    fn eq(&self, other: &NSString) -> bool {
+        other == self
+    }
+}
+
+impl PartialOrd<str> for NSString {
+    fn partial_cmp(&self, other: &str) -> Option<Ordering> {
+        // SAFETY: This instance is not mutated while the UTF-16 slice exists.
+        if let Some(this) = unsafe { self.as_utf16() } {
+            let mut this_iter = this.iter();
+            let mut other_iter = other.encode_utf16();
+            loop {
+                match (this_iter.next(), other_iter.next()) {
+                    (Some(&this), Some(other)) => match this.cmp(&other) {
+                        Ordering::Equal => continue,
+                        ord => return Some(ord),
+                    },
+                    (Some(_), None) => return Some(Ordering::Greater),
+                    (None, Some(_)) => return Some(Ordering::Less),
+                    (None, None) => return Some(Ordering::Equal),
+                }
+            }
+        } else {
+            // If the string is not UTF-16, then it is UTF-8 (or some other
+            // encoding?).
+
+            // SAFETY: `this` is short-lived.
+            let this = unsafe { self.to_str() };
+
+            Some(this.cmp(other))
+        }
+    }
+}
+
+impl PartialOrd<&str> for NSString {
+    #[inline]
+    fn partial_cmp(&self, other: &&str) -> Option<Ordering> {
+        self.partial_cmp(*other)
+    }
+}
+
+impl PartialOrd<NSString> for str {
+    #[inline]
+    fn partial_cmp(&self, other: &NSString) -> Option<Ordering> {
+        Some(other.partial_cmp(self)?.reverse())
+    }
+}
+
+impl PartialOrd<NSString> for &str {
+    #[inline]
+    fn partial_cmp(&self, other: &NSString) -> Option<Ordering> {
+        Some(other.partial_cmp(self)?.reverse())
+    }
+}
+
 impl From<&str> for NSString {
     #[inline]
     fn from(s: &str) -> Self {
@@ -761,6 +857,63 @@ impl Ord for NSMutableString {
         NSString::cmp(self, other)
     }
 }
+
+impl PartialEq<str> for NSMutableString {
+    #[inline]
+    fn eq(&self, other: &str) -> bool {
+        NSString::eq(self, other)
+    }
+}
+
+impl PartialEq<&str> for NSMutableString {
+    #[inline]
+    fn eq(&self, other: &&str) -> bool {
+        NSString::eq(self, other)
+    }
+}
+
+impl PartialEq<NSMutableString> for str {
+    #[inline]
+    fn eq(&self, other: &NSMutableString) -> bool {
+        other == self
+    }
+}
+
+impl PartialEq<NSMutableString> for &str {
+    #[inline]
+    fn eq(&self, other: &NSMutableString) -> bool {
+        other == self
+    }
+}
+
+impl PartialOrd<str> for NSMutableString {
+    #[inline]
+    fn partial_cmp(&self, other: &str) -> Option<Ordering> {
+        NSString::partial_cmp(self, other)
+    }
+}
+
+impl PartialOrd<&str> for NSMutableString {
+    #[inline]
+    fn partial_cmp(&self, other: &&str) -> Option<Ordering> {
+        NSString::partial_cmp(self, other)
+    }
+}
+
+impl PartialOrd<NSMutableString> for str {
+    #[inline]
+    fn partial_cmp(&self, other: &NSMutableString) -> Option<Ordering> {
+        Some(other.partial_cmp(self)?.reverse())
+    }
+}
+
+impl PartialOrd<NSMutableString> for &str {
+    #[inline]
+    fn partial_cmp(&self, other: &NSMutableString) -> Option<Ordering> {
+        Some(other.partial_cmp(self)?.reverse())
+    }
+}
+
 
 impl From<&str> for NSMutableString {
     #[inline]
