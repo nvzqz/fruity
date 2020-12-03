@@ -914,7 +914,6 @@ impl PartialOrd<NSMutableString> for &str {
     }
 }
 
-
 impl From<&str> for NSMutableString {
     #[inline]
     fn from(s: &str) -> Self {
