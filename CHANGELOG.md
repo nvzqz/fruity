@@ -93,6 +93,11 @@ The format is based on [Keep a Changelog] and this project adheres to
 
 ### Fixed
 
+- The signed-ness of `BOOL` on platforms where it is a `signed char`.
+
+- **\[breaking\]** The memory representation of `BOOL` on platforms where it is
+  a C/C++ `Bool`.
+
 - The `ns_string!` macro now transcodes non-ASCII strings to UTF-16, instead of
   allowing UTF-8 data where only ASCII data is expected.
 
@@ -102,6 +107,8 @@ The format is based on [Keep a Changelog] and this project adheres to
   See issue [#3].
 
 ### Changed
+
+- **\[breaking\]** Changed `BOOL` from a type alias to a newtype.
 
 - **\[breaking\]** Renamed `nsstring!` macro to `ns_string!`.
 

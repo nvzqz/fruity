@@ -49,7 +49,7 @@ impl Deref for NSNumber {
 impl PartialEq for NSNumber {
     #[inline]
     fn eq(&self, other: &Self) -> bool {
-        unsafe { _msg_send_cached![self, isEqualToNumber: other as &Object => BOOL] != 0 }
+        unsafe { _msg_send_cached![self, isEqualToNumber: other as &Object => BOOL] }.into()
     }
 }
 
@@ -250,7 +250,7 @@ impl NSNumber {
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsnumber/1551475-numberwithbool).
     #[inline]
     pub fn with_bool(value: bool) -> Self {
-        unsafe { _msg_send![Self::class(), numberWithBool: value as BOOL] }
+        unsafe { _msg_send![Self::class(), numberWithBool: BOOL::from(value)] }
     }
 
     /// Creates a number object from a C `float`.
@@ -499,7 +499,7 @@ impl NSNumber {
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsnumber/1410865-boolvalue).
     #[inline]
     pub fn bool_value(&self) -> bool {
-        unsafe { _msg_send![self, boolValue => BOOL] != 0 }
+        unsafe { _msg_send![self, boolValue => BOOL] }.into()
     }
 
     /// Returns the number object's value expressed as a C `float`, converted as necessary.

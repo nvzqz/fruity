@@ -31,7 +31,7 @@ impl PartialEq for SEL {
         extern "C" {
             fn sel_isEqual(lhs: SEL, rhs: SEL) -> BOOL;
         }
-        unsafe { sel_isEqual(*self, *other) != 0 }
+        unsafe { sel_isEqual(*self, *other) }.into()
     }
 }
 

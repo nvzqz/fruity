@@ -75,7 +75,7 @@ impl Default for NSString {
 impl PartialEq for NSString {
     #[inline]
     fn eq(&self, other: &Self) -> bool {
-        unsafe { _msg_send_cached![self, isEqualToString: other as &Object => BOOL] != 0 }
+        unsafe { _msg_send_cached![self, isEqualToString: other as &Object => BOOL] }.into()
     }
 }
 
@@ -749,7 +749,7 @@ impl NSString {
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsstring/1410309-hasprefix).
     #[inline]
     pub fn has_prefix(&self, prefix: &NSString) -> bool {
-        unsafe { _msg_send![self, hasPrefix: prefix as &Object => BOOL] != 0 }
+        unsafe { _msg_send![self, hasPrefix: prefix as &Object => BOOL] }.into()
     }
 
     /// Returns `true` if the given string matches the ending characters of this
@@ -758,7 +758,7 @@ impl NSString {
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsstring/1416529-hassuffix).
     #[inline]
     pub fn has_suffix(&self, suffix: &NSString) -> bool {
-        unsafe { _msg_send![self, hasSuffix: suffix as &Object => BOOL] != 0 }
+        unsafe { _msg_send![self, hasSuffix: suffix as &Object => BOOL] }.into()
     }
 }
 

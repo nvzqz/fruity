@@ -75,7 +75,8 @@ impl NSErrorRecoveryAttempting {
         // - (BOOL)attemptRecoveryFromError:(NSError *)error
         //                      optionIndex:(NSUInteger)recoveryOptionIndex;
         unsafe {
-            self._msg_send_with::<_, BOOL>(sel, (error.as_object(), recovery_option_index)) != 0
+            self._msg_send_with::<_, BOOL>(sel, (error.as_object(), recovery_option_index))
+                .into()
         }
     }
 
