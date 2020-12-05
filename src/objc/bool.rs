@@ -59,19 +59,33 @@ impl fmt::Debug for BOOL {
 }
 
 impl BOOL {
+    /// The [`BOOL`](struct.BOOL.html) equivalent to
+    /// [`false`](https://doc.rust-lang.org/std/keyword.false.html).
+    ///
+    /// See [documentation](https://developer.apple.com/documentation/objectivec/no).
+    pub const NO: Self = Self::new(false);
+
+    /// The [`BOOL`](struct.BOOL.html) equivalent to
+    /// [`true`](https://doc.rust-lang.org/std/keyword.true.html).
+    ///
+    /// See [documentation](https://developer.apple.com/documentation/objectivec/yes).
+    pub const YES: Self = Self::new(true);
+
     /// Creates an Objective-C boolean from a Rust boolean.
     #[inline]
     pub const fn new(value: bool) -> Self {
         Self { value: value as _ }
     }
 
-    /// Returns `true` if `self` should be treated like [`NO`](const.NO.html).
+    /// Returns `true` if `self` should be treated like
+    /// [`NO`](Self::NO).
     #[inline]
     pub const fn is_no(self) -> bool {
         self.value as c_schar == 0
     }
 
-    /// Returns `true` if `self` should be treated like [`YES`](const.YES.html).
+    /// Returns `true` if `self` should be treated like
+    /// [`YES`](Self::YES).
     #[inline]
     pub const fn is_yes(self) -> bool {
         self.value as c_schar != 0
@@ -81,11 +95,15 @@ impl BOOL {
 /// The [`BOOL`](struct.BOOL.html) equivalent to
 /// [`false`](https://doc.rust-lang.org/std/keyword.false.html).
 ///
+/// Use [`BOOL::NO`] if an associated constant is preferred.
+///
 /// See [documentation](https://developer.apple.com/documentation/objectivec/no).
-pub const NO: BOOL = BOOL::new(false);
+pub const NO: BOOL = BOOL::NO;
 
 /// The [`BOOL`](struct.BOOL.html) equivalent to
 /// [`true`](https://doc.rust-lang.org/std/keyword.true.html).
 ///
+/// Use [`BOOL::YES`] if an associated constant is preferred.
+///
 /// See [documentation](https://developer.apple.com/documentation/objectivec/yes).
-pub const YES: BOOL = BOOL::new(true);
+pub const YES: BOOL = BOOL::YES;

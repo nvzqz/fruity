@@ -1,5 +1,5 @@
 use super::{NSComparisonResult, NSRange};
-use crate::objc::{Class, NSObject, NSUInteger, Object, ObjectType, BOOL, NO, SEL};
+use crate::objc::{Class, NSObject, NSUInteger, Object, ObjectType, BOOL, SEL};
 use std::{
     cmp::Ordering,
     ffi::CStr,
@@ -426,7 +426,7 @@ impl NSString {
         let bytes = s.as_ptr();
         let length = s.len();
         let encoding = NSStringEncoding::UTF8;
-        let free_when_done = NO;
+        let free_when_done = BOOL::NO;
 
         objc_msgSend(obj, sel, bytes, length, encoding, free_when_done)
     }
@@ -1011,7 +1011,7 @@ impl NSMutableString {
         let bytes = s.as_mut_ptr();
         let length = s.len();
         let encoding = NSStringEncoding::UTF8;
-        let free_when_done = NO;
+        let free_when_done = BOOL::NO;
 
         objc_msgSend(obj, sel, bytes, length, encoding, free_when_done)
     }

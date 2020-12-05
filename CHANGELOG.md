@@ -9,6 +9,9 @@ The format is based on [Keep a Changelog] and this project adheres to
 
 ### Added
 
+- `BOOL::NO` and `BOOL::YES` associated constants as alternatives to the
+  constants in in the `objc` module. These should be preferred.
+
 - `DispatchQueue::current_queue_label_owned` as safe owned alternative to
   `current_queue_label`.
 
