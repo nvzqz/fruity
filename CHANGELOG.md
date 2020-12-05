@@ -9,6 +9,12 @@ The format is based on [Keep a Changelog] and this project adheres to
 
 ### Added
 
+- `DispatchQueue::current_queue_label_owned` as safe owned alternative to
+  `current_queue_label`.
+
+- `DispatchQueue::with_current_queue_label` as safe scoped alternative to
+  `current_queue_label`.
+
 - `ObjectType` trait to generalize over object references.
 
 - `Unretained<T>` wrapper type that's semantically a `&T` but with the memory
@@ -92,6 +98,10 @@ The format is based on [Keep a Changelog] and this project adheres to
 - Implemented `Default` for `NSString` and `NSMutableString`.
 
 ### Fixed
+
+- **\[breaking\]** The safety of `DispatchQueue::current_queue_label_owned` by
+  marking it as `unsafe`. It is unspecified whether the label may outlive the
+  current queue.
 
 - The signed-ness of `BOOL` on platforms where it is a `signed char`.
 

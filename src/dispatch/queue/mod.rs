@@ -1,6 +1,6 @@
 use super::{DispatchObject, DispatchQos, DispatchQosClass};
 use std::{
-    ffi::CStr,
+    ffi::{CStr, CString},
     fmt,
     ops::Deref,
     os::raw::{c_char, c_int, c_long, c_ulong, c_void},
@@ -155,17 +155,42 @@ extern "C" {
 
 /// Queue properties.
 impl DispatchQueue {
-    /// Returns the label of the current queue.
+    /// Returns a reference to the label of the current queue.
+    ///
+    /// # Safety
+    ///
+    /// The returned label must live as long as the current queue.
+    ///
+    /// Consider instead using
+    /// [`current_queue_label_owned`](Self::current_queue_label_owned) or
+    /// [`with_current_queue_label`](Self::with_current_queue_label),
+    /// depending on how long the string is needed for.
     #[inline]
-    pub fn current_queue_label<'a>() -> Option<&'a CStr> {
-        unsafe {
-            let label = dispatch_queue_get_label(ptr::null_mut());
-            if label.is_null() {
-                None
-            } else {
-                Some(CStr::from_ptr(label))
-            }
+    pub unsafe fn current_queue_label<'a>() -> Option<&'a CStr> {
+        let label = dispatch_queue_get_label(ptr::null_mut());
+        if label.is_null() {
+            None
+        } else {
+            Some(CStr::from_ptr(label))
         }
+    }
+
+    /// Returns an owned copy of the label of the current queue.
+    #[inline]
+    pub fn current_queue_label_owned() -> Option<CString> {
+        Self::with_current_queue_label(|label| Some(label?.to_owned()))
+    }
+
+    /// Returns the result of calling the function with a reference to the label
+    /// of the current queue.
+    #[inline]
+    pub fn with_current_queue_label<F, T>(f: F) -> T
+    where
+        F: FnOnce(Option<&CStr>) -> T,
+    {
+        // SAFETY: The string cannot be used past the lifetime of the current
+        // queue because the reference only lives as long as the scope of `f`.
+        f(unsafe { Self::current_queue_label() })
     }
 
     #[inline]
