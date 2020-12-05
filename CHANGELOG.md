@@ -108,6 +108,11 @@ The format is based on [Keep a Changelog] and this project adheres to
 
 ### Changed
 
+- **\[breaking\]** Renamed `get_class` to `class` for Objective-C objects.
+
+- **\[breaking\]** Shortened lifetime of `class` on Objective-C objects from
+  static to `self`.
+
 - **\[breaking\]** Changed `BOOL` from a type alias to a newtype.
 
 - **\[breaking\]** Renamed `nsstring!` macro to `ns_string!`.
