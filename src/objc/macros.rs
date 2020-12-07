@@ -44,7 +44,7 @@ macro_rules! objc_class_wrapper {
     ) => {
         class_wrapper! {
             $(#[$meta])+
-            $vis wrapper $wrapper: $crate::foundation::NSString;
+            $vis wrapper $wrapper: $target;
         }
 
         impl $crate::objc::ObjectType for $wrapper {}
