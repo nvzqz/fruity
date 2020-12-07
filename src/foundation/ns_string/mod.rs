@@ -47,7 +47,7 @@ impl Default for &NSString {
 impl PartialEq for NSString {
     #[inline]
     fn eq(&self, other: &Self) -> bool {
-        unsafe { _msg_send_cached![self, isEqualToString: other => BOOL] }.into()
+        unsafe { _msg_send_any_cached![self, isEqualToString: other => BOOL] }.into()
     }
 }
 
@@ -297,7 +297,7 @@ impl NSString {
     #[inline]
     #[doc(alias = "availableStringEncodings")]
     pub fn available_encodings_ptr() -> *const NSStringEncoding {
-        unsafe { _msg_send![Self::class(), availableStringEncodings] }
+        unsafe { _msg_send_any![Self::class(), availableStringEncodings] }
     }
 
     /// Returns the number of supported encodings.
@@ -454,7 +454,7 @@ impl NSString {
     /// [`-[NSString UTF8String]`](https://developer.apple.com/documentation/foundation/nsstring/1411189-utf8string).
     #[inline]
     pub fn to_utf8_ptr(&self) -> *const c_char {
-        unsafe { _msg_send![self, UTF8String] }
+        unsafe { _msg_send_any![self, UTF8String] }
     }
 
     /// Returns the contents of `self` as a native UTF-8 string slice, or `None`
@@ -631,7 +631,7 @@ impl NSString {
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsstring/1414212-length).
     #[inline]
     pub fn length(&self) -> NSUInteger {
-        unsafe { _msg_send![self, length] }
+        unsafe { _msg_send_any![self, length] }
     }
 
     /// Returns a selector with `self` as its name.
@@ -656,7 +656,7 @@ impl NSString {
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsstring/1414082-compare).
     #[inline]
     pub fn compare(&self, other: &NSString) -> NSComparisonResult {
-        unsafe { _msg_send![self, compare: other] }
+        unsafe { _msg_send_any![self, compare: other] }
     }
 
     /// Compares the string and a given string using a localized comparison.
@@ -665,7 +665,7 @@ impl NSString {
     #[inline]
     #[doc(alias = "localizedCompare")]
     pub fn localized_compare(&self, other: &NSString) -> NSComparisonResult {
-        unsafe { _msg_send![self, localizedCompare: other] }
+        unsafe { _msg_send_any![self, localizedCompare: other] }
     }
 
     /// Compares the string with a given string using `NSCaseInsensitiveSearch`.
@@ -674,7 +674,7 @@ impl NSString {
     #[inline]
     #[doc(alias = "caseInsensitiveCompare")]
     pub fn case_insensitive_compare(&self, other: &NSString) -> NSComparisonResult {
-        unsafe { _msg_send![self, caseInsensitiveCompare: other] }
+        unsafe { _msg_send_any![self, caseInsensitiveCompare: other] }
     }
 
     /// Compares the string with a given string using a case-insensitive,
@@ -684,7 +684,7 @@ impl NSString {
     #[inline]
     #[doc(alias = "localizedCaseInsensitiveCompare")]
     pub fn localized_case_insensitive_compare(&self, other: &NSString) -> NSComparisonResult {
-        unsafe { _msg_send![self, localizedCaseInsensitiveCompare: other] }
+        unsafe { _msg_send_any![self, localizedCaseInsensitiveCompare: other] }
     }
 
     /// Compares strings as sorted by the Finder.
@@ -699,7 +699,7 @@ impl NSString {
     #[inline]
     #[doc(alias = "localizedStandardCompare")]
     pub fn localized_standard_compare(&self, other: &NSString) -> NSComparisonResult {
-        unsafe { _msg_send![self, localizedStandardCompare: other] }
+        unsafe { _msg_send_any![self, localizedStandardCompare: other] }
     }
 
     /// Returns `true` if the given string matches the beginning characters of
@@ -709,7 +709,7 @@ impl NSString {
     #[inline]
     #[doc(alias = "hasPrefix")]
     pub fn has_prefix(&self, prefix: &NSString) -> bool {
-        unsafe { _msg_send![self, hasPrefix: prefix => BOOL] }.into()
+        unsafe { _msg_send_any![self, hasPrefix: prefix => BOOL] }.into()
     }
 
     /// Returns `true` if the given string matches the ending characters of this
@@ -719,7 +719,7 @@ impl NSString {
     #[inline]
     #[doc(alias = "hasSuffix")]
     pub fn has_suffix(&self, suffix: &NSString) -> bool {
-        unsafe { _msg_send![self, hasSuffix: suffix => BOOL] }.into()
+        unsafe { _msg_send_any![self, hasSuffix: suffix => BOOL] }.into()
     }
 }
 

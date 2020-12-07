@@ -45,7 +45,7 @@ impl NSErrorRecoveryAttempting {
         //                      optionIndex:(NSUInteger)recoveryOptionIndex;
         unsafe {
             self.0
-                ._msg_send_with::<_, BOOL>(sel, (error, recovery_option_index))
+                ._msg_send_any_with::<_, BOOL>(sel, (error, recovery_option_index))
                 .into()
         }
     }
@@ -81,7 +81,7 @@ impl NSErrorRecoveryAttempting {
         //                         delegate:(id)delegate
         //               didRecoverSelector:(SEL)didRecoverSelector
         //                      contextInfo:(void *)contextInfo;
-        self.0._msg_send_with(
+        self.0._msg_send_any_with(
             sel,
             (
                 error,

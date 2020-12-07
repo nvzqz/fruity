@@ -61,7 +61,7 @@ impl super::ObjectType for ObjCObject {
         // - iOS (unknown)
         // - tvOS (unknown)
         // - watchOS (unknown)
-        unsafe { _msg_send_cached![self, class] }
+        unsafe { _msg_send_any_cached![self, class] }
     }
 }
 

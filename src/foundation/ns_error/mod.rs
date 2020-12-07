@@ -49,7 +49,7 @@ impl NSError {
     /// See [documentation](https://developer.apple.com/documentation/foundation/nserror/1409165-code).
     #[inline]
     pub fn code(&self) -> NSInteger {
-        unsafe { _msg_send![self, code] }
+        unsafe { _msg_send_any![self, code] }
     }
 
     /// Returns a string containing the error domain.
@@ -57,7 +57,7 @@ impl NSError {
     /// See [documentation](https://developer.apple.com/documentation/foundation/nserror/1413924-domain).
     #[inline]
     pub fn domain(&self) -> Arc<NSErrorDomain> {
-        unsafe { _msg_send![self, domain] }
+        unsafe { _msg_send_any![self, domain] }
     }
 
     // TODO: `userInfo`
@@ -76,7 +76,7 @@ impl NSError {
     #[inline]
     #[doc(alias = "localizedDescription")]
     pub fn localized_description(&self) -> Arc<NSString> {
-        unsafe { _msg_send![self, localizedDescription] }
+        unsafe { _msg_send_any![self, localizedDescription] }
     }
 
     /// Returns a string containing the localized explanation of the reason for
@@ -89,7 +89,7 @@ impl NSError {
     #[inline]
     #[doc(alias = "localizedFailureReason")]
     pub fn localized_failure_reason(&self) -> Option<Arc<NSString>> {
-        unsafe { _msg_send![self, localizedFailureReason] }
+        unsafe { _msg_send_any![self, localizedFailureReason] }
     }
 
     // TODO: `localizedRecoveryOptions`
@@ -104,7 +104,7 @@ impl NSError {
     #[inline]
     #[doc(alias = "localizedRecoverySuggestion")]
     pub fn localized_recovery_suggestion(&self) -> Option<Arc<NSString>> {
-        unsafe { _msg_send![self, localizedRecoverySuggestion] }
+        unsafe { _msg_send_any![self, localizedRecoverySuggestion] }
     }
 
     /// Returns the object in the user info dictionary corresponding to
@@ -114,7 +114,7 @@ impl NSError {
     #[inline]
     #[doc(alias = "recoveryAttempter")]
     pub fn recovery_attempter(&self) -> Option<Arc<NSErrorRecoveryAttempting>> {
-        unsafe { _msg_send![self, recoveryAttempter] }
+        unsafe { _msg_send_any![self, recoveryAttempter] }
     }
 
     /// Returns the object in the user info dictionary corresponding to
@@ -124,7 +124,7 @@ impl NSError {
     #[inline]
     #[doc(alias = "helpAnchor")]
     pub fn help_anchor(&self) -> Option<Arc<NSString>> {
-        unsafe { _msg_send![self, helpAnchor] }
+        unsafe { _msg_send_any![self, helpAnchor] }
     }
 }
 

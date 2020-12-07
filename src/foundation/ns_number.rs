@@ -24,7 +24,7 @@ objc_subclass! {
 impl PartialEq for NSNumber {
     #[inline]
     fn eq(&self, other: &Self) -> bool {
-        unsafe { _msg_send_cached![self, isEqualToNumber: other => BOOL] }.into()
+        unsafe { _msg_send_any_cached![self, isEqualToNumber: other => BOOL] }.into()
     }
 }
 
@@ -181,7 +181,7 @@ impl NSNumber {
     #[doc(alias = "numberWithBool")]
     #[doc(alias = "numberWithBool:")]
     pub fn from_bool(value: bool) -> Arc<Self> {
-        unsafe { _msg_send![Self::class(), numberWithBool: BOOL::from(value)] }
+        unsafe { _msg_send_any![Self::class(), numberWithBool: BOOL::from(value)] }
     }
 
     /// Creates a number object from a C `float`.
@@ -191,7 +191,7 @@ impl NSNumber {
     #[doc(alias = "numberWithFloat")]
     #[doc(alias = "numberWithFloat:")]
     pub fn from_float(value: c_float) -> Arc<Self> {
-        unsafe { _msg_send![Self::class(), numberWithFloat: value] }
+        unsafe { _msg_send_any![Self::class(), numberWithFloat: value] }
     }
 
     /// Creates a number object from a C `double`.
@@ -201,7 +201,7 @@ impl NSNumber {
     #[doc(alias = "numberWithDouble")]
     #[doc(alias = "numberWithDouble:")]
     pub fn from_double(value: c_double) -> Arc<Self> {
-        unsafe { _msg_send![Self::class(), numberWithDouble: value] }
+        unsafe { _msg_send_any![Self::class(), numberWithDouble: value] }
     }
 
     /// Creates a number object from a C `char`.
@@ -211,7 +211,7 @@ impl NSNumber {
     #[doc(alias = "numberWithChar")]
     #[doc(alias = "numberWithChar:")]
     pub fn from_char(value: c_char) -> Arc<Self> {
-        unsafe { _msg_send![Self::class(), numberWithChar: value] }
+        unsafe { _msg_send_any![Self::class(), numberWithChar: value] }
     }
 
     /// Creates a number object from a C `short`.
@@ -221,7 +221,7 @@ impl NSNumber {
     #[doc(alias = "numberWithShort")]
     #[doc(alias = "numberWithShort:")]
     pub fn from_short(value: c_short) -> Arc<Self> {
-        unsafe { _msg_send![Self::class(), numberWithShort: value] }
+        unsafe { _msg_send_any![Self::class(), numberWithShort: value] }
     }
 
     /// Creates a number object from a C `int`.
@@ -231,7 +231,7 @@ impl NSNumber {
     #[doc(alias = "numberWithInt")]
     #[doc(alias = "numberWithInt:")]
     pub fn from_int(value: c_int) -> Arc<Self> {
-        unsafe { _msg_send![Self::class(), numberWithInt: value] }
+        unsafe { _msg_send_any![Self::class(), numberWithInt: value] }
     }
 
     /// Creates a number object from a C `long`.
@@ -241,7 +241,7 @@ impl NSNumber {
     #[doc(alias = "numberWithLong")]
     #[doc(alias = "numberWithLong:")]
     pub fn from_long(value: c_long) -> Arc<Self> {
-        unsafe { _msg_send![Self::class(), numberWithLong: value] }
+        unsafe { _msg_send_any![Self::class(), numberWithLong: value] }
     }
 
     /// Creates a number object from a C `long long`.
@@ -251,7 +251,7 @@ impl NSNumber {
     #[doc(alias = "numberWithLongLong")]
     #[doc(alias = "numberWithLongLong:")]
     pub fn from_longlong(value: c_longlong) -> Arc<Self> {
-        unsafe { _msg_send![Self::class(), numberWithLongLong: value] }
+        unsafe { _msg_send_any![Self::class(), numberWithLongLong: value] }
     }
 
     /// Creates a number object from an Objective-C integer.
@@ -261,7 +261,7 @@ impl NSNumber {
     #[doc(alias = "numberWithInteger")]
     #[doc(alias = "numberWithInteger:")]
     pub fn from_integer(value: NSInteger) -> Arc<Self> {
-        unsafe { _msg_send![Self::class(), numberWithInteger: value] }
+        unsafe { _msg_send_any![Self::class(), numberWithInteger: value] }
     }
 
     /// Creates a number object from a C `unsigned char`.
@@ -271,7 +271,7 @@ impl NSNumber {
     #[doc(alias = "numberWithUnsignedChar")]
     #[doc(alias = "numberWithUnsignedChar:")]
     pub fn from_unsigned_char(value: c_uchar) -> Arc<Self> {
-        unsafe { _msg_send![Self::class(), numberWithUnsignedChar: value] }
+        unsafe { _msg_send_any![Self::class(), numberWithUnsignedChar: value] }
     }
 
     /// Creates a number object from a C `unsigned short`.
@@ -281,7 +281,7 @@ impl NSNumber {
     #[doc(alias = "numberWithUnsignedShort")]
     #[doc(alias = "numberWithUnsignedShort:")]
     pub fn from_unsigned_short(value: c_ushort) -> Arc<Self> {
-        unsafe { _msg_send![Self::class(), numberWithUnsignedShort: value] }
+        unsafe { _msg_send_any![Self::class(), numberWithUnsignedShort: value] }
     }
 
     /// Creates a number object from a C `unsigned int`.
@@ -291,7 +291,7 @@ impl NSNumber {
     #[doc(alias = "numberWithUnsignedInt")]
     #[doc(alias = "numberWithUnsignedInt:")]
     pub fn from_unsigned_int(value: c_uint) -> Arc<Self> {
-        unsafe { _msg_send![Self::class(), numberWithUnsignedInt: value] }
+        unsafe { _msg_send_any![Self::class(), numberWithUnsignedInt: value] }
     }
 
     /// Creates a number object from a C `unsigned long`.
@@ -301,7 +301,7 @@ impl NSNumber {
     #[doc(alias = "numberWithUnsignedLong")]
     #[doc(alias = "numberWithUnsignedLong:")]
     pub fn from_unsigned_long(value: c_ulong) -> Arc<Self> {
-        unsafe { _msg_send![Self::class(), numberWithUnsignedLong: value] }
+        unsafe { _msg_send_any![Self::class(), numberWithUnsignedLong: value] }
     }
 
     /// Creates a number object from a C `unsigned long long`.
@@ -311,7 +311,7 @@ impl NSNumber {
     #[doc(alias = "numberWithUnsignedLongLong")]
     #[doc(alias = "numberWithUnsignedLongLong:")]
     pub fn from_unsigned_longlong(value: c_ulonglong) -> Arc<Self> {
-        unsafe { _msg_send![Self::class(), numberWithUnsignedLongLong: value] }
+        unsafe { _msg_send_any![Self::class(), numberWithUnsignedLongLong: value] }
     }
 
     /// Creates a number object from a Objective-C unsigned integer.
@@ -321,7 +321,7 @@ impl NSNumber {
     #[doc(alias = "numberWithUnsignedInteger")]
     #[doc(alias = "numberWithUnsignedInteger:")]
     pub fn from_unsigned_integer(value: NSUInteger) -> Arc<Self> {
-        unsafe { _msg_send![Self::class(), numberWithUnsignedInteger: value] }
+        unsafe { _msg_send_any![Self::class(), numberWithUnsignedInteger: value] }
     }
 }
 
@@ -424,7 +424,7 @@ impl NSNumber {
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsnumber/1413562-compare)
     #[inline]
     pub fn compare(&self, other: &NSNumber) -> NSComparisonResult {
-        unsafe { _msg_send![self, compare: other] }
+        unsafe { _msg_send_any![self, compare: other] }
     }
 
     /// Returns the number object's value expressed as a human-readable string.
@@ -433,7 +433,7 @@ impl NSNumber {
     #[inline]
     #[doc(alias = "stringValue")]
     pub fn string_value(&self) -> Arc<NSString> {
-        unsafe { _msg_send![self, stringValue] }
+        unsafe { _msg_send_any![self, stringValue] }
     }
 
     /// Returns a string that represents the contents of the number object for a
@@ -450,7 +450,7 @@ impl NSNumber {
             Some(locale) => Some(locale.as_ref()),
             None => None,
         };
-        unsafe { _msg_send![self, descriptionWithLocale: locale] }
+        unsafe { _msg_send_any![self, descriptionWithLocale: locale] }
     }
 }
 
@@ -465,7 +465,7 @@ impl NSNumber {
     #[inline]
     #[doc(alias = "boolValue")]
     pub fn bool_value(&self) -> bool {
-        unsafe { _msg_send![self, boolValue => BOOL] }.into()
+        unsafe { _msg_send_any![self, boolValue => BOOL] }.into()
     }
 
     /// Returns the number object's value expressed as a C `float`, converted as necessary.
@@ -474,7 +474,7 @@ impl NSNumber {
     #[inline]
     #[doc(alias = "floatValue")]
     pub fn float_value(&self) -> c_float {
-        unsafe { _msg_send![self, floatValue] }
+        unsafe { _msg_send_any![self, floatValue] }
     }
 
     /// Returns the number object's value expressed as a C `double`, converted as necessary.
@@ -483,7 +483,7 @@ impl NSNumber {
     #[inline]
     #[doc(alias = "doubleValue")]
     pub fn double_value(&self) -> c_double {
-        unsafe { _msg_send![self, doubleValue] }
+        unsafe { _msg_send_any![self, doubleValue] }
     }
 
     /// Returns the number object's value expressed as a C `char`, converted as necessary.
@@ -492,7 +492,7 @@ impl NSNumber {
     #[inline]
     #[doc(alias = "charValue")]
     pub fn char_value(&self) -> c_char {
-        unsafe { _msg_send![self, charValue] }
+        unsafe { _msg_send_any![self, charValue] }
     }
 
     /// Returns the number object's value expressed as a C `short`, converted as necessary.
@@ -501,7 +501,7 @@ impl NSNumber {
     #[inline]
     #[doc(alias = "shortValue")]
     pub fn short_value(&self) -> c_short {
-        unsafe { _msg_send![self, shortValue] }
+        unsafe { _msg_send_any![self, shortValue] }
     }
 
     /// Returns the number object's value expressed as a C `int`, converted as necessary.
@@ -510,7 +510,7 @@ impl NSNumber {
     #[inline]
     #[doc(alias = "intValue")]
     pub fn int_value(&self) -> c_int {
-        unsafe { _msg_send![self, intValue] }
+        unsafe { _msg_send_any![self, intValue] }
     }
 
     /// Returns the number object's value expressed as a C `long`, converted as necessary.
@@ -519,7 +519,7 @@ impl NSNumber {
     #[inline]
     #[doc(alias = "longValue")]
     pub fn long_value(&self) -> c_long {
-        unsafe { _msg_send![self, longValue] }
+        unsafe { _msg_send_any![self, longValue] }
     }
 
     /// Returns the number object's value expressed as a C `long long`, converted as necessary.
@@ -528,7 +528,7 @@ impl NSNumber {
     #[inline]
     #[doc(alias = "longLongValue")]
     pub fn longlong_value(&self) -> c_longlong {
-        unsafe { _msg_send![self, longLongValue] }
+        unsafe { _msg_send_any![self, longLongValue] }
     }
 
     /// Returns the number object's value expressed as an Objective-C integer, converted as necessary.
@@ -537,7 +537,7 @@ impl NSNumber {
     #[inline]
     #[doc(alias = "integerValue")]
     pub fn integer_value(&self) -> NSInteger {
-        unsafe { _msg_send![self, integerValue] }
+        unsafe { _msg_send_any![self, integerValue] }
     }
 
     /// Returns the number object's value expressed as a C `unsigned char`, converted as necessary.
@@ -546,7 +546,7 @@ impl NSNumber {
     #[inline]
     #[doc(alias = "unsignedCharValue")]
     pub fn unsigned_char_value(&self) -> c_uchar {
-        unsafe { _msg_send![self, unsignedCharValue] }
+        unsafe { _msg_send_any![self, unsignedCharValue] }
     }
 
     /// Returns the number object's value expressed as a C `unsigned short`, converted as necessary.
@@ -555,7 +555,7 @@ impl NSNumber {
     #[inline]
     #[doc(alias = "unsignedShortValue")]
     pub fn unsigned_short_value(&self) -> c_ushort {
-        unsafe { _msg_send![self, unsignedShortValue] }
+        unsafe { _msg_send_any![self, unsignedShortValue] }
     }
 
     /// Returns the number object's value expressed as a C `unsigned int`, converted as necessary.
@@ -564,7 +564,7 @@ impl NSNumber {
     #[inline]
     #[doc(alias = "unsignedIntValue")]
     pub fn unsigned_int_value(&self) -> c_uint {
-        unsafe { _msg_send![self, unsignedIntValue] }
+        unsafe { _msg_send_any![self, unsignedIntValue] }
     }
 
     /// Returns the number object's value expressed as a C `unsigned long`, converted as necessary.
@@ -573,7 +573,7 @@ impl NSNumber {
     #[inline]
     #[doc(alias = "unsignedLongValue")]
     pub fn unsigned_long_value(&self) -> c_ulong {
-        unsafe { _msg_send![self, unsignedLongValue] }
+        unsafe { _msg_send_any![self, unsignedLongValue] }
     }
 
     /// Returns the number object's value expressed as a C `unsigned long long`, converted as necessary.
@@ -582,7 +582,7 @@ impl NSNumber {
     #[inline]
     #[doc(alias = "unsignedLongLongValue")]
     pub fn unsigned_longlong_value(&self) -> c_ulonglong {
-        unsafe { _msg_send![self, unsignedLongLongValue] }
+        unsafe { _msg_send_any![self, unsignedLongLongValue] }
     }
 
     /// Returns the number object's value expressed as an Objective-C unsigned integer, converted as necessary.
@@ -591,6 +591,6 @@ impl NSNumber {
     #[inline]
     #[doc(alias = "unsignedIntegerValue")]
     pub fn unsigned_integer_value(&self) -> NSUInteger {
-        unsafe { _msg_send![self, unsignedIntegerValue] }
+        unsafe { _msg_send_any![self, unsignedIntegerValue] }
     }
 }

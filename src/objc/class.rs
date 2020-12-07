@@ -142,7 +142,7 @@ impl Class {
     #[inline]
     #[doc(alias = "respondsToSelector")]
     pub fn responds_to_selector(&self, selector: SEL) -> bool {
-        unsafe { _msg_send_cached![self, respondsToSelector: selector => BOOL] }.into()
+        unsafe { _msg_send_any_cached![self, respondsToSelector: selector => BOOL] }.into()
     }
 
     /// Returns `true` if instances of this class implement or inherit a method
@@ -152,7 +152,7 @@ impl Class {
     #[inline]
     #[doc(alias = "instancesRespondToSelector")]
     pub fn instances_respond_to_selector(&self, selector: SEL) -> bool {
-        unsafe { _msg_send_cached![self, instancesRespondToSelector: selector => BOOL] }.into()
+        unsafe { _msg_send_any_cached![self, instancesRespondToSelector: selector => BOOL] }.into()
     }
 
     /// Returns the name of this class.

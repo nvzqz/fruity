@@ -78,7 +78,7 @@ impl NSException {
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsexception/1410925-name).
     #[inline]
     pub fn name(&self) -> Arc<NSExceptionName> {
-        unsafe { _msg_send![self, name] }
+        unsafe { _msg_send_any![self, name] }
     }
 
     /// Returns a containing a "human-readable" reason for `self`.
@@ -86,7 +86,7 @@ impl NSException {
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsexception/1415537-reason).
     #[inline]
     pub fn reason(&self) -> Option<Arc<NSString>> {
-        unsafe { _msg_send![self, reason] }
+        unsafe { _msg_send_any![self, reason] }
     }
 
     // TODO: `userInfo`

@@ -4,7 +4,7 @@ use std::{any::TypeId, mem};
 // TODO(#7): Use "C-unwind" ABI when stable.
 #[allow(unused)]
 extern "C" {
-    fn objc_msgSend();
+    pub fn objc_msgSend();
     fn objc_msgSend_fpret();
     fn objc_msgSend_stret();
 }

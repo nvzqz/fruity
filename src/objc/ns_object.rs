@@ -19,7 +19,7 @@ impl Default for Arc<NSObject> {
 impl PartialEq for NSObject {
     #[inline]
     fn eq(&self, other: &NSObject) -> bool {
-        unsafe { _msg_send_cached![self, isEqual: other => BOOL] }.into()
+        unsafe { _msg_send_any_cached![self, isEqual: other => BOOL] }.into()
     }
 }
 
@@ -31,7 +31,7 @@ impl NSObject {
     /// See [documentation](https://developer.apple.com/documentation/objectivec/1418956-nsobject/1571952-retaincount).
     #[inline]
     pub fn retain_count(&self) -> usize {
-        unsafe { _msg_send_cached![self, retainCount] }
+        unsafe { _msg_send_any_cached![self, retainCount] }
     }
 
     /// Returns `true` if this object implements or inherits a method that can
@@ -40,7 +40,7 @@ impl NSObject {
     /// See [documentation](https://developer.apple.com/documentation/objectivec/1418956-nsobject/1418583-respondstoselector).
     #[inline]
     pub fn responds_to_selector(&self, selector: SEL) -> bool {
-        unsafe { _msg_send_cached![self, respondsToSelector: selector => BOOL] }.into()
+        unsafe { _msg_send_any_cached![self, respondsToSelector: selector => BOOL] }.into()
     }
 
     /// Returns `true` if this object is an instance or subclass of `class`.
@@ -48,7 +48,7 @@ impl NSObject {
     /// See [documentation](https://developer.apple.com/documentation/objectivec/1418956-nsobject/1418511-iskindofclass)
     #[inline]
     pub fn is_kind_of_class(&self, class: &Class) -> bool {
-        unsafe { _msg_send_cached![self, isKindOfClass: class => BOOL] }.into()
+        unsafe { _msg_send_any_cached![self, isKindOfClass: class => BOOL] }.into()
     }
 
     /// Returns `true` if this object is an instance of `class`.
@@ -56,7 +56,7 @@ impl NSObject {
     /// See [documentation](https://developer.apple.com/documentation/objectivec/1418956-nsobject/1418766-ismemberofclass)
     #[inline]
     pub fn is_member_of_class(&self, class: &Class) -> bool {
-        unsafe { _msg_send_cached![self, isMemberOfClass: class => BOOL] }.into()
+        unsafe { _msg_send_any_cached![self, isMemberOfClass: class => BOOL] }.into()
     }
 
     /// Returns an integer that can be used as a table address in a hash table
@@ -65,7 +65,7 @@ impl NSObject {
     /// See [documentation](https://developer.apple.com/documentation/objectivec/1418956-nsobject/1418859-hash).
     #[inline]
     pub fn hash(&self) -> NSUInteger {
-        unsafe { _msg_send_cached![self, hash] }
+        unsafe { _msg_send_any_cached![self, hash] }
     }
 
     /// Returns a copy of this object using
@@ -74,7 +74,7 @@ impl NSObject {
     /// See [documentation](https://developer.apple.com/documentation/objectivec/nsobject/1418807-copy).
     #[inline]
     pub fn copy(&self) -> Arc<NSObject> {
-        unsafe { _msg_send_cached![self, copy] }
+        unsafe { _msg_send_any_cached![self, copy] }
     }
 
     /// Returns a copy of this object using
@@ -84,6 +84,6 @@ impl NSObject {
     #[inline]
     #[doc(alias = "mutableCopy")]
     pub fn mutable_copy(&self) -> Arc<NSObject> {
-        unsafe { _msg_send_cached![self, mutableCopy] }
+        unsafe { _msg_send_any_cached![self, mutableCopy] }
     }
 }
