@@ -16,10 +16,10 @@ impl Default for Arc<NSObject> {
     }
 }
 
-impl<T: AsRef<NSObject>> PartialEq<T> for NSObject {
+impl PartialEq for NSObject {
     #[inline]
-    fn eq(&self, other: &T) -> bool {
-        unsafe { _msg_send_cached![self, isEqual: other.as_ref() => BOOL] }.into()
+    fn eq(&self, other: &NSObject) -> bool {
+        unsafe { _msg_send_cached![self, isEqual: other => BOOL] }.into()
     }
 }
 
