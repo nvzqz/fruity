@@ -1,47 +1,30 @@
 use super::NSError;
 use crate::objc::{NSObject, NSUInteger, ObjCObject, BOOL, SEL};
-use std::{ffi::c_void, ops::Deref};
+use std::ffi::c_void;
 
-/// A set of methods that provide options to recover from an error.
-///
-/// This type is returned by
-/// [`NSError::recovery_attempter`](struct.NSError.html#method.recovery_attempter).
-///
-/// This informal protocol provides methods that allow your application to
-/// attempt to recover from an error. These methods are invoked when an
-/// [`NSError`](struct.NSError.html) is returned that specifies the implementing
-/// object as the error recoveryAttempter and the user has selected one of the
-/// error’s localized recovery options.
-///
-/// The method invoked depends on how the error is presented to the user:
-///
-/// - If the error is presented in a document-modal sheet,
-///   [`attempt_recovery_with`](#method.attempt_recovery_with) is invoked.
-///
-/// - If the error is presented in an application-modal dialog,
-///   [`attempt_recovery`](#method.attempt_recovery) is invoked.
-///
-/// See [documentation](https://developer.apple.com/documentation/foundation/nserror/nserrorrecoveryattempting).
-#[repr(C)]
-pub struct NSErrorRecoveryAttempting(
-    // TODO: Create `NSObjectProtocol` and `Deref` to that.
-    NSObject,
-);
-
-impl AsRef<NSObject> for NSErrorRecoveryAttempting {
-    #[inline]
-    fn as_ref(&self) -> &NSObject {
-        self
-    }
-}
-
-impl Deref for NSErrorRecoveryAttempting {
-    type Target = NSObject;
-
-    #[inline]
-    fn deref(&self) -> &NSObject {
-        &self.0
-    }
+// TODO: Create `NSObjectProtocol` and wrap that.
+objc_object_wrapper! {
+    /// A set of methods that provide options to recover from an error.
+    ///
+    /// This type is returned by
+    /// [`NSError::recovery_attempter`](struct.NSError.html#method.recovery_attempter).
+    ///
+    /// This informal protocol provides methods that allow your application to
+    /// attempt to recover from an error. These methods are invoked when an
+    /// [`NSError`](struct.NSError.html) is returned that specifies the
+    /// implementing object as the error recoveryAttempter and the user has
+    /// selected one of the error’s localized recovery options.
+    ///
+    /// The method invoked depends on how the error is presented to the user:
+    ///
+    /// - If the error is presented in a document-modal sheet,
+    ///   [`attempt_recovery_with`](#method.attempt_recovery_with) is invoked.
+    ///
+    /// - If the error is presented in an application-modal dialog,
+    ///   [`attempt_recovery`](#method.attempt_recovery) is invoked.
+    ///
+    /// See [documentation](https://developer.apple.com/documentation/foundation/nserror/nserrorrecoveryattempting).
+    pub wrapper NSErrorRecoveryAttempting: NSObject;
 }
 
 impl NSErrorRecoveryAttempting {
@@ -59,7 +42,8 @@ impl NSErrorRecoveryAttempting {
         // - (BOOL)attemptRecoveryFromError:(NSError *)error
         //                      optionIndex:(NSUInteger)recoveryOptionIndex;
         unsafe {
-            self._msg_send_with::<_, BOOL>(sel, (error, recovery_option_index))
+            self.0
+                ._msg_send_with::<_, BOOL>(sel, (error, recovery_option_index))
                 .into()
         }
     }
@@ -93,7 +77,7 @@ impl NSErrorRecoveryAttempting {
         //                         delegate:(id)delegate
         //               didRecoverSelector:(SEL)didRecoverSelector
         //                      contextInfo:(void *)contextInfo;
-        self._msg_send_with(
+        self.0._msg_send_with(
             sel,
             (
                 error,
