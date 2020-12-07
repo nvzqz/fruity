@@ -13,7 +13,8 @@ impl NSValue {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsvalue/1624531-valuewithcgpoint).
     #[inline]
-    pub fn value_with_cg_point(value: CGPoint) -> Arc<Self> {
+    #[doc(alias = "valueWithCGPoint")]
+    pub fn from_cg_point(value: CGPoint) -> Arc<Self> {
         unsafe { _msg_send![Self::class(), valueWithCGPoint: value] }
     }
 
@@ -29,7 +30,8 @@ impl NSValue {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsvalue/1624511-valuewithcgsize).
     #[inline]
-    pub fn value_with_cg_size(value: CGSize) -> Arc<Self> {
+    #[doc(alias = "valueWithCGSize")]
+    pub fn from_cg_size(value: CGSize) -> Arc<Self> {
         unsafe { _msg_send![Self::class(), valueWithCGSize: value] }
     }
 
@@ -45,7 +47,8 @@ impl NSValue {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsvalue/1624529-valuewithcgrect).
     #[inline]
-    pub fn value_with_cg_rect(value: CGRect) -> Arc<Self> {
+    #[doc(alias = "valueWithCGRect")]
+    pub fn from_cg_rect(value: CGRect) -> Arc<Self> {
         unsafe { _msg_send![Self::class(), valueWithCGRect: value] }
     }
 
@@ -61,7 +64,8 @@ impl NSValue {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsvalue/1624493-valuewithcgvector).
     #[inline]
-    pub fn value_with_cg_vector(value: CGVector) -> Arc<Self> {
+    #[doc(alias = "valueWithCGVector")]
+    pub fn from_cg_vector(value: CGVector) -> Arc<Self> {
         unsafe { _msg_send![Self::class(), valueWithCGVector: value] }
     }
 
@@ -78,7 +82,8 @@ impl NSValue {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsvalue/1624503-valuewithcgaffinetransform).
     #[inline]
-    pub fn value_with_cg_affine_transform(value: CGAffineTransform) -> Arc<Self> {
+    #[doc(alias = "valueWithCGAffineTransform")]
+    pub fn from_cg_affine_transform(value: CGAffineTransform) -> Arc<Self> {
         unsafe { _msg_send![Self::class(), valueWithCGAffineTransform: value] }
     }
 

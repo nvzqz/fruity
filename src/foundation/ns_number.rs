@@ -47,77 +47,77 @@ impl Ord for NSNumber {
 impl From<bool> for Arc<NSNumber> {
     #[inline]
     fn from(value: bool) -> Self {
-        NSNumber::with_bool(value)
+        NSNumber::from_bool(value)
     }
 }
 
 impl From<c_double> for Arc<NSNumber> {
     #[inline]
     fn from(value: c_double) -> Self {
-        NSNumber::with_double(value)
+        NSNumber::from_double(value)
     }
 }
 
 impl From<c_float> for Arc<NSNumber> {
     #[inline]
     fn from(value: c_float) -> Self {
-        NSNumber::with_float(value)
+        NSNumber::from_float(value)
     }
 }
 
 impl From<NSInteger> for Arc<NSNumber> {
     #[inline]
     fn from(value: NSInteger) -> Self {
-        NSNumber::with_integer(value)
+        NSNumber::from_integer(value)
     }
 }
 
 impl From<NSUInteger> for Arc<NSNumber> {
     #[inline]
     fn from(value: NSUInteger) -> Self {
-        NSNumber::with_unsigned_integer(value)
+        NSNumber::from_unsigned_integer(value)
     }
 }
 
 impl From<c_char> for Arc<NSNumber> {
     #[inline]
     fn from(value: c_char) -> Self {
-        NSNumber::with_char(value)
+        NSNumber::from_char(value)
     }
 }
 
 impl From<c_uchar> for Arc<NSNumber> {
     #[inline]
     fn from(value: c_uchar) -> Self {
-        NSNumber::with_unsigned_char(value)
+        NSNumber::from_unsigned_char(value)
     }
 }
 
 impl From<c_int> for Arc<NSNumber> {
     #[inline]
     fn from(value: c_int) -> Self {
-        NSNumber::with_int(value)
+        NSNumber::from_int(value)
     }
 }
 
 impl From<c_uint> for Arc<NSNumber> {
     #[inline]
     fn from(value: c_uint) -> Self {
-        NSNumber::with_unsigned_int(value)
+        NSNumber::from_unsigned_int(value)
     }
 }
 
 impl From<c_long> for Arc<NSNumber> {
     #[inline]
     fn from(value: c_long) -> Self {
-        NSNumber::with_long(value)
+        NSNumber::from_long(value)
     }
 }
 
 impl From<c_ulong> for Arc<NSNumber> {
     #[inline]
     fn from(value: c_ulong) -> Self {
-        NSNumber::with_unsigned_long(value)
+        NSNumber::from_unsigned_long(value)
     }
 }
 
@@ -128,14 +128,14 @@ impl From<c_ulong> for Arc<NSNumber> {
 impl From<c_short> for Arc<NSNumber> {
     #[inline]
     fn from(value: c_short) -> Self {
-        NSNumber::with_short(value)
+        NSNumber::from_short(value)
     }
 }
 
 impl From<c_ushort> for Arc<NSNumber> {
     #[inline]
     fn from(value: c_ushort) -> Self {
-        NSNumber::with_unsigned_short(value)
+        NSNumber::from_unsigned_short(value)
     }
 }
 
@@ -185,7 +185,8 @@ impl NSNumber {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsnumber/1551475-numberwithbool).
     #[inline]
-    pub fn with_bool(value: bool) -> Arc<Self> {
+    #[doc(alias = "numberWithBool")]
+    pub fn from_bool(value: bool) -> Arc<Self> {
         unsafe { _msg_send![Self::class(), numberWithBool: BOOL::from(value)] }
     }
 
@@ -193,7 +194,8 @@ impl NSNumber {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsnumber/1551471-numberwithfloat)
     #[inline]
-    pub fn with_float(value: c_float) -> Arc<Self> {
+    #[doc(alias = "numberWithFloat")]
+    pub fn from_float(value: c_float) -> Arc<Self> {
         unsafe { _msg_send![Self::class(), numberWithFloat: value] }
     }
 
@@ -201,7 +203,8 @@ impl NSNumber {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsnumber/1551463-numberwithdouble)
     #[inline]
-    pub fn with_double(value: c_double) -> Arc<Self> {
+    #[doc(alias = "numberWithDouble")]
+    pub fn from_double(value: c_double) -> Arc<Self> {
         unsafe { _msg_send![Self::class(), numberWithDouble: value] }
     }
 
@@ -209,7 +212,8 @@ impl NSNumber {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsnumber/1551464-numberwithchar)
     #[inline]
-    pub fn with_char(value: c_char) -> Arc<Self> {
+    #[doc(alias = "numberWithChar")]
+    pub fn from_char(value: c_char) -> Arc<Self> {
         unsafe { _msg_send![Self::class(), numberWithChar: value] }
     }
 
@@ -217,7 +221,8 @@ impl NSNumber {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsnumber/1551476-numberwithshort)
     #[inline]
-    pub fn with_short(value: c_short) -> Arc<Self> {
+    #[doc(alias = "numberWithShort")]
+    pub fn from_short(value: c_short) -> Arc<Self> {
         unsafe { _msg_send![Self::class(), numberWithShort: value] }
     }
 
@@ -225,7 +230,8 @@ impl NSNumber {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsnumber/1551470-numberwithint)
     #[inline]
-    pub fn with_int(value: c_int) -> Arc<Self> {
+    #[doc(alias = "numberWithInt")]
+    pub fn from_int(value: c_int) -> Arc<Self> {
         unsafe { _msg_send![Self::class(), numberWithInt: value] }
     }
 
@@ -233,7 +239,8 @@ impl NSNumber {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsnumber/1551474-numberwithlong)
     #[inline]
-    pub fn with_long(value: c_long) -> Arc<Self> {
+    #[doc(alias = "numberWithLong")]
+    pub fn from_long(value: c_long) -> Arc<Self> {
         unsafe { _msg_send![Self::class(), numberWithLong: value] }
     }
 
@@ -241,7 +248,8 @@ impl NSNumber {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsnumber/1551462-numberwithlonglong)
     #[inline]
-    pub fn with_longlong(value: c_longlong) -> Arc<Self> {
+    #[doc(alias = "numberWithLongLong")]
+    pub fn from_longlong(value: c_longlong) -> Arc<Self> {
         unsafe { _msg_send![Self::class(), numberWithLongLong: value] }
     }
 
@@ -249,7 +257,8 @@ impl NSNumber {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsnumber/1551473-numberwithinteger)
     #[inline]
-    pub fn with_integer(value: NSInteger) -> Arc<Self> {
+    #[doc(alias = "numberWithInteger")]
+    pub fn from_integer(value: NSInteger) -> Arc<Self> {
         unsafe { _msg_send![Self::class(), numberWithInteger: value] }
     }
 
@@ -257,7 +266,8 @@ impl NSNumber {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsnumber/1551468-numberwithunsignedchar)
     #[inline]
-    pub fn with_unsigned_char(value: c_uchar) -> Arc<Self> {
+    #[doc(alias = "numberWithUnsignedChar")]
+    pub fn from_unsigned_char(value: c_uchar) -> Arc<Self> {
         unsafe { _msg_send![Self::class(), numberWithUnsignedChar: value] }
     }
 
@@ -265,7 +275,8 @@ impl NSNumber {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsnumber/1551467-numberwithunsignedshort)
     #[inline]
-    pub fn with_unsigned_short(value: c_ushort) -> Arc<Self> {
+    #[doc(alias = "numberWithUnsignedShort")]
+    pub fn from_unsigned_short(value: c_ushort) -> Arc<Self> {
         unsafe { _msg_send![Self::class(), numberWithUnsignedShort: value] }
     }
 
@@ -273,7 +284,8 @@ impl NSNumber {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsnumber/1551472-numberwithunsignedint)
     #[inline]
-    pub fn with_unsigned_int(value: c_uint) -> Arc<Self> {
+    #[doc(alias = "numberWithUnsignedInt")]
+    pub fn from_unsigned_int(value: c_uint) -> Arc<Self> {
         unsafe { _msg_send![Self::class(), numberWithUnsignedInt: value] }
     }
 
@@ -281,7 +293,8 @@ impl NSNumber {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsnumber/1551477-numberwithunsignedlong)
     #[inline]
-    pub fn with_unsigned_long(value: c_ulong) -> Arc<Self> {
+    #[doc(alias = "numberWithUnsignedLong")]
+    pub fn from_unsigned_long(value: c_ulong) -> Arc<Self> {
         unsafe { _msg_send![Self::class(), numberWithUnsignedLong: value] }
     }
 
@@ -289,7 +302,8 @@ impl NSNumber {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsnumber/1551465-numberwithunsignedlonglong)
     #[inline]
-    pub fn with_unsigned_longlong(value: c_ulonglong) -> Arc<Self> {
+    #[doc(alias = "numberWithUnsignedLongLong")]
+    pub fn from_unsigned_longlong(value: c_ulonglong) -> Arc<Self> {
         unsafe { _msg_send![Self::class(), numberWithUnsignedLongLong: value] }
     }
 
@@ -297,7 +311,8 @@ impl NSNumber {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsnumber/1551469-numberwithunsignedinteger)
     #[inline]
-    pub fn with_unsigned_integer(value: NSUInteger) -> Arc<Self> {
+    #[doc(alias = "numberWithUnsignedInteger")]
+    pub fn from_unsigned_integer(value: NSUInteger) -> Arc<Self> {
         unsafe { _msg_send![Self::class(), numberWithUnsignedInteger: value] }
     }
 }

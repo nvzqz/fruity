@@ -46,28 +46,28 @@ impl DispatchTime {
     /// Returns a time that's a specified number of seconds from the current
     /// time.
     #[inline]
-    pub fn with_secs_from_now(secs: u64) -> Self {
-        Self::with_nanos_from_now(secs.saturating_mul(NANOS_PER_SEC))
+    pub fn from_secs_from_now(secs: u64) -> Self {
+        Self::from_nanos_from_now(secs.saturating_mul(NANOS_PER_SEC))
     }
 
     /// Returns a time that's a specified number of milliseconds from the
     /// current time.
     #[inline]
-    pub fn with_millis_from_now(millis: u64) -> Self {
-        Self::with_nanos_from_now(millis.saturating_mul(NANOS_PER_MILLI))
+    pub fn from_millis_from_now(millis: u64) -> Self {
+        Self::from_nanos_from_now(millis.saturating_mul(NANOS_PER_MILLI))
     }
 
     /// Returns a time that's a specified number of microseconds from the
     /// current time.
     #[inline]
-    pub fn with_micros_from_now(micros: u64) -> Self {
-        Self::with_nanos_from_now(micros.saturating_mul(NANOS_PER_MICRO))
+    pub fn from_micros_from_now(micros: u64) -> Self {
+        Self::from_nanos_from_now(micros.saturating_mul(NANOS_PER_MICRO))
     }
 
     /// Returns a time that's a specified number of nanoseconds from the current
     /// time.
     #[inline]
-    pub fn with_nanos_from_now(nanos: u64) -> Self {
+    pub fn from_nanos_from_now(nanos: u64) -> Self {
         let (delta, rem) = match nanos.checked_sub(i64::MAX as u64) {
             Some(rem) => (i64::MAX, rem as i64),
             None => (nanos as i64, 0),
