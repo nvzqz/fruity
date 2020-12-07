@@ -16,12 +16,12 @@ pub struct CGRect {
 /// Rectangle construction.
 impl CGRect {
     /// A rectangle with zero origin and size.
-    pub const ZERO: Self = Self::new(CGPoint::ZERO, CGSize::ZERO);
+    pub const ZERO: Self = Self::from_parts(CGPoint::ZERO, CGSize::ZERO);
 
     /// The null rectangle, representing an invalid value.
     ///
     /// See [documentation](https://developer.apple.com/documentation/coregraphics/cgrectnull).
-    pub const NULL: Self = Self::new(
+    pub const NULL: Self = Self::from_parts(
         CGPoint::new(CGFloat::INFINITY, CGFloat::INFINITY),
         CGSize::ZERO,
     );
@@ -33,29 +33,29 @@ impl CGRect {
         let max = CGFloat::MAX;
         let min = CGFloat::MIN / 2.0;
 
-        Self::from_floats(min, min, max, max)
+        Self::new(min, min, max, max)
     };
 
-    /// Returns a point with the specified coordinates.
+    /// Returns a rectangle with the given components.
     ///
     /// This is equivalent to
-    /// [`CGRectMake`](https://developer.apple.com/documentation/coregraphics/1455746-CGRectmake).
+    /// [`CGRectMake`](https://developer.apple.com/documentation/coregraphics/1455245-cgrectmake).
     #[inline]
-    pub const fn new(origin: CGPoint, size: CGSize) -> Self {
-        Self { origin, size }
-    }
-
-    /// Returns a rectangle with the given components.
-    #[inline]
-    pub const fn from_floats(x: CGFloat, y: CGFloat, width: CGFloat, height: CGFloat) -> Self {
-        Self::new(CGPoint::new(x, y), CGSize::new(width, height))
+    pub const fn new(x: CGFloat, y: CGFloat, width: CGFloat, height: CGFloat) -> Self {
+        Self::from_parts(CGPoint::new(x, y), CGSize::new(width, height))
     }
 
     /// Returns a rectangle with the given components losslessly converted to
     /// [`CGFloat`](type.CGFloat.html)s.
     #[inline]
     pub const fn from_i16s(x: i16, y: i16, width: i16, height: i16) -> Self {
-        Self::from_floats(x as _, y as _, width as _, height as _)
+        Self::new(x as _, y as _, width as _, height as _)
+    }
+
+    /// Returns a rectangle with the specified parts.
+    #[inline]
+    pub const fn from_parts(origin: CGPoint, size: CGSize) -> Self {
+        Self { origin, size }
     }
 }
 
