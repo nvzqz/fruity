@@ -18,9 +18,9 @@ macro_rules! key {
         pub fn $fn() -> &'static NSErrorUserInfoKey {
             extern "C" {
                 #[link_name = $value]
-                static VALUE: NSErrorUserInfoKey;
+                static VALUE: &'static NSErrorUserInfoKey;
             }
-            unsafe { &VALUE }
+            unsafe { VALUE }
         }
     };
 }

@@ -18,9 +18,9 @@ macro_rules! domain {
         pub fn $fn() -> &'static NSErrorDomain {
             extern "C" {
                 #[link_name = $value]
-                static VALUE: NSErrorDomain;
+                static VALUE: &'static NSErrorDomain;
             }
-            unsafe { &VALUE }
+            unsafe { VALUE }
         }
     };
 }

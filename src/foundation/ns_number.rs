@@ -341,9 +341,9 @@ impl NSNumber {
     #[doc(alias = "kCFBooleanFalse")]
     pub fn no() -> &'static NSNumber {
         extern "C" {
-            static kCFBooleanFalse: NSNumber;
+            static kCFBooleanFalse: &'static NSNumber;
         }
-        unsafe { &kCFBooleanFalse }
+        unsafe { kCFBooleanFalse }
     }
 
     /// Returns a reference to the equivalent of `@YES`.
@@ -354,9 +354,9 @@ impl NSNumber {
     #[doc(alias = "kCFBooleanTrue")]
     pub fn yes() -> &'static NSNumber {
         extern "C" {
-            static kCFBooleanTrue: NSNumber;
+            static kCFBooleanTrue: &'static NSNumber;
         }
-        unsafe { &kCFBooleanTrue }
+        unsafe { kCFBooleanTrue }
     }
 
     /// Returns a reference to a
@@ -368,9 +368,9 @@ impl NSNumber {
     #[doc(alias = "kCFNumberNaN")]
     pub fn nan() -> &'static NSNumber {
         extern "C" {
-            static kCFNumberNaN: NSNumber;
+            static kCFNumberNaN: &'static NSNumber;
         }
-        unsafe { &kCFNumberNaN }
+        unsafe { kCFNumberNaN }
     }
 
     /// Returns a reference to the infinity (∞) value.
@@ -381,9 +381,9 @@ impl NSNumber {
     #[doc(alias = "kCFNumberPositiveInfinity")]
     pub fn infinity() -> &'static NSNumber {
         extern "C" {
-            static kCFNumberPositiveInfinity: NSNumber;
+            static kCFNumberPositiveInfinity: &'static NSNumber;
         }
-        unsafe { &kCFNumberPositiveInfinity }
+        unsafe { kCFNumberPositiveInfinity }
     }
 
     /// Returns a reference to the negative infinity (−∞) value.
@@ -394,9 +394,9 @@ impl NSNumber {
     #[doc(alias = "kCFNumberNegativeInfinity")]
     pub fn neg_infinity() -> &'static NSNumber {
         extern "C" {
-            static kCFNumberNegativeInfinity: NSNumber;
+            static kCFNumberNegativeInfinity: &'static NSNumber;
         }
-        unsafe { &kCFNumberNegativeInfinity }
+        unsafe { kCFNumberNegativeInfinity }
     }
 }
 

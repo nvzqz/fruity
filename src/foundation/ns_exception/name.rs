@@ -17,9 +17,9 @@ macro_rules! name {
         pub fn $fn() -> &'static NSExceptionName {
             extern "C" {
                 #[link_name = $value]
-                static VALUE: NSExceptionName;
+                static VALUE: &'static NSExceptionName;
             }
-            unsafe { &VALUE }
+            unsafe { VALUE }
         }
     };
 }
