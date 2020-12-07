@@ -10,15 +10,17 @@ ns_string_wrapper! {
 macro_rules! domain {
     (
         $(#[$docs:meta])+
-        $fn:ident $value:ident
+        $fn:ident $value:literal
     ) => {
         $(#[$docs])+
         #[inline]
+        #[doc(alias = $value)]
         pub fn $fn() -> &'static NSErrorDomain {
             extern "C" {
-                static $value: NSErrorDomain;
+                #[link_name = $value]
+                static VALUE: NSErrorDomain;
             }
-            unsafe { &$value }
+            unsafe { &VALUE }
         }
     };
 }
@@ -28,28 +30,28 @@ impl NSErrorDomain {
         /// Cocoa errors.
         ///
         /// See [documentation](https://developer.apple.com/documentation/foundation/nscocoaerrordomain).
-        cocoa NSCocoaErrorDomain
+        cocoa "NSCocoaErrorDomain"
     }
 
     domain! {
         /// POSIX/BSD errors.
         ///
         /// See [documentation](https://developer.apple.com/documentation/foundation/nsposixerrordomain).
-        posix NSPOSIXErrorDomain
+        posix "NSPOSIXErrorDomain"
     }
 
     domain! {
         /// Mac OS 9/Carbon errors.
         ///
         /// See [documentation](https://developer.apple.com/documentation/foundation/nsosstatuserrordomain).
-        os_status NSOSStatusErrorDomain
+        os_status "NSOSStatusErrorDomain"
     }
 
     domain! {
         /// Mach errors.
         ///
         /// See [documentation](https://developer.apple.com/documentation/foundation/nsmacherrordomain).
-        mach NSMachErrorDomain
+        mach "NSMachErrorDomain"
     }
 
     // NSNetServices.h
@@ -59,7 +61,7 @@ impl NSErrorDomain {
         /// or the mach network layer.
         ///
         /// See [documentation](https://developer.apple.com/documentation/foundation/nsnetserviceserrordomain).
-        ns_net_services NSNetServicesErrorDomain
+        ns_net_services "NSNetServicesErrorDomain"
     }
 
     // NSStream.h
@@ -69,7 +71,7 @@ impl NSErrorDomain {
         /// reporting SOCKS errors.
         ///
         /// See [documentation](https://developer.apple.com/documentation/foundation/nsstreamsockserrordomain).
-        stream_socks NSStreamSOCKSErrorDomain
+        stream_socks "NSStreamSOCKSErrorDomain"
     }
 
     domain! {
@@ -77,7 +79,7 @@ impl NSErrorDomain {
         /// reporting SSL errors.
         ///
         /// See [documentation](https://developer.apple.com/documentation/foundation/nsstreamsocketsslerrordomain).
-        stream_socket_ssl NSStreamSocketSSLErrorDomain
+        stream_socket_ssl "NSStreamSocketSSLErrorDomain"
     }
 
     // NSURLError.h
@@ -86,7 +88,7 @@ impl NSErrorDomain {
         /// URL loading system errors.
         ///
         /// See [documentation](https://developer.apple.com/documentation/foundation/nsurlerrordomain).
-        ns_url NSURLErrorDomain
+        ns_url "NSURLErrorDomain"
     }
 
     // NSXMLParser.h
@@ -95,7 +97,7 @@ impl NSErrorDomain {
         /// An error in XML parsing.
         ///
         /// See [documentation](https://developer.apple.com/documentation/foundation/nsxmlparsererrordomain).
-        ns_xml_parser NSXMLParserErrorDomain
+        ns_xml_parser "NSXMLParserErrorDomain"
     }
 }
 
@@ -110,7 +112,7 @@ impl NSErrorDomain {
         /// An error raised by the document browser.
         ///
         /// See [documentation](https://developer.apple.com/documentation/uikit/uidocumentbrowsererrordomain).
-        ui_document_browser UIDocumentBrowserErrorDomain
+        ui_document_browser "UIDocumentBrowserErrorDomain"
     }
 
     // UIGuidedAccess.h
@@ -120,7 +122,7 @@ impl NSErrorDomain {
         /// undocumented.
         ///
         /// See [documentation](https://developer.apple.com/documentation/uikit/uiguidedaccesserrordomain).
-        ui_guided_access UIGuidedAccessErrorDomain
+        ui_guided_access "UIGuidedAccessErrorDomain"
     }
 
     // UIPrintError.h
@@ -130,7 +132,7 @@ impl NSErrorDomain {
         /// An error in printing via UIKit.
         ///
         /// See [documentation](https://developer.apple.com/documentation/uikit/uiprinterrordomain).
-        ui_print UIPrintErrorDomain
+        ui_print "UIPrintErrorDomain"
     }
 
     // UIPrintError.h
@@ -140,6 +142,6 @@ impl NSErrorDomain {
         /// Scene-related errors.
         ///
         /// See [documentation](https://developer.apple.com/documentation/uikit/uisceneerrordomain).
-        ui_scene UISceneErrorDomain
+        ui_scene "UISceneErrorDomain"
     }
 }
