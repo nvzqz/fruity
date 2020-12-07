@@ -139,13 +139,6 @@ impl From<c_ushort> for Arc<NSNumber> {
     }
 }
 
-impl From<NSNumber> for NSString {
-    #[inline]
-    fn from(number: NSNumber) -> Self {
-        number.string_value()
-    }
-}
-
 impl From<&NSNumber> for Arc<NSString> {
     #[inline]
     fn from(number: &NSNumber) -> Self {
