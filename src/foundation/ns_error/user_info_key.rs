@@ -10,15 +10,17 @@ ns_string_wrapper! {
 macro_rules! key {
     (
         $(#[$docs:meta])+
-        $fn:ident $value:ident
+        $fn:ident $value:literal
     ) => {
         $(#[$docs])+
         #[inline]
+        #[doc(alias = $value)]
         pub fn $fn() -> &'static NSErrorUserInfoKey {
             extern "C" {
-                static $value: NSErrorUserInfoKey;
+                #[link_name = $value]
+                static VALUE: NSErrorUserInfoKey;
             }
-            unsafe { &$value }
+            unsafe { &VALUE }
         }
     };
 }
@@ -30,7 +32,7 @@ impl NSErrorUserInfoKey {
         /// The corresponding value is an [`NSURL`](struct.NSURL.html).
         ///
         /// See [documentation](https://developer.apple.com/documentation/foundation/nsurlerrorkey).
-        ns_url NSURLErrorKey
+        ns_url "NSURLErrorKey"
     }
 
     key! {
@@ -39,7 +41,7 @@ impl NSErrorUserInfoKey {
         /// The corresponding value is an [`NSString`](struct.NSString.html).
         ///
         /// See [documentation](https://developer.apple.com/documentation/foundation/nsfilepatherrorkey).
-        file_path NSFilePathErrorKey
+        file_path "NSFilePathErrorKey"
     }
 
     key! {
@@ -50,7 +52,7 @@ impl NSErrorUserInfoKey {
         /// [`NSError::help_anchor`](struct.NSError.html#method.help_anchor).
         ///
         /// See [documentation](https://developer.apple.com/documentation/foundation/nshelpanchorerrorkey).
-        help_anchor NSHelpAnchorErrorKey
+        help_anchor "NSHelpAnchorErrorKey"
     }
 
     key! {
@@ -61,7 +63,7 @@ impl NSErrorUserInfoKey {
         /// [`NSError::localized_description`](struct.NSError.html#method.localized_description).
         ///
         /// See [documentation](https://developer.apple.com/documentation/foundation/nslocalizeddescriptionkey).
-        localized_description NSLocalizedDescriptionKey
+        localized_description "NSLocalizedDescriptionKey"
     }
 
     key! {
@@ -69,7 +71,7 @@ impl NSErrorUserInfoKey {
         /// undocumented.
         ///
         /// See [documentation](https://developer.apple.com/documentation/foundation/nsdebugdescriptionerrorkey).
-        debug_description NSDebugDescriptionErrorKey
+        debug_description "NSDebugDescriptionErrorKey"
     }
 
     key! {
@@ -77,7 +79,7 @@ impl NSErrorUserInfoKey {
         /// undocumented.
         ///
         /// See [documentation](https://developer.apple.com/documentation/foundation/nslocalizedfailureerrorkey).
-        localized_failure NSLocalizedFailureErrorKey
+        localized_failure "NSLocalizedFailureErrorKey"
     }
 
     key! {
@@ -88,7 +90,7 @@ impl NSErrorUserInfoKey {
         /// [`NSError::localized_failure_reason`](struct.NSError.html#method.localized_failure_reason).
         ///
         /// See [documentation](https://developer.apple.com/documentation/foundation/nslocalizedfailurereasonerrorkey).
-        localized_failure_reason NSLocalizedFailureReasonErrorKey
+        localized_failure_reason "NSLocalizedFailureReasonErrorKey"
     }
 
     key! {
@@ -101,7 +103,7 @@ impl NSErrorUserInfoKey {
         /// [`NSError::localized_recovery_options`](struct.NSError.html#method.localized_recovery_options).
         ///
         /// See [documentation](https://developer.apple.com/documentation/foundation/nslocalizedrecoveryoptionserrorkey).
-        localized_recovery_options NSLocalizedRecoveryOptionsErrorKey
+        localized_recovery_options "NSLocalizedRecoveryOptionsErrorKey"
     }
 
     key! {
@@ -112,7 +114,7 @@ impl NSErrorUserInfoKey {
         /// [`NSError::localized_recovery_suggestion`](struct.NSError.html#method.localized_recovery_suggestion).
         ///
         /// See [documentation](https://developer.apple.com/documentation/foundation/nslocalizedrecoverysuggestionerrorkey).
-        localized_recovery_suggestion NSLocalizedRecoverySuggestionErrorKey
+        localized_recovery_suggestion "NSLocalizedRecoverySuggestionErrorKey"
     }
 
     key! {
@@ -124,7 +126,7 @@ impl NSErrorUserInfoKey {
         /// [`NSError::recovery_attempter`](struct.NSError.html#method.recovery_attempter).
         ///
         /// See [documentation](https://developer.apple.com/documentation/foundation/nsrecoveryattemptererrorkey).
-        recovery_attempter NSRecoveryAttempterErrorKey
+        recovery_attempter "NSRecoveryAttempterErrorKey"
     }
 
     key! {
@@ -133,7 +135,7 @@ impl NSErrorUserInfoKey {
         /// value.
         ///
         /// See [documentation](https://developer.apple.com/documentation/foundation/nsrecoveryattemptererrorkey).
-        string_encoding NSStringEncodingErrorKey
+        string_encoding "NSStringEncodingErrorKey"
     }
 
     key! {
@@ -142,6 +144,6 @@ impl NSErrorUserInfoKey {
         /// represents to occur.
         ///
         /// See [documentation](https://developer.apple.com/documentation/foundation/nsrecoveryattemptererrorkey).
-        underlying_error NSUnderlyingErrorKey
+        underlying_error "NSUnderlyingErrorKey"
     }
 }
