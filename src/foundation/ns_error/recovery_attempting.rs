@@ -1,6 +1,6 @@
 use super::NSError;
-use crate::objc::{NSObject, NSUInteger, Object, ObjectType, BOOL, SEL};
-use std::{ffi::c_void, fmt, ops::Deref};
+use crate::objc::{NSObject, NSUInteger, ObjCObject, BOOL, SEL};
+use std::{ffi::c_void, ops::Deref};
 
 /// A set of methods that provide options to recover from an error.
 ///
@@ -22,18 +22,11 @@ use std::{ffi::c_void, fmt, ops::Deref};
 ///   [`attempt_recovery`](#method.attempt_recovery) is invoked.
 ///
 /// See [documentation](https://developer.apple.com/documentation/foundation/nserror/nserrorrecoveryattempting).
-#[repr(transparent)]
-#[derive(Clone)]
-pub struct NSErrorRecoveryAttempting(NSObject);
-
-unsafe impl ObjectType for NSErrorRecoveryAttempting {}
-
-impl From<NSErrorRecoveryAttempting> for NSObject {
-    #[inline]
-    fn from(object: NSErrorRecoveryAttempting) -> Self {
-        object.0
-    }
-}
+#[repr(C)]
+pub struct NSErrorRecoveryAttempting(
+    // TODO: Create `NSObjectProtocol` and `Deref` to that.
+    NSObject,
+);
 
 impl AsRef<NSObject> for NSErrorRecoveryAttempting {
     #[inline]
@@ -48,13 +41,6 @@ impl Deref for NSErrorRecoveryAttempting {
     #[inline]
     fn deref(&self) -> &NSObject {
         &self.0
-    }
-}
-
-impl fmt::Pointer for NSErrorRecoveryAttempting {
-    #[inline]
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        self.as_ptr().fmt(f)
     }
 }
 
@@ -75,7 +61,7 @@ impl NSErrorRecoveryAttempting {
         // - (BOOL)attemptRecoveryFromError:(NSError *)error
         //                      optionIndex:(NSUInteger)recoveryOptionIndex;
         unsafe {
-            self._msg_send_with::<_, BOOL>(sel, (error.as_object(), recovery_option_index))
+            self._msg_send_with::<_, BOOL>(sel, (error, recovery_option_index))
                 .into()
         }
     }
@@ -87,7 +73,7 @@ impl NSErrorRecoveryAttempting {
         &self,
         error: &NSError,
         recovery_option_index: NSUInteger,
-        delegate: Option<&Object>,
+        delegate: Option<&ObjCObject>,
         did_recover_selector: Option<SEL>,
         context_info: *mut c_void,
     ) {
@@ -114,7 +100,7 @@ impl NSErrorRecoveryAttempting {
         self._msg_send_with(
             sel,
             (
-                error.as_object(),
+                error,
                 recovery_option_index,
                 delegate,
                 did_recover_selector,

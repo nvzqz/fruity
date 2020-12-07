@@ -4,14 +4,6 @@
 //!
 //! This module corresponds to the **`dispatch`**
 //! [feature flag](../index.html#feature-flags).
-//!
-//! # Additional Features
-//!
-//! When the [`objc`](../objc/index.html) module is enabled, object types in
-//! this module implement [`ObjectType`](../objc/trait.ObjectType.html). This
-//! enables them to be stored in types like
-//! [`NSArray`](../foundation/struct.NSArray.html) and
-//! [`NSDictionary`](../foundation/struct.NSDictionary.html).
 
 #![cfg(feature = "dispatch")]
 

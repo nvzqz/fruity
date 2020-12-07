@@ -1,77 +1,19 @@
 use super::{NSEdgeInsets, NSPoint, NSRange, NSRect, NSSize};
-use crate::objc::{Class, NSObject, NSUInteger, Object, ObjectType};
+use crate::core::Arc;
+use crate::objc::{ClassType, NSObject, NSUInteger, ObjCObject};
 use std::{
     ffi::CStr,
-    fmt, mem,
-    ops::Deref,
+    mem,
     os::raw::{c_char, c_void},
-    ptr::NonNull,
 };
 
 // TODO: Implement methods defined in other frameworks.
 
-/// A simple container for a single C or Objective-C data item.
-///
-/// See [documentation](https://developer.apple.com/documentation/foundation/nsvalue).
-#[repr(transparent)]
-#[derive(Clone)]
-pub struct NSValue(NSObject);
-
-unsafe impl ObjectType for NSValue {}
-
-impl From<NSValue> for NSObject {
-    #[inline]
-    fn from(obj: NSValue) -> Self {
-        obj.0
-    }
-}
-
-impl Deref for NSValue {
-    type Target = NSObject;
-
-    #[inline]
-    fn deref(&self) -> &NSObject {
-        &self.0
-    }
-}
-
-impl fmt::Pointer for NSValue {
-    #[inline]
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        self.as_ptr().fmt(f)
-    }
-}
-
-impl NSValue {
-    /// Returns the `NSValue` class.
-    #[inline]
-    pub fn class() -> &'static Class {
-        extern "C" {
-            #[link_name = "OBJC_CLASS_$_NSValue"]
-            static CLASS: Class;
-        }
-        unsafe { &CLASS }
-    }
-
-    /// Creates an immutable string object from a raw nullable pointer.
+objc_subclass! {
+    /// A simple container for a single C or Objective-C data item.
     ///
-    /// # Safety
-    ///
-    /// The pointer must point to a valid `NSValue` instance.
-    #[inline]
-    pub const unsafe fn from_ptr(ptr: *mut Object) -> Self {
-        Self(NSObject::from_ptr(ptr))
-    }
-
-    /// Creates an immutable object from a raw non-null pointer.
-    ///
-    /// # Safety
-    ///
-    /// The pointer must point to a valid `NSValue` instance.
-    #[inline]
-    pub const unsafe fn from_non_null_ptr(ptr: NonNull<Object>) -> Self {
-        Self(NSObject::from_non_null_ptr(ptr))
-    }
+    /// See [documentation](https://developer.apple.com/documentation/foundation/nsvalue).
+    pub class NSValue: NSObject;
 }
 
 /// Arbitrary values.
@@ -81,7 +23,7 @@ impl NSValue {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsvalue/1551466-valuewithbytes).
     #[inline]
-    pub unsafe fn with_bytes(value: *const c_void, objc_type: *const c_char) -> Self {
+    pub unsafe fn with_bytes(value: *const c_void, objc_type: *const c_char) -> Arc<Self> {
         _msg_send![
             Self::class(),
             valueWithBytes: value
@@ -156,7 +98,7 @@ impl NSValue {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsvalue/1415975-valuewithpointer).
     #[inline]
-    pub fn with_ptr(ptr: *const c_void) -> Self {
+    pub fn with_ptr(ptr: *const c_void) -> Arc<Self> {
         unsafe { _msg_send![Self::class(), valueWithPointer: ptr] }
     }
 
@@ -178,7 +120,7 @@ impl NSValue {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsvalue/1408098-valuewithnonretainedobject).
     #[inline]
-    pub fn with_nonretained_object(obj: *mut Object) -> Self {
+    pub fn with_nonretained_object(obj: *mut ObjCObject) -> Arc<Self> {
         unsafe { _msg_send![Self::class(), valueWithNonretainedObject: obj] }
     }
 
@@ -189,7 +131,7 @@ impl NSValue {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsvalue/1410668-pointervalue).
     #[inline]
-    pub fn nonretained_object_value(&self) -> *mut Object {
+    pub fn nonretained_object_value(&self) -> *mut ObjCObject {
         unsafe { _msg_send![self, nonretainedObjectValue] }
     }
 }
@@ -200,7 +142,7 @@ impl NSValue {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsvalue/1410315-valuewithrange).
     #[inline]
-    pub fn with_range(value: NSRange) -> Self {
+    pub fn with_range(value: NSRange) -> Arc<Self> {
         unsafe { _msg_send![Self::class(), valueWithRange: value] }
     }
 
@@ -219,7 +161,7 @@ impl NSValue {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsvalue/1391106-valuewithpoint).
     #[inline]
-    pub fn with_point(value: NSPoint) -> Self {
+    pub fn with_point(value: NSPoint) -> Arc<Self> {
         unsafe { _msg_send![Self::class(), valueWithPoint: value] }
     }
 
@@ -235,7 +177,7 @@ impl NSValue {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsvalue/1391199-valuewithsize).
     #[inline]
-    pub fn with_size(value: NSSize) -> Self {
+    pub fn with_size(value: NSSize) -> Arc<Self> {
         unsafe { _msg_send![Self::class(), valueWithSize: value] }
     }
 
@@ -251,7 +193,7 @@ impl NSValue {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsvalue/1391281-valuewithrect).
     #[inline]
-    pub fn with_rect(value: NSRect) -> Self {
+    pub fn with_rect(value: NSRect) -> Arc<Self> {
         unsafe { _msg_send![Self::class(), valueWithRect: value] }
     }
 
@@ -267,7 +209,7 @@ impl NSValue {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsvalue/1391181-valuewithedgeinsets).
     #[inline]
-    pub fn with_edge_insets(value: NSEdgeInsets) -> Self {
+    pub fn with_edge_insets(value: NSEdgeInsets) -> Arc<Self> {
         unsafe { _msg_send![Self::class(), valueWithEdgeInsets: value] }
     }
 

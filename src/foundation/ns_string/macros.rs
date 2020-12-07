@@ -1,3 +1,33 @@
+// This macro is intentionally undocumented to ensure it is not publicly
+// exported.
+macro_rules! ns_string_wrapper {
+    (
+        $(#[$meta:meta])+
+        $vis:vis wrapper $wrapper:ident;
+    ) => {
+        objc_class_wrapper! {
+            $(#[$meta])+
+            $vis wrapper $wrapper: $crate::foundation::NSString;
+        }
+
+        // Use `NSString` formatting.
+
+        impl std::fmt::Debug for $wrapper {
+            #[inline]
+            fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+                self.0.fmt(f)
+            }
+        }
+
+        impl std::fmt::Display for $wrapper {
+            #[inline]
+            fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+                self.0.fmt(f)
+            }
+        }
+    }
+}
+
 /// Creates an [`NSString`](foundation/struct.NSString.html) from a static
 /// string.
 ///
@@ -25,7 +55,7 @@
 ///
 /// ```
 /// # use fruity::foundation::NSString;
-/// static WORLD: NSString = fruity::ns_string!("world");
+/// static WORLD: &NSString = fruity::ns_string!("world");
 ///
 /// assert_eq!(WORLD.to_string(), "world");
 /// ```
@@ -42,7 +72,7 @@
 ///
 /// ```
 /// # use fruity::foundation::NSString;
-/// static HELLO_RU: NSString = fruity::ns_string!("Привет");
+/// static HELLO_RU: &NSString = fruity::ns_string!("Привет");
 ///
 /// assert_eq!(HELLO_RU.to_string(), "Привет");
 /// ```
@@ -185,8 +215,18 @@ macro_rules! ns_string {
             }
         };
 
+        union Cast<T: 'static> {
+            pointer: *const T,
+            reference: &'static T,
+        }
+
         #[allow(unused_unsafe)]
-        let ns_string = unsafe { $crate::foundation::NSString::from_ptr(cfstring_ptr as _) };
+        let ns_string: &$crate::foundation::NSString = unsafe {
+            Cast {
+                pointer: cfstring_ptr.cast(),
+            }
+            .reference
+        };
 
         ns_string
     }};
@@ -200,7 +240,7 @@ mod tests {
     fn ns_string() {
         macro_rules! test {
             ($($s:expr,)+) => {$({
-                static STRING: NSString = ns_string!($s);
+                static STRING: &NSString = ns_string!($s);
                 assert_eq!(STRING.to_string(), $s);
             })+};
         }

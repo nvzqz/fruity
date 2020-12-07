@@ -1,73 +1,10 @@
-use crate::{foundation::NSString, objc::ObjectType};
-use std::fmt;
-
-/// The context in which an [`NSError`](struct.NSError.html) code should be
-/// understood.
-///
-/// See [documentation](https://developer.apple.com/documentation/foundation/nserrordomain).
-#[repr(transparent)]
-#[derive(Clone, Ord, PartialOrd, Eq, PartialEq)]
-pub struct NSErrorDomain(pub NSString);
-
-unsafe impl ObjectType for NSErrorDomain {}
-
-impl From<NSString> for NSErrorDomain {
-    #[inline]
-    fn from(string: NSString) -> Self {
-        Self(string)
-    }
-}
-
-impl From<NSErrorDomain> for NSString {
-    #[inline]
-    fn from(key: NSErrorDomain) -> Self {
-        key.0
-    }
-}
-
-impl AsRef<NSString> for NSErrorDomain {
-    #[inline]
-    fn as_ref(&self) -> &NSString {
-        &self.0
-    }
-}
-
-impl AsRef<NSErrorDomain> for NSErrorDomain {
-    #[inline]
-    fn as_ref(&self) -> &NSErrorDomain {
-        self
-    }
-}
-
-impl AsRef<NSErrorDomain> for NSString {
-    #[inline]
-    fn as_ref(&self) -> &NSErrorDomain {
-        // SAFETY: Both types have equivalent memory representations.
-        unsafe { &*(self as *const _ as *const _) }
-    }
-}
-
-// Use `NSString` formatting.
-
-impl fmt::Debug for NSErrorDomain {
-    #[inline]
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        self.0.fmt(f)
-    }
-}
-
-impl fmt::Display for NSErrorDomain {
-    #[inline]
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        self.0.fmt(f)
-    }
-}
-
-impl fmt::Pointer for NSErrorDomain {
-    #[inline]
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        self.0.fmt(f)
-    }
+ns_string_wrapper! {
+    /// The context in which an [`NSError`](struct.NSError.html) code should be
+    /// understood.
+    ///
+    /// See [documentation](https://developer.apple.com/documentation/foundation/nserrordomain).
+    #[derive(Ord, PartialOrd, Eq, PartialEq)]
+    pub wrapper NSErrorDomain;
 }
 
 macro_rules! domain {

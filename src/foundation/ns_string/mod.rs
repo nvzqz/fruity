@@ -1,14 +1,7 @@
 use super::{NSComparisonResult, NSRange};
-use crate::objc::{Class, NSObject, NSUInteger, Object, ObjectType, BOOL, SEL};
-use std::{
-    cmp::Ordering,
-    ffi::CStr,
-    fmt,
-    ops::Deref,
-    os::raw::c_char,
-    ptr::{self, NonNull},
-    slice, str,
-};
+use crate::core::Arc;
+use crate::objc::{Class, ClassType, NSObject, NSUInteger, BOOL, SEL};
+use std::{cmp::Ordering, ffi::CStr, fmt, os::raw::c_char, ptr, slice, str};
 
 #[macro_use]
 mod macros;
@@ -32,50 +25,29 @@ pub use encoding::*;
 #[allow(non_snake_case)]
 pub fn NSSelectorFromString(string: &NSString) -> Option<SEL> {
     extern "C" {
-        fn NSSelectorFromString(string: &Object) -> Option<SEL>;
+        fn NSSelectorFromString(string: &NSString) -> Option<SEL>;
     }
     unsafe { NSSelectorFromString(string) }
 }
 
-/// A static, plain-text Unicode string object.
-///
-/// See [documentation](https://developer.apple.com/documentation/foundation/nsstring).
-#[repr(transparent)]
-#[derive(Clone)]
-pub struct NSString(NSObject);
-
-unsafe impl ObjectType for NSString {}
-
-impl From<NSString> for NSObject {
-    #[inline]
-    fn from(obj: NSString) -> Self {
-        obj.0
-    }
+objc_subclass! {
+    /// A static, plain-text Unicode string object.
+    ///
+    /// See [documentation](https://developer.apple.com/documentation/foundation/nsstring).
+    pub class NSString: NSObject;
 }
 
-impl Deref for NSString {
-    type Target = NSObject;
-
-    #[inline]
-    fn deref(&self) -> &NSObject {
-        &self.0
-    }
-}
-
-// Causes a linker error if not static.
-static DEFAULT: NSString = ns_string!("");
-
-impl Default for NSString {
-    #[inline]
+impl Default for &NSString {
+    // #[inline]
     fn default() -> Self {
-        DEFAULT.clone()
+        ns_string!("")
     }
 }
 
 impl PartialEq for NSString {
     #[inline]
     fn eq(&self, other: &Self) -> bool {
-        unsafe { _msg_send_cached![self, isEqualToString: other as &Object => BOOL] }.into()
+        unsafe { _msg_send_cached![self, isEqualToString: other => BOOL] }.into()
     }
 }
 
@@ -191,17 +163,24 @@ impl PartialOrd<NSString> for &str {
     }
 }
 
-impl From<&str> for NSString {
+impl From<&str> for Arc<NSString> {
     #[inline]
     fn from(s: &str) -> Self {
-        Self::from_str(s)
+        NSString::from_str(s)
     }
 }
 
-impl From<&mut str> for NSString {
+impl From<&mut str> for Arc<NSString> {
     #[inline]
     fn from(s: &mut str) -> Self {
-        Self::from_str(s)
+        NSString::from_str(s)
+    }
+}
+
+impl From<NSRange> for Arc<NSString> {
+    #[inline]
+    fn from(range: NSRange) -> Self {
+        NSString::from_nsrange(range)
     }
 }
 
@@ -222,45 +201,6 @@ impl fmt::Display for NSString {
         let str = unsafe { self.to_str() };
 
         str.fmt(f)
-    }
-}
-
-impl fmt::Pointer for NSString {
-    #[inline]
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        self.as_ptr().fmt(f)
-    }
-}
-
-impl NSString {
-    /// Returns the `NSString` class.
-    #[inline]
-    pub fn class() -> &'static Class {
-        extern "C" {
-            #[link_name = "OBJC_CLASS_$_NSString"]
-            static CLASS: Class;
-        }
-        unsafe { &CLASS }
-    }
-
-    /// Creates an immutable string object from a raw nullable pointer.
-    ///
-    /// # Safety
-    ///
-    /// The pointer must point to a valid `NSString` instance.
-    #[inline]
-    pub const unsafe fn from_ptr(ptr: *mut Object) -> Self {
-        Self(NSObject::from_ptr(ptr))
-    }
-
-    /// Creates an immutable object from a raw non-null pointer.
-    ///
-    /// # Safety
-    ///
-    /// The pointer must point to a valid `NSString` instance.
-    #[inline]
-    pub const unsafe fn from_non_null_ptr(ptr: NonNull<Object>) -> Self {
-        Self(NSObject::from_non_null_ptr(ptr))
     }
 }
 
@@ -373,17 +313,18 @@ impl NSString {
     // Shared non-inlined `from_str` implementation.
     //
     // This allows for reducing the code size of the final binary.
-    unsafe fn _from_str(s: &str, class: &Class) -> NSString {
-        let value: Self = class.alloc();
+    unsafe fn _from_str(s: &str, class: &Class) -> Arc<NSString> {
+        let value: Arc<Self> = class.alloc();
 
+        #[allow(clashing_extern_declarations)]
         extern "C" {
             fn objc_msgSend(
-                obj: NSString,
+                obj: Arc<NSString>,
                 sel: SEL,
                 bytes: *const u8,
                 length: NSUInteger,
                 encoding: NSStringEncoding,
-            ) -> NSString;
+            ) -> Arc<NSString>;
         }
 
         let obj = value;
@@ -397,7 +338,7 @@ impl NSString {
 
     /// Creates an immutable string object from copying a slice.
     #[inline]
-    pub fn from_str(s: &str) -> NSString {
+    pub fn from_str(s: &str) -> Arc<NSString> {
         unsafe { Self::_from_str(s, Self::class()) }
     }
 
@@ -407,18 +348,19 @@ impl NSString {
     ///
     /// The returned string object or its clones must not outlive the referenced
     /// string slice.
-    pub unsafe fn from_str_no_copy(s: &str) -> NSString {
-        let value: Self = Self::class().alloc();
+    pub unsafe fn from_str_no_copy(s: &str) -> Arc<NSString> {
+        let value: Arc<Self> = Self::class().alloc();
 
+        #[allow(clashing_extern_declarations)]
         extern "C" {
             fn objc_msgSend(
-                obj: NSString,
+                obj: Arc<NSString>,
                 sel: SEL,
                 bytes: *const u8,
                 length: NSUInteger,
                 encoding: NSStringEncoding,
                 free_when_done: BOOL,
-            ) -> NSString;
+            ) -> Arc<NSString>;
         }
 
         let obj = value;
@@ -435,9 +377,9 @@ impl NSString {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/1415155-nsstringfromrange).
     #[inline]
-    pub fn from_nsrange(range: NSRange) -> Self {
+    pub fn from_nsrange(range: NSRange) -> Arc<Self> {
         extern "C" {
-            fn NSStringFromRange(range: NSRange) -> NSString;
+            fn NSStringFromRange(range: NSRange) -> Arc<NSString>;
         }
         unsafe { NSStringFromRange(range) }
     }
@@ -447,8 +389,9 @@ impl NSString {
     ///
     /// See [documentation](https://developer.apple.com/documentation/objectivec/nsobject/1418807-copy).
     #[inline]
-    pub fn copy(&self) -> NSString {
-        Self(NSObject::copy(self))
+    pub fn copy(&self) -> Arc<NSString> {
+        let copy = NSObject::copy(self);
+        unsafe { Arc::cast_unchecked(copy) }
     }
 
     /// Returns a copy of this object using
@@ -456,8 +399,9 @@ impl NSString {
     ///
     /// See [documentation](https://developer.apple.com/documentation/objectivec/nsobject/1418978-mutablecopy).
     #[inline]
-    pub fn mutable_copy(&self) -> NSMutableString {
-        NSMutableString(Self(NSObject::mutable_copy(self)))
+    pub fn mutable_copy(&self) -> Arc<NSMutableString> {
+        let copy = NSObject::mutable_copy(self);
+        unsafe { Arc::cast_unchecked(copy) }
     }
 }
 
@@ -482,7 +426,7 @@ impl NSString {
         const kCFStringEncodingUTF8: CFStringEncoding = 0x08000100;
 
         extern "C" {
-            fn CFStringGetCStringPtr(s: &Object, encoding: CFStringEncoding) -> *const c_char;
+            fn CFStringGetCStringPtr(s: &NSString, encoding: CFStringEncoding) -> *const c_char;
         }
 
         unsafe { CFStringGetCStringPtr(self, kCFStringEncodingUTF8) }
@@ -644,7 +588,7 @@ impl NSString {
     #[inline]
     pub fn as_utf16_ptr(&self) -> *const u16 {
         extern "C" {
-            fn CFStringGetCharactersPtr(s: &Object) -> *const u16;
+            fn CFStringGetCharactersPtr(s: &NSString) -> *const u16;
         }
         unsafe { CFStringGetCharactersPtr(self) }
     }
@@ -701,7 +645,7 @@ impl NSString {
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsstring/1414082-compare).
     #[inline]
     pub fn compare(&self, other: &NSString) -> NSComparisonResult {
-        unsafe { _msg_send![self, compare: other as &Object] }
+        unsafe { _msg_send![self, compare: other] }
     }
 
     /// Compares the string and a given string using a localized comparison.
@@ -709,7 +653,7 @@ impl NSString {
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsstring/1416999-localizedcompare).
     #[inline]
     pub fn localized_compare(&self, other: &NSString) -> NSComparisonResult {
-        unsafe { _msg_send![self, localizedCompare: other as &Object] }
+        unsafe { _msg_send![self, localizedCompare: other] }
     }
 
     /// Compares the string with a given string using `NSCaseInsensitiveSearch`.
@@ -717,7 +661,7 @@ impl NSString {
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsstring/1414769-caseinsensitivecompare).
     #[inline]
     pub fn case_insensitive_compare(&self, other: &NSString) -> NSComparisonResult {
-        unsafe { _msg_send![self, caseInsensitiveCompare: other as &Object] }
+        unsafe { _msg_send![self, caseInsensitiveCompare: other] }
     }
 
     /// Compares the string with a given string using a case-insensitive,
@@ -726,7 +670,7 @@ impl NSString {
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsstring/1417333-localizedcaseinsensitivecompare).
     #[inline]
     pub fn localized_case_insensitive_compare(&self, other: &NSString) -> NSComparisonResult {
-        unsafe { _msg_send![self, localizedCaseInsensitiveCompare: other as &Object] }
+        unsafe { _msg_send![self, localizedCaseInsensitiveCompare: other] }
     }
 
     /// Compares strings as sorted by the Finder.
@@ -740,7 +684,7 @@ impl NSString {
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsstring/1409742-localizedstandardcompare).
     #[inline]
     pub fn localized_standard_compare(&self, other: &NSString) -> NSComparisonResult {
-        unsafe { _msg_send![self, localizedStandardCompare: other as &Object] }
+        unsafe { _msg_send![self, localizedStandardCompare: other] }
     }
 
     /// Returns `true` if the given string matches the beginning characters of
@@ -749,7 +693,7 @@ impl NSString {
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsstring/1410309-hasprefix).
     #[inline]
     pub fn has_prefix(&self, prefix: &NSString) -> bool {
-        unsafe { _msg_send![self, hasPrefix: prefix as &Object => BOOL] }.into()
+        unsafe { _msg_send![self, hasPrefix: prefix => BOOL] }.into()
     }
 
     /// Returns `true` if the given string matches the ending characters of this
@@ -758,52 +702,21 @@ impl NSString {
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsstring/1416529-hassuffix).
     #[inline]
     pub fn has_suffix(&self, suffix: &NSString) -> bool {
-        unsafe { _msg_send![self, hasSuffix: suffix as &Object => BOOL] }.into()
+        unsafe { _msg_send![self, hasSuffix: suffix => BOOL] }.into()
     }
 }
 
-/// A dynamic plain-text Unicode string object.
-///
-/// See [documentation](https://developer.apple.com/documentation/foundation/nsmutablestring).
-#[repr(transparent)]
-#[derive(Clone)]
-pub struct NSMutableString(NSString);
-
-unsafe impl ObjectType for NSMutableString {}
-
-impl From<NSMutableString> for NSObject {
-    #[inline]
-    fn from(obj: NSMutableString) -> Self {
-        (obj.0).0
-    }
+objc_subclass! {
+    /// A dynamic plain-text Unicode string object.
+    ///
+    /// See [documentation](https://developer.apple.com/documentation/foundation/nsmutablestring).
+    pub class NSMutableString: NSString;
 }
 
-impl From<NSMutableString> for NSString {
-    #[inline]
-    fn from(obj: NSMutableString) -> Self {
-        obj.0
-    }
-}
-
-impl From<NSRange> for NSString {
-    fn from(range: NSRange) -> Self {
-        Self::from_nsrange(range)
-    }
-}
-
-impl Deref for NSMutableString {
-    type Target = NSString;
-
-    #[inline]
-    fn deref(&self) -> &NSString {
-        &self.0
-    }
-}
-
-impl Default for NSMutableString {
+impl Default for Arc<NSMutableString> {
     #[inline]
     fn default() -> Self {
-        DEFAULT.mutable_copy()
+        unsafe { NSMutableString::class().alloc_init() }
     }
 }
 
@@ -914,17 +827,17 @@ impl PartialOrd<NSMutableString> for &str {
     }
 }
 
-impl From<&str> for NSMutableString {
+impl From<&str> for Arc<NSMutableString> {
     #[inline]
     fn from(s: &str) -> Self {
-        Self::from_str(s)
+        NSMutableString::from_str(s)
     }
 }
 
-impl From<&mut str> for NSMutableString {
+impl From<&mut str> for Arc<NSMutableString> {
     #[inline]
     fn from(s: &mut str) -> Self {
-        Self::from_str(s)
+        NSMutableString::from_str(s)
     }
 }
 
@@ -942,48 +855,11 @@ impl fmt::Display for NSMutableString {
     }
 }
 
-impl fmt::Pointer for NSMutableString {
-    #[inline]
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        self.as_ptr().fmt(f)
-    }
-}
-
 impl NSMutableString {
-    /// Returns the `NSMutableString` class.
-    #[inline]
-    pub fn class() -> &'static Class {
-        extern "C" {
-            #[link_name = "OBJC_CLASS_$_NSMutableString"]
-            static CLASS: Class;
-        }
-        unsafe { &CLASS }
-    }
-
-    /// Creates a mutable string object from a raw nullable pointer.
-    ///
-    /// # Safety
-    ///
-    /// The pointer must point to a valid `NSMutableString` instance.
-    #[inline]
-    pub const unsafe fn from_ptr(ptr: *mut Object) -> Self {
-        Self(NSString::from_ptr(ptr))
-    }
-
-    /// Creates a mutable object from a raw non-null pointer.
-    ///
-    /// # Safety
-    ///
-    /// The pointer must point to a valid `NSMutableString` instance.
-    #[inline]
-    pub const unsafe fn from_non_null_ptr(ptr: NonNull<Object>) -> Self {
-        Self(NSString::from_non_null_ptr(ptr))
-    }
-
     /// Creates a mutable string object from copying a slice.
     #[inline]
-    pub fn from_str(s: &str) -> NSMutableString {
-        unsafe { Self(NSString::_from_str(s, Self::class())) }
+    pub fn from_str(s: &str) -> Arc<NSMutableString> {
+        unsafe { Arc::cast_unchecked(NSString::_from_str(s, Self::class())) }
     }
 
     /// Creates a mutable string object without copying a slice.
@@ -992,18 +868,19 @@ impl NSMutableString {
     ///
     /// The returned string object or its clones must not outlive the referenced
     /// string slice.
-    pub unsafe fn from_str_no_copy(s: &mut str) -> NSMutableString {
-        let value: Self = Self::class().alloc();
+    pub unsafe fn from_str_no_copy(s: &mut str) -> Arc<NSMutableString> {
+        let value: Arc<Self> = Self::class().alloc();
 
+        #[allow(clashing_extern_declarations)]
         extern "C" {
             fn objc_msgSend(
-                obj: NSMutableString,
+                obj: Arc<NSMutableString>,
                 sel: SEL,
                 bytes: *mut u8,
                 length: NSUInteger,
                 encoding: NSStringEncoding,
                 free_when_done: BOOL,
-            ) -> NSMutableString;
+            ) -> Arc<NSMutableString>;
         }
 
         let obj = value;

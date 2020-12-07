@@ -1,6 +1,6 @@
 use super::NSString;
-use crate::objc::{Class, NSInteger, NSObject, Object, ObjectType};
-use std::{fmt, ops::Deref, ptr::NonNull};
+use crate::objc::{NSInteger, NSObject};
+use std::fmt;
 
 mod domain;
 mod recovery_attempting;
@@ -12,36 +12,18 @@ pub use user_info_key::*;
 
 // TODO: Add error codes for Cocoa, Mach, and POSIX.
 
-/// Information about an error condition including a domain, a domain-specific
-/// error code, and application-specific information.
-///
-/// See [documentation](https://developer.apple.com/documentation/foundation/nserror).
-///
-/// # Formatting
-///
-/// The [`Display`](https://doc.rust-lang.org/std/fmt/trait.Display.html)
-/// implementation writes the result of
-/// [`localized_description`](#method.localized_description).
-#[repr(transparent)]
-#[derive(Clone)]
-pub struct NSError(NSObject);
-
-unsafe impl ObjectType for NSError {}
-
-impl From<NSError> for NSObject {
-    #[inline]
-    fn from(obj: NSError) -> Self {
-        obj.0
-    }
-}
-
-impl Deref for NSError {
-    type Target = NSObject;
-
-    #[inline]
-    fn deref(&self) -> &NSObject {
-        &self.0
-    }
+objc_subclass! {
+    /// Information about an error condition including a domain, a domain-specific
+    /// error code, and application-specific information.
+    ///
+    /// See [documentation](https://developer.apple.com/documentation/foundation/nserror).
+    ///
+    /// # Formatting
+    ///
+    /// The [`Display`](https://doc.rust-lang.org/std/fmt/trait.Display.html)
+    /// implementation writes the result of
+    /// [`localized_description`](#method.localized_description).
+    pub class NSError: NSObject;
 }
 
 // TODO: `fmt::Debug`
@@ -53,45 +35,8 @@ impl fmt::Display for NSError {
     }
 }
 
-impl fmt::Pointer for NSError {
-    #[inline]
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        self.as_ptr().fmt(f)
-    }
-}
-
 impl NSError {
-    /// Returns the `NSError` class.
-    #[inline]
-    pub fn class() -> &'static Class {
-        extern "C" {
-            #[link_name = "OBJC_CLASS_$_NSError"]
-            static CLASS: Class;
-        }
-        unsafe { &CLASS }
-    }
-
-    /// Creates an immutable string object from a raw nullable pointer.
-    ///
-    /// # Safety
-    ///
-    /// The pointer must point to a valid `NSError` instance.
-    #[inline]
-    pub const unsafe fn from_ptr(ptr: *mut Object) -> Self {
-        Self(NSObject::from_ptr(ptr))
-    }
-
-    /// Creates an immutable object from a raw non-null pointer.
-    ///
-    /// # Safety
-    ///
-    /// The pointer must point to a valid `NSError` instance.
-    #[inline]
-    pub const unsafe fn from_non_null_ptr(ptr: NonNull<Object>) -> Self {
-        Self(NSObject::from_non_null_ptr(ptr))
-    }
-
-    // TODO: `new(domain: &NSErrorDomain, code: NSInteger, user_info: &NSDictionary<NSErrorUserInfoKey, id>) -> Self`
+    // TODO: `new(domain: &NSErrorDomain, code: NSInteger, user_info: &NSDictionary<NSErrorUserInfoKey, id>) -> Arc<Self>`
 }
 
 /// Getting error properties.

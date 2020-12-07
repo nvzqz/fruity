@@ -11,24 +11,29 @@
 pub(crate) mod sel;
 
 #[macro_use]
+mod macros;
+
+#[macro_use]
 mod msg;
 
 mod autoreleasepool;
 mod bool;
 mod class;
+mod class_type;
 mod int;
 mod ns_object;
-mod obj;
-mod unretained;
+mod objc_object;
+mod object_type;
 
 pub use self::bool::*;
 pub use autoreleasepool::*;
 pub use class::*;
+pub use class_type::*;
 pub use int::*;
 pub use ns_object::*;
-pub use obj::*;
+pub use objc_object::*;
+pub use object_type::*;
 pub use sel::SEL;
-pub use unretained::*;
 
 #[link(name = "objc", kind = "dylib")]
 extern "C" {}

@@ -1,73 +1,10 @@
-use crate::{foundation::NSString, objc::ObjectType};
-use std::fmt;
-
-/// Keys that may exist in an [`NSError`](struct.NSError.html) user info
-/// dictionary.
-///
-/// See [documentation](https://developer.apple.com/documentation/foundation/nserroruserinfokey).
-#[repr(transparent)]
-#[derive(Clone, Ord, PartialOrd, Eq, PartialEq)]
-pub struct NSErrorUserInfoKey(pub NSString);
-
-unsafe impl ObjectType for NSErrorUserInfoKey {}
-
-impl From<NSString> for NSErrorUserInfoKey {
-    #[inline]
-    fn from(string: NSString) -> Self {
-        Self(string)
-    }
-}
-
-impl From<NSErrorUserInfoKey> for NSString {
-    #[inline]
-    fn from(key: NSErrorUserInfoKey) -> Self {
-        key.0
-    }
-}
-
-impl AsRef<NSString> for NSErrorUserInfoKey {
-    #[inline]
-    fn as_ref(&self) -> &NSString {
-        &self.0
-    }
-}
-
-impl AsRef<NSErrorUserInfoKey> for NSErrorUserInfoKey {
-    #[inline]
-    fn as_ref(&self) -> &NSErrorUserInfoKey {
-        self
-    }
-}
-
-impl AsRef<NSErrorUserInfoKey> for NSString {
-    #[inline]
-    fn as_ref(&self) -> &NSErrorUserInfoKey {
-        // SAFETY: Both types have equivalent memory representations.
-        unsafe { &*(self as *const _ as *const _) }
-    }
-}
-
-// Use `NSString` formatting.
-
-impl fmt::Debug for NSErrorUserInfoKey {
-    #[inline]
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        self.0.fmt(f)
-    }
-}
-
-impl fmt::Display for NSErrorUserInfoKey {
-    #[inline]
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        self.0.fmt(f)
-    }
-}
-
-impl fmt::Pointer for NSErrorUserInfoKey {
-    #[inline]
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        self.0.fmt(f)
-    }
+ns_string_wrapper! {
+    /// Keys that may exist in an [`NSError`](struct.NSError.html) user info
+    /// dictionary.
+    ///
+    /// See [documentation](https://developer.apple.com/documentation/foundation/nserroruserinfokey).
+    #[derive(Ord, PartialOrd, Eq, PartialEq)]
+    pub wrapper NSErrorUserInfoKey;
 }
 
 macro_rules! key {

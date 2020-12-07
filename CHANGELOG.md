@@ -9,6 +9,43 @@ The format is based on [Keep a Changelog] and this project adheres to
 
 ### Added
 
+- `core` module for core types and traits are not specific to any wrapped
+  library.
+
+  - `ObjectType` trait to generalize retain/release.
+
+  - `Arc` type to handle automatic reference counting. Built on top of the
+    methods in `ObjectType`.
+
+    - Implements `Default`:
+
+      - `Arc<NSObject>` from `[[NSObject alloc] init]`.
+
+      - `Arc<NSMutableString>` from `[[NSMutableString alloc] init]`.
+
+      - `Arc<NSNull>` from retaining `kCFNull`.
+
+- Internal macros to simplify creating class types and wrappers:
+
+  - `subclass!` performs all the wrapping and trait impls (e.g. `obj::Object`,
+    `Deref`) to make a new subclass easy to declare. This macro is
+    runtime-agnostic.
+
+  - `class_wrapper!` for thin wrappers over classes. Unlike `subclass!`, this is
+    not meant for creating a new class type.
+
+  - `objc_class_type!` implements `objc::ClassType` using the given class name.
+
+  - `objc_subclass!` calls `subclass!` and `objc_class_type!`.
+
+  - `objc_class_wrapper!` calls `class_wrapper!` and implements the
+    `objc::ObjectType` trait.
+
+  - `ns_string_wrapper!` calls `objc_class_wrapper!` with `foundation::NSString`
+    and implements the `Debug` and `Display` traits.
+
+- `objc::ClassType` trait for types whose classes are statically available.
+
 - `BOOL::NO` and `BOOL::YES` associated constants as alternatives to the
   constants in in the `objc` module. These should be preferred.
 
@@ -17,11 +54,6 @@ The format is based on [Keep a Changelog] and this project adheres to
 
 - `DispatchQueue::with_current_queue_label` as safe scoped alternative to
   `current_queue_label`.
-
-- `ObjectType` trait to generalize over object references.
-
-- `Unretained<T>` wrapper type that's semantically a `&T` but with the memory
-  representation of `T` when `T` implements `ObjectType`.
 
 - The `ns_string!` macro can now take `const X: &str` as input, not just string
   literals.
@@ -121,6 +153,12 @@ The format is based on [Keep a Changelog] and this project adheres to
 
 ### Changed
 
+- **\[breaking\]** Objects now are closer to how they are in Objective-C.
+  `&NSString` in Rust is like `NSString *` in Objective-C. The new `Arc<T>` type
+  handles releasing the reference on `Drop`.
+
+  As a result, constructors now
+
 - **\[breaking\]** Renamed `get_class` to `class` for Objective-C objects.
 
 - **\[breaking\]** Shortened lifetime of `class` on Objective-C objects from
@@ -142,6 +180,11 @@ The format is based on [Keep a Changelog] and this project adheres to
   UPPER_SNAKE_CASE.
 
 - `NSStringEncoding` is formatted like a Rust `enum`. This improves debugging.
+
+### Removed
+
+- Pointer conversion methods on object types. These are now handled through
+  `Arc`.
 
 ## [0.2.0] - 2020-09-11
 

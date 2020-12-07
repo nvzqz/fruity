@@ -1,5 +1,6 @@
 use super::NSString;
-use crate::objc::{NSUInteger, Object};
+use crate::core::Arc;
+use crate::objc::NSUInteger;
 use std::ops::Range;
 
 /// Describe a portion of a series, such as characters in a string or objects in
@@ -52,7 +53,7 @@ impl NSRange {
     #[inline]
     pub fn from_nsstring(string: &NSString) -> Self {
         extern "C" {
-            fn NSRangeFromString(string: &Object) -> NSRange;
+            fn NSRangeFromString(string: &NSString) -> NSRange;
         }
         unsafe { NSRangeFromString(string) }
     }
@@ -91,7 +92,7 @@ impl NSRange {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/1415155-nsstringfromrange).
     #[inline]
-    pub fn to_nsstring(self) -> NSString {
+    pub fn to_nsstring(self) -> Arc<NSString> {
         self.into()
     }
 

@@ -1,5 +1,6 @@
 use super::NSString;
-use crate::objc::{NSUInteger, Unretained};
+use crate::core::Arc;
+use crate::objc::NSUInteger;
 use std::fmt;
 
 /// Possible [`NSString`](struct.NSString.html) encodings.
@@ -26,23 +27,21 @@ impl NSStringEncoding {
     /// This is retrieved using
     /// [`CFStringGetNameOfEncoding`](https://developer.apple.com/documentation/corefoundation/1543585-cfstringgetnameofencoding).
     #[inline]
-    pub fn name(&self) -> Option<NSString> {
+    pub fn name(&self) -> Option<Arc<NSString>> {
         // SAFETY: The string is immediately retained.
-        Some(unsafe { self.name_unretained()? }.get())
+        Some(Arc::retain(unsafe { self.name_unretained()? }))
     }
 
     // SAFETY: The string is created using "The Get Rule", so it should be
     // retained for long uses.
     #[inline]
-    pub(crate) unsafe fn name_unretained<'a>(&self) -> Option<Unretained<'a, NSString>> {
+    pub(crate) unsafe fn name_unretained<'a>(&self) -> Option<&'a NSString> {
         type CFStringEncoding = u32;
 
         extern "C" {
             fn CFStringConvertNSStringEncodingToEncoding(enc: NSStringEncoding)
                 -> CFStringEncoding;
-            fn CFStringGetNameOfEncoding<'a>(
-                enc: CFStringEncoding,
-            ) -> Option<Unretained<'a, NSString>>;
+            fn CFStringGetNameOfEncoding<'a>(enc: CFStringEncoding) -> Option<&'a NSString>;
         }
 
         CFStringGetNameOfEncoding(CFStringConvertNSStringEncodingToEncoding(*self))

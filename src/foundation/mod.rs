@@ -10,6 +10,9 @@
 
 #![cfg(feature = "foundation")]
 
+#[macro_use]
+mod ns_string;
+
 pub mod error_codes;
 
 mod cmp;
@@ -19,7 +22,6 @@ mod ns_exception;
 mod ns_null;
 mod ns_number;
 mod ns_range;
-mod ns_string;
 mod ns_value;
 
 pub use cmp::*;

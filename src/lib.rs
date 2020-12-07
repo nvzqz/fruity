@@ -180,6 +180,9 @@
 #![deny(improper_ctypes)]
 #![warn(missing_docs)]
 
+#[macro_use]
+pub mod core;
+
 // This module is not for public use. It is an implementation detail of macros
 // exposed by this crate.
 #[doc(hidden)]

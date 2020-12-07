@@ -1,9 +1,10 @@
-use super::{Object, ObjectType, BOOL, SEL};
+use super::{BOOL, SEL};
+use crate::core::{Arc, ObjectType};
 use std::{
+    cell::UnsafeCell,
     cmp,
     ffi::CStr,
     fmt, hash, mem,
-    ops::Deref,
     os::raw::{c_char, c_int},
     panic::RefUnwindSafe,
     ptr,
@@ -21,37 +22,18 @@ use std::{
 /// A nullable class is defined as `Option<&Class>`, which is semantically
 /// equivalent to `Class _Nullable`.
 #[repr(C)]
-pub struct Class(
-    // `Object` stores static data in the `__DATA` section, which is needed to
-    // store class data. Internally, this is accomplished with `UnsafeCell`.
-    Object,
-);
-
-unsafe impl ObjectType for &Class {
-    #[inline]
-    fn as_object(&self) -> &Object {
-        &self.0
-    }
+pub struct Class {
+    // Stores data that may be mutated behind a shared reference. Internal
+    // mutability triggers undefined behavior without `UnsafeCell`.
+    _data: UnsafeCell<[u8; 0]>,
 }
+
+// This type is used globally, so we must be able to share it across threads.
+unsafe impl Sync for Class {}
+unsafe impl Send for Class {}
 
 // Although this uses `UnsafeCell`, it does not point to any Rust types.
 impl RefUnwindSafe for Class {}
-
-impl Deref for Class {
-    type Target = Object;
-
-    #[inline]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-
-impl AsRef<Object> for Class {
-    #[inline]
-    fn as_ref(&self) -> &Object {
-        self
-    }
-}
 
 impl fmt::Debug for Class {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -118,7 +100,7 @@ impl Class {
 
     #[inline]
     #[allow(unused)] // Used by `foundation`
-    pub(crate) unsafe fn alloc<T: ObjectType>(&self) -> T {
+    pub(crate) unsafe fn alloc<T: ObjectType>(&self) -> Arc<T> {
         // TODO: Add `cfg` use `objc_msgSend` on older platforms where this
         // symbol does not exist, such as macOS 10.10+.
         //
@@ -128,15 +110,27 @@ impl Class {
             fn objc_alloc();
         }
         let objc_alloc: unsafe extern "C" fn() = objc_alloc;
-        let objc_alloc: unsafe extern "C" fn(&Class) -> T = mem::transmute(objc_alloc);
+        let objc_alloc: unsafe extern "C" fn(&Class) -> Arc<T> = mem::transmute(objc_alloc);
 
-        unsafe { objc_alloc(self) }
+        objc_alloc(self)
     }
 
-    /// Returns a reference to this class as an Objective-C object.
+    /// Calls `[[self alloc] init]`.
     #[inline]
-    pub const fn as_object(&self) -> &Object {
-        &self.0
+    pub(crate) unsafe fn alloc_init<T: ObjectType>(&self) -> Arc<T> {
+        // TODO: Add `cfg` use `objc_msgSend` on older platforms where this
+        // symbol does not exist.
+        //
+        // This may require reading the `-mmacosx-version-min` flag somehow.
+
+        extern "C" {
+            fn objc_alloc_init();
+        }
+        let objc_alloc_init: unsafe extern "C" fn() = objc_alloc_init;
+        let objc_alloc_init: unsafe extern "C" fn(&Class) -> Arc<T> =
+            mem::transmute(objc_alloc_init);
+
+        objc_alloc_init(self)
     }
 
     /// Returns `true` if this class implements or inherits a method that can

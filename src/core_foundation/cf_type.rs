@@ -1,5 +1,6 @@
 use super::{Boolean, CFHashCode, CFIndex};
-use std::{cell::UnsafeCell, fmt, hash, mem, ops::Deref, ptr::NonNull};
+use crate::core::{Arc, ObjectType};
+use std::{cell::UnsafeCell, fmt, hash, ptr::NonNull};
 
 /// Unique constant integer value that identifies particular Core Foundation
 /// opaque types.
@@ -9,7 +10,7 @@ use std::{cell::UnsafeCell, fmt, hash, mem, ops::Deref, ptr::NonNull};
 /// [Objective-C](https://developer.apple.com/documentation/corefoundation/cftypeid?language=objc)
 pub type CFTypeID = usize;
 
-/// A Core Foundation object instance.
+/// An instance of a Core Foundation type.
 ///
 /// This is designed to be used behind a reference. In the future, this will be
 /// defined as an
@@ -19,15 +20,32 @@ pub type CFTypeID = usize;
 /// [`Deref`](https://doc.rust-lang.org/std/ops/trait.Deref.html) to this type.
 #[repr(C)]
 pub struct CFType {
-    // This data can be mutably aliased behind a shared reference.
+    // Stores data that may be mutated behind a shared reference. Internal
+    // mutability triggers undefined behavior without `UnsafeCell`.
     _data: UnsafeCell<[u8; 0]>,
 }
 
-// SAFETY: `CFTypeRef` is bridged to `id`.
-unsafe impl crate::objc::ObjectType for &CFType {}
+impl ObjectType for CFType {
+    #[inline]
+    fn retain(obj: &Self) -> Arc<Self> {
+        extern "C" {
+            fn CFRetain(obj: &CFType) -> Arc<CFType>;
+        }
+        unsafe { CFRetain(obj) }
+    }
+
+    #[inline]
+    unsafe fn release(obj: NonNull<Self>) {
+        extern "C" {
+            fn CFRelease(obj: NonNull<CFType>);
+        }
+        CFRelease(obj);
+    }
+}
 
 // This type is used globally, so we must be able to share it across threads.
 unsafe impl Sync for CFType {}
+unsafe impl Send for CFType {}
 
 impl AsRef<CFType> for CFType {
     #[inline]
@@ -61,14 +79,6 @@ impl fmt::Debug for CFType {
 }
 
 impl CFType {
-    #[inline]
-    pub(crate) fn _retain(&self) -> NonNull<CFType> {
-        extern "C" {
-            fn CFRetain(cf: &CFType) -> NonNull<CFType>;
-        }
-        unsafe { CFRetain(self) }
-    }
-
     /// Casts `self` to a raw nullable pointer.
     #[inline]
     pub fn as_ptr(&self) -> *mut CFType {
@@ -118,85 +128,10 @@ impl CFType {
     // TODO: `CFCopyDescription`
 }
 
-/// A non-null smart pointer to any Core Foundation object instance.
+/// An automatically-reference-counted pointer to a type-erased Core Foundation
+/// object.
 ///
 /// Documentation:
 /// [Swift](https://developer.apple.com/documentation/corefoundation/cftyperef?language=swift) |
 /// [Objective-C](https://developer.apple.com/documentation/corefoundation/cftyperef?language=objc)
-#[repr(transparent)]
-pub struct CFTypeRef(NonNull<CFType>);
-
-// SAFETY: `CFTypeRef` is bridged to `id`.
-unsafe impl crate::objc::ObjectType for CFTypeRef {}
-
-unsafe impl Send for CFTypeRef {}
-unsafe impl Sync for CFTypeRef {}
-
-impl Deref for CFTypeRef {
-    type Target = CFType;
-
-    #[inline]
-    fn deref(&self) -> &Self::Target {
-        unsafe { self.0.as_ref() }
-    }
-}
-
-impl AsRef<CFType> for CFTypeRef {
-    #[inline]
-    fn as_ref(&self) -> &CFType {
-        self
-    }
-}
-
-impl Drop for CFTypeRef {
-    #[inline]
-    fn drop(&mut self) {
-        extern "C" {
-            fn CFRelease(cf: &CFType);
-        }
-        unsafe { CFRelease(self) };
-    }
-}
-
-impl Clone for CFTypeRef {
-    #[inline]
-    fn clone(&self) -> Self {
-        Self(self._retain())
-    }
-}
-
-impl From<CFTypeRef> for crate::objc::id {
-    #[inline]
-    fn from(cf: CFTypeRef) -> Self {
-        // SAFETY: `CFTypeRef` is bridged to `id`.
-        unsafe { mem::transmute(cf) }
-    }
-}
-
-impl PartialEq for CFTypeRef {
-    #[inline]
-    fn eq(&self, other: &Self) -> bool {
-        CFType::eq(self, other)
-    }
-}
-
-impl PartialEq<CFType> for CFTypeRef {
-    #[inline]
-    fn eq(&self, other: &CFType) -> bool {
-        CFType::eq(self, other)
-    }
-}
-
-impl PartialEq<CFTypeRef> for CFType {
-    #[inline]
-    fn eq(&self, other: &CFTypeRef) -> bool {
-        self.eq(other as &CFType)
-    }
-}
-
-impl hash::Hash for CFTypeRef {
-    #[inline]
-    fn hash<H: hash::Hasher>(&self, state: &mut H) {
-        hash::Hash::hash(self as &CFType, state)
-    }
-}
+pub type CFTypeRef = Arc<CFType>;

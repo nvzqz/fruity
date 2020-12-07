@@ -1,7 +1,8 @@
 use super::{
     super::{DispatchAutoreleaseFrequency, DispatchQos, DispatchQosClass},
-    dispatch_queue_attr_t, dispatch_queue_t, DispatchQueue, DispatchQueueAttributes,
+    dispatch_queue_attr_t, DispatchQueue, DispatchQueueAttributes,
 };
+use crate::core::Arc;
 use std::{
     ffi::CStr,
     os::raw::{c_char, c_int, c_ulong},
@@ -10,12 +11,12 @@ use std::{
 
 /// Configures and creates a [`DispatchQueue`](struct.DispatchQueue.html).
 #[must_use = "This does nothing until `build` is called"]
-#[derive(Clone)]
+#[derive(Clone, Copy)]
 pub struct DispatchQueueBuilder<'a> {
     qos: DispatchQos,
     attr: DispatchQueueAttributes,
     autorelease_frequency: DispatchAutoreleaseFrequency,
-    target: Option<DispatchQueue>,
+    target: Option<&'a DispatchQueue>,
     label: Option<&'a CStr>,
 }
 
@@ -42,7 +43,7 @@ impl DispatchQueueBuilder<'_> {
     /// Creates a new [`DispatchQueue`](struct.DispatchQueue.html) with the
     /// configuration specified by this builder.
     #[inline]
-    pub fn build(&self) -> DispatchQueue {
+    pub fn build(&self) -> Arc<DispatchQueue> {
         extern "C" {
             // fn dispatch_queue_create(
             //     label: *const c_char,
@@ -56,8 +57,8 @@ impl DispatchQueueBuilder<'_> {
             fn dispatch_queue_create_with_target(
                 label: *const c_char,
                 attr: dispatch_queue_attr_t,
-                target: dispatch_queue_t,
-            ) -> DispatchQueue;
+                target: *const DispatchQueue,
+            ) -> Arc<DispatchQueue>;
 
             // available(macOS 10.12, iOS 10.0, tvOS 10.0, watchOS 3.0)
             //
@@ -105,9 +106,9 @@ impl DispatchQueueBuilder<'_> {
             None => ptr::null(),
         };
 
-        let target = match &self.target {
-            Some(target) => target._as_queue(),
-            None => ptr::null_mut(),
+        let target = match self.target {
+            Some(target) => target,
+            None => ptr::null(),
         };
 
         unsafe { dispatch_queue_create_with_target(label, attr, target) }
@@ -197,7 +198,7 @@ impl<'a> DispatchQueueBuilder<'a> {
     ///
     /// Default value: `None`.
     #[inline]
-    pub fn target(mut self, target: DispatchQueue) -> Self {
+    pub fn target(mut self, target: &'a DispatchQueue) -> Self {
         self.target = Some(target);
         self
     }

@@ -1,6 +1,5 @@
 use super::NSString;
-use crate::objc::{Class, NSObject, Object, ObjectType};
-use std::{fmt, ops::Deref, ptr::NonNull};
+use crate::objc::NSObject;
 
 mod name;
 
@@ -40,68 +39,12 @@ pub fn NSSetUncaughtExceptionHandler(handler: Option<NSUncaughtExceptionHandler>
     unsafe { NSSetUncaughtExceptionHandler(handler) }
 }
 
-/// A special condition that interrupts the normal flow of program execution.
-///
-/// See [documentation](https://developer.apple.com/documentation/foundation/nsexception).
-#[repr(transparent)]
-#[derive(Clone)]
-pub struct NSException(NSObject);
-
-unsafe impl ObjectType for NSException {}
-
-impl From<NSException> for NSObject {
-    #[inline]
-    fn from(obj: NSException) -> Self {
-        obj.0
-    }
-}
-
-impl Deref for NSException {
-    type Target = NSObject;
-
-    #[inline]
-    fn deref(&self) -> &NSObject {
-        &self.0
-    }
-}
-
-impl fmt::Pointer for NSException {
-    #[inline]
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        self.as_ptr().fmt(f)
-    }
-}
-
-impl NSException {
-    /// Returns the `NSException` class.
-    #[inline]
-    pub fn class() -> &'static Class {
-        extern "C" {
-            #[link_name = "OBJC_CLASS_$_NSException"]
-            static CLASS: Class;
-        }
-        unsafe { &CLASS }
-    }
-
-    /// Creates an immutable string object from a raw nullable pointer.
+objc_subclass! {
+    /// A special condition that interrupts the normal flow of program
+    /// execution.
     ///
-    /// # Safety
-    ///
-    /// The pointer must point to a valid `NSException` instance.
-    #[inline]
-    pub const unsafe fn from_ptr(ptr: *mut Object) -> Self {
-        Self(NSObject::from_ptr(ptr))
-    }
-
-    /// Creates an immutable object from a raw non-null pointer.
-    ///
-    /// # Safety
-    ///
-    /// The pointer must point to a valid `NSException` instance.
-    #[inline]
-    pub const unsafe fn from_non_null_ptr(ptr: NonNull<Object>) -> Self {
-        Self(NSObject::from_non_null_ptr(ptr))
-    }
+    /// See [documentation](https://developer.apple.com/documentation/foundation/nsexception).
+    pub class NSException: NSObject;
 }
 
 /// Creating and rasing exceptions.
@@ -120,7 +63,7 @@ impl NSException {
     pub fn raise(&self) -> ! {
         extern "C" {
             // TODO: Define unwind ABI.
-            fn objc_exception_throw(exception: &Object) -> !;
+            fn objc_exception_throw(exception: &NSException) -> !;
         }
         unsafe { objc_exception_throw(self) }
     }

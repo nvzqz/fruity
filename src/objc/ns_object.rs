@@ -1,94 +1,29 @@
-use super::{id, Class, NSUInteger, Object, ObjectType, BOOL, SEL};
-use std::{fmt, ops::Deref, ptr::NonNull};
+use super::{Class, ClassType, NSUInteger, ObjCObject, BOOL, SEL};
+use crate::core::Arc;
 
-/// The root class for most Objective-C objects.
-///
-/// See [documentation](https://developer.apple.com/documentation/objectivec/nsobject).
-#[repr(transparent)]
-#[derive(Clone, Debug)]
-pub struct NSObject(id);
+// TODO: Create `NSObjectProtocol` for `@protocol NSObject` and `Deref` to that.
+objc_subclass! {
+    /// An instance of the root class for most Objective-C objects.
+    ///
+    /// See [documentation](https://developer.apple.com/documentation/objectivec/nsobject).
+    pub class NSObject: ObjCObject;
+}
 
-unsafe impl ObjectType for NSObject {}
-
-impl Deref for NSObject {
-    type Target = id;
-
+impl Default for Arc<NSObject> {
     #[inline]
-    fn deref(&self) -> &Self::Target {
-        &self.0
+    fn default() -> Self {
+        unsafe { NSObject::class().alloc_init() }
     }
 }
 
-impl AsRef<NSObject> for NSObject {
-    #[inline]
-    fn as_ref(&self) -> &Self {
-        self
-    }
-}
-
-impl<T: ObjectType> PartialEq<T> for NSObject {
+impl<T: AsRef<NSObject>> PartialEq<T> for NSObject {
     #[inline]
     fn eq(&self, other: &T) -> bool {
-        unsafe { _msg_send_cached![self, isEqual: other.as_object() => BOOL] }.into()
-    }
-}
-
-impl fmt::Pointer for NSObject {
-    #[inline]
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        self.as_ptr().fmt(f)
+        unsafe { _msg_send_cached![self, isEqual: other.as_ref() => BOOL] }.into()
     }
 }
 
 impl NSObject {
-    /// Returns the `NSObject` class.
-    #[inline]
-    pub fn class() -> &'static Class {
-        extern "C" {
-            #[link_name = "OBJC_CLASS_$_NSObject"]
-            static CLASS: Class;
-        }
-        unsafe { &CLASS }
-    }
-
-    /// Creates an object from a raw nullable pointer.
-    ///
-    /// # Safety
-    ///
-    /// The pointer must point to a valid `NSObject` instance.
-    #[inline]
-    pub const unsafe fn from_ptr(ptr: *mut Object) -> Self {
-        Self(id::from_ptr(ptr))
-    }
-
-    /// Creates an object from a raw non-null pointer.
-    ///
-    /// # Safety
-    ///
-    /// The pointer must point to a valid `NSObject` instance.
-    #[inline]
-    pub const unsafe fn from_non_null_ptr(ptr: NonNull<Object>) -> Self {
-        Self(id::from_non_null_ptr(ptr))
-    }
-
-    /// Returns a pointer to this object's data.
-    #[inline]
-    pub fn as_id(&self) -> &id {
-        &self.0
-    }
-
-    /// Returns a raw nullable pointer to this object's data.
-    #[inline]
-    pub fn as_ptr(&self) -> *mut Object {
-        self.0.as_ptr()
-    }
-
-    /// Returns a raw non-null pointer to this object's data.
-    #[inline]
-    pub fn as_non_null_ptr(&self) -> NonNull<Object> {
-        self.0.as_non_null_ptr()
-    }
-
     /// Returns this object's reference count.
     ///
     /// This method is only useful for debugging certain objects.
@@ -138,7 +73,7 @@ impl NSObject {
     ///
     /// See [documentation](https://developer.apple.com/documentation/objectivec/nsobject/1418807-copy).
     #[inline]
-    pub fn copy(&self) -> NSObject {
+    pub fn copy(&self) -> Arc<NSObject> {
         unsafe { _msg_send_cached![self, copy] }
     }
 
@@ -147,7 +82,7 @@ impl NSObject {
     ///
     /// See [documentation](https://developer.apple.com/documentation/objectivec/nsobject/1418978-mutablecopy).
     #[inline]
-    pub fn mutable_copy(&self) -> NSObject {
+    pub fn mutable_copy(&self) -> Arc<NSObject> {
         unsafe { _msg_send_cached![self, mutableCopy] }
     }
 }
