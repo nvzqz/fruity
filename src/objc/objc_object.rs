@@ -35,6 +35,7 @@ pub struct ObjCObject {
 
 impl crate::core::ObjectType for ObjCObject {
     #[inline]
+    #[doc(alias = "objc_retain")]
     fn retain(obj: &Self) -> Arc<Self> {
         extern "C" {
             fn objc_retain(obj: &ObjCObject) -> Arc<ObjCObject>;
@@ -43,6 +44,7 @@ impl crate::core::ObjectType for ObjCObject {
     }
 
     #[inline]
+    #[doc(alias = "objc_release")]
     unsafe fn release(obj: NonNull<Self>) {
         extern "C" {
             fn objc_release(obj: NonNull<ObjCObject>);

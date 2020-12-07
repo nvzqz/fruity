@@ -37,12 +37,14 @@ impl NSValue {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsvalue/1412365-objctype).
     #[inline]
+    #[doc(alias = "objCType")]
     pub fn objc_type(&self) -> *const c_char {
         unsafe { _msg_send![self, objCType] }
     }
 
     /// Returns [`objc_type`](#method.objc_type) as a C string reference.
     #[inline]
+    #[doc(alias = "objCType")]
     pub fn objc_type_cstr(&self) -> &CStr {
         unsafe { CStr::from_ptr(self.objc_type()) }
     }
@@ -56,6 +58,8 @@ impl NSValue {
     /// If `size` is the wrong number of bytes, an `NSInvalidArgumentException`
     /// is thrown.
     #[inline]
+    #[doc(alias = "getValue")]
+    #[doc(alias = "getValue:size:")]
     pub unsafe fn write_value(&self, value: *mut c_void, size: NSUInteger) {
         _msg_send![
             self,
@@ -71,6 +75,8 @@ impl NSValue {
     /// If `value` is the wrong number of bytes, an `NSInvalidArgumentException`
     /// is thrown.
     #[inline]
+    #[doc(alias = "getValue")]
+    #[doc(alias = "getValue:size:")]
     pub fn write_value_slice(&self, value: &mut [u8]) {
         unsafe { self.write_value(value.as_mut_ptr().cast(), value.len()) };
     }
@@ -86,6 +92,8 @@ impl NSValue {
     ///
     /// The value must have a valid memory representation for the return type.
     #[inline]
+    #[doc(alias = "getValue")]
+    #[doc(alias = "getValue:size:")]
     pub unsafe fn transmute_value<T>(&self) -> T {
         let mut value = mem::MaybeUninit::<T>::uninit();
         self.write_value(value.as_mut_ptr().cast(), mem::size_of::<T>());
@@ -100,6 +108,7 @@ impl NSValue {
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsvalue/1415975-valuewithpointer).
     #[inline]
     #[doc(alias = "valueWithPointer")]
+    #[doc(alias = "valueWithPointer:")]
     pub fn from_ptr(ptr: *const c_void) -> Arc<Self> {
         unsafe { _msg_send![Self::class(), valueWithPointer: ptr] }
     }
@@ -123,6 +132,7 @@ impl NSValue {
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsvalue/1408098-valuewithnonretainedobject).
     #[inline]
     #[doc(alias = "valueWithNonretainedObject")]
+    #[doc(alias = "valueWithNonretainedObject:")]
     pub fn from_nonretained_object(obj: *mut ObjCObject) -> Arc<Self> {
         unsafe { _msg_send![Self::class(), valueWithNonretainedObject: obj] }
     }
@@ -146,6 +156,7 @@ impl NSValue {
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsvalue/1410315-valuewithrange).
     #[inline]
     #[doc(alias = "valueWithRange")]
+    #[doc(alias = "valueWithRange:")]
     pub fn from_range(value: NSRange) -> Arc<Self> {
         unsafe { _msg_send![Self::class(), valueWithRange: value] }
     }
@@ -166,6 +177,7 @@ impl NSValue {
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsvalue/1391106-valuewithpoint).
     #[inline]
     #[doc(alias = "valueWithPoint")]
+    #[doc(alias = "valueWithPoint:")]
     pub fn from_point(value: NSPoint) -> Arc<Self> {
         unsafe { _msg_send![Self::class(), valueWithPoint: value] }
     }
@@ -174,6 +186,7 @@ impl NSValue {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsvalue/1391255-pointvalue).
     #[inline]
+    #[doc(alias = "pointValue")]
     pub fn point_value(&self) -> NSPoint {
         unsafe { _msg_send![self, pointValue] }
     }
@@ -183,6 +196,7 @@ impl NSValue {
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsvalue/1391199-valuewithsize).
     #[inline]
     #[doc(alias = "valueWithSize")]
+    #[doc(alias = "valueWithSize:")]
     pub fn from_size(value: NSSize) -> Arc<Self> {
         unsafe { _msg_send![Self::class(), valueWithSize: value] }
     }
@@ -191,6 +205,7 @@ impl NSValue {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsvalue/1391301-sizevalue).
     #[inline]
+    #[doc(alias = "sizeValue")]
     pub fn size_value(&self) -> NSSize {
         unsafe { _msg_send![self, sizeValue] }
     }
@@ -200,6 +215,7 @@ impl NSValue {
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsvalue/1391281-valuewithrect).
     #[inline]
     #[doc(alias = "valueWithRect")]
+    #[doc(alias = "valueWithRect:")]
     pub fn from_rect(value: NSRect) -> Arc<Self> {
         unsafe { _msg_send![Self::class(), valueWithRect: value] }
     }
@@ -208,6 +224,7 @@ impl NSValue {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsvalue/1391171-rectvalue).
     #[inline]
+    #[doc(alias = "rectValue")]
     pub fn rect_value(&self) -> NSRect {
         unsafe { _msg_send![self, rectValue] }
     }
@@ -217,6 +234,7 @@ impl NSValue {
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsvalue/1391181-valuewithedgeinsets).
     #[inline]
     #[doc(alias = "valueWithEdgeInsets")]
+    #[doc(alias = "valueWithEdgeInsets:")]
     pub fn from_edge_insets(value: NSEdgeInsets) -> Arc<Self> {
         unsafe { _msg_send![Self::class(), valueWithEdgeInsets: value] }
     }
@@ -225,6 +243,7 @@ impl NSValue {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsvalue/1391123-edgeinsetsvalue).
     #[inline]
+    #[doc(alias = "edgeInsetsValue")]
     pub fn edge_insets_value(&self) -> NSEdgeInsets {
         unsafe { _msg_send![self, edgeInsetsValue] }
     }

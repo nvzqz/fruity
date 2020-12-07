@@ -20,6 +20,7 @@ impl NSNull {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsnull).
     #[inline]
+    #[doc(alias = "kCFNull")]
     pub fn null() -> &'static Self {
         extern "C" {
             // `NSNull` is toll-free bridged with `CFNullRef` whose only

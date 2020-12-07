@@ -61,6 +61,7 @@ impl CGAffineTransform {
     /// This is equivalent to
     /// [`CGAffineTransformMake`](https://developer.apple.com/documentation/coregraphics/1455865-cgaffinetransformmake).
     #[inline]
+    #[doc(alias = "CGAffineTransformMake")]
     pub const fn new(
         a: CGFloat,
         b: CGFloat,
@@ -76,6 +77,7 @@ impl CGAffineTransform {
     ///
     /// See [documentation](https://developer.apple.com/documentation/coregraphics/1455666-cgaffinetransformmakerotation).
     #[inline]
+    #[doc(alias = "CGAffineTransformMakeRotation")]
     pub fn new_rotation(angle: CGFloat) -> Self {
         extern "C" {
             fn CGAffineTransformMakeRotation(angle: CGFloat) -> CGAffineTransform;
@@ -87,6 +89,7 @@ impl CGAffineTransform {
     ///
     /// See [documentation](https://developer.apple.com/documentation/coregraphics/1455016-cgaffinetransformmakescale).
     #[inline]
+    #[doc(alias = "CGAffineTransformMakeScale")]
     pub const fn new_scale(sx: CGFloat, sy: CGFloat) -> Self {
         Self::new(sx, 0.0, 0.0, sy, 0.0, 0.0)
     }
@@ -95,6 +98,7 @@ impl CGAffineTransform {
     ///
     /// See [documentation](https://developer.apple.com/documentation/coregraphics/1454909-cgaffinetransformmaketranslation).
     #[inline]
+    #[doc(alias = "CGAffineTransformMakeTranslation")]
     pub const fn new_translation(tx: CGFloat, ty: CGFloat) -> Self {
         Self::new(1.0, 0.0, 0.0, 1.0, tx, ty)
     }
@@ -102,6 +106,7 @@ impl CGAffineTransform {
     /// Returns `true` if `self` does nothing when applied.
     ///
     /// See [documentation](https://developer.apple.com/documentation/coregraphics/1455754-cgaffinetransformisidentity).
+    #[doc(alias = "CGAffineTransformIsIdentity")]
     pub fn is_identity(&self) -> bool {
         // This implementation is optimized for speed and code size.
 
@@ -133,6 +138,7 @@ impl CGAffineTransform {
     ///
     /// See [documentation](https://developer.apple.com/documentation/coregraphics/1454251-cgpointapplyaffinetransform).
     #[inline]
+    #[doc(alias = "CGPointApplyAffineTransform")]
     pub fn apply_to_point(self, point: CGPoint) -> CGPoint {
         point.apply(self)
     }
@@ -141,6 +147,7 @@ impl CGAffineTransform {
     ///
     /// See [documentation](https://developer.apple.com/documentation/coregraphics/1454806-cgsizeapplyaffinetransform).
     #[inline]
+    #[doc(alias = "CGSizeApplyAffineTransform")]
     pub fn apply_to_size(self, size: CGSize) -> CGSize {
         size.apply(self)
     }
@@ -149,6 +156,7 @@ impl CGAffineTransform {
     ///
     /// See [documentation](https://developer.apple.com/documentation/coregraphics/1455875-cgrectapplyaffinetransform).
     #[inline]
+    #[doc(alias = "CGRectApplyAffineTransform")]
     pub fn apply_to_rect(self, rect: CGRect) -> CGRect {
         rect.apply(self)
     }
@@ -157,6 +165,7 @@ impl CGAffineTransform {
     ///
     /// See [documentation](https://developer.apple.com/documentation/coregraphics/1455264-cgaffinetransforminvert).
     #[inline]
+    #[doc(alias = "CGAffineTransformInvert")]
     pub fn invert(self) -> Self {
         extern "C" {
             fn CGAffineTransformInvert(transform: CGAffineTransform) -> CGAffineTransform;
@@ -171,6 +180,7 @@ impl CGAffineTransform {
     ///
     /// See [documentation](https://developer.apple.com/documentation/coregraphics/1455962-cgaffinetransformrotate).
     #[inline]
+    #[doc(alias = "CGAffineTransformRotate")]
     pub fn rotate(self, angle: CGFloat) -> Self {
         extern "C" {
             fn CGAffineTransformRotate(
@@ -185,6 +195,7 @@ impl CGAffineTransform {
     ///
     /// See [documentation](https://developer.apple.com/documentation/coregraphics/1455882-cgaffinetransformscale).
     #[inline]
+    #[doc(alias = "CGAffineTransformScale")]
     pub fn scale(self, sx: CGFloat, sy: CGFloat) -> Self {
         Self {
             a: self.a * sx,
@@ -199,6 +210,7 @@ impl CGAffineTransform {
     ///
     /// See [documentation](https://developer.apple.com/documentation/coregraphics/1455822-cgaffinetransformtranslate).
     #[inline]
+    #[doc(alias = "CGAffineTransformTranslate")]
     pub fn translate(self, tx: CGFloat, ty: CGFloat) -> Self {
         extern "C" {
             fn CGAffineTransformTranslate(
@@ -224,6 +236,7 @@ impl CGAffineTransform {
     ///
     /// See [documentation](https://developer.apple.com/documentation/coregraphics/1455996-cgaffinetransformconcat).
     #[inline]
+    #[doc(alias = "CGAffineTransformConcat")]
     pub fn concat(self, other: Self) -> Self {
         extern "C" {
             fn CGAffineTransformConcat(

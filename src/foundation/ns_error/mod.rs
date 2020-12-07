@@ -74,6 +74,7 @@ impl NSError {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nserror/1413924-domain).
     #[inline]
+    #[doc(alias = "localizedDescription")]
     pub fn localized_description(&self) -> Arc<NSString> {
         unsafe { _msg_send![self, localizedDescription] }
     }
@@ -86,6 +87,7 @@ impl NSError {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nserror/1412752-localizedfailurereason).
     #[inline]
+    #[doc(alias = "localizedFailureReason")]
     pub fn localized_failure_reason(&self) -> Option<Arc<NSString>> {
         unsafe { _msg_send![self, localizedFailureReason] }
     }
@@ -100,6 +102,7 @@ impl NSError {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nserror/1407500-localizedrecoverysuggestion).
     #[inline]
+    #[doc(alias = "localizedRecoverySuggestion")]
     pub fn localized_recovery_suggestion(&self) -> Option<Arc<NSString>> {
         unsafe { _msg_send![self, localizedRecoverySuggestion] }
     }
@@ -109,6 +112,7 @@ impl NSError {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nserror/1408864-recoveryattempter).
     #[inline]
+    #[doc(alias = "recoveryAttempter")]
     pub fn recovery_attempter(&self) -> Option<Arc<NSErrorRecoveryAttempting>> {
         unsafe { _msg_send![self, recoveryAttempter] }
     }
@@ -118,6 +122,7 @@ impl NSError {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nserror/1414718-helpanchor).
     #[inline]
+    #[doc(alias = "helpAnchor")]
     pub fn help_anchor(&self) -> Option<Arc<NSString>> {
         unsafe { _msg_send![self, helpAnchor] }
     }

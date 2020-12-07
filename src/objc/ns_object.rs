@@ -82,6 +82,7 @@ impl NSObject {
     ///
     /// See [documentation](https://developer.apple.com/documentation/objectivec/nsobject/1418978-mutablecopy).
     #[inline]
+    #[doc(alias = "mutableCopy")]
     pub fn mutable_copy(&self) -> Arc<NSObject> {
         unsafe { _msg_send_cached![self, mutableCopy] }
     }

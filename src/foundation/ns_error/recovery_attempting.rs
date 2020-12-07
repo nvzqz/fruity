@@ -31,6 +31,8 @@ impl NSErrorRecoveryAttempting {
     /// Attempts a recovery from an error noted in an application-modal dialog.
     ///
     /// See [documentation](https://developer.apple.com/documentation/objectivec/nsobject/1416402-attemptrecovery).
+    #[doc(alias = "attemptRecoveryFromError")]
+    #[doc(alias = "attemptRecoveryFromError:optionIndex:")]
     pub fn attempt_recovery(&self, error: &NSError, recovery_option_index: NSUInteger) -> bool {
         let sel = selector!(attemptRecoveryFromError:optionIndex:);
 
@@ -51,6 +53,8 @@ impl NSErrorRecoveryAttempting {
     /// Attempts a recovery from an error noted in a document-modal sheet.
     ///
     /// See [documentation](https://developer.apple.com/documentation/objectivec/nsobject/1411071-attemptrecovery).
+    #[doc(alias = "attemptRecoveryFromError")]
+    #[doc(alias = "attemptRecoveryFromError:optionIndex:delegate:didRecoverSelector:contextInfo:")]
     pub unsafe fn attempt_recovery_with(
         &self,
         error: &NSError,

@@ -45,6 +45,7 @@ impl DispatchQueue {
     /// The serial dispatch queue associated with the main thread of the current
     /// process.
     #[inline]
+    #[doc(alias = "dispatch_get_main_queue")]
     pub fn main() -> &'static Self {
         extern "C" {
             static mut _dispatch_main_q: DispatchQueue;
@@ -55,12 +56,14 @@ impl DispatchQueue {
     /// Returns the global system concurrent queue with the specified
     /// quality-of-service class.
     #[inline]
+    #[doc(alias = "dispatch_get_global_queue")]
     pub fn global_with_qos(qos_class: DispatchQosClass) -> &'static Self {
         unsafe { dispatch_get_global_queue(qos_class as _, 0) }
     }
 
     /// Returns the global system concurrent queue with the specified priority.
     #[inline]
+    #[doc(alias = "dispatch_get_global_queue")]
     pub fn global_with_priority(priority: DispatchQueuePriority) -> &'static Self {
         unsafe { dispatch_get_global_queue(priority as _, 0) }
     }
@@ -96,6 +99,7 @@ impl DispatchQueue {
     /// [`with_current_queue_label`](Self::with_current_queue_label),
     /// depending on how long the string is needed for.
     #[inline]
+    #[doc(alias = "dispatch_queue_get_label")]
     pub unsafe fn current_queue_label<'a>() -> Option<&'a CStr> {
         let label = dispatch_queue_get_label(ptr::null());
         if label.is_null() {
@@ -107,6 +111,7 @@ impl DispatchQueue {
 
     /// Returns an owned copy of the label of the current queue.
     #[inline]
+    #[doc(alias = "dispatch_queue_get_label")]
     pub fn current_queue_label_owned() -> Option<CString> {
         Self::with_current_queue_label(|label| Some(label?.to_owned()))
     }
@@ -114,6 +119,7 @@ impl DispatchQueue {
     /// Returns the result of calling the function with a reference to the label
     /// of the current queue.
     #[inline]
+    #[doc(alias = "dispatch_queue_get_label")]
     pub fn with_current_queue_label<F, T>(f: F) -> T
     where
         F: FnOnce(Option<&CStr>) -> T,
@@ -129,6 +135,7 @@ impl DispatchQueue {
     /// [Swift](https://developer.apple.com/documentation/dispatch/dispatchqueue/1780825-label) |
     /// [Objective-C](https://developer.apple.com/documentation/dispatch/1452939-dispatch_queue_get_label)
     #[inline]
+    #[doc(alias = "dispatch_queue_get_label")]
     pub fn label(&self) -> Option<&CStr> {
         unsafe {
             let label = dispatch_queue_get_label(self);
@@ -146,6 +153,7 @@ impl DispatchQueue {
     /// [Swift](https://developer.apple.com/documentation/dispatch/dispatchqueue/1781008-qos) |
     /// [Objective-C](https://developer.apple.com/documentation/dispatch/1452829-dispatch_queue_get_qos_class)
     #[inline]
+    #[doc(alias = "dispatch_queue_get_qos_class")]
     pub fn qos(&self) -> DispatchQos {
         extern "C" {
             fn dispatch_queue_get_qos_class(

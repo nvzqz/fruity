@@ -27,6 +27,7 @@ impl NSStringEncoding {
     /// This is retrieved using
     /// [`CFStringGetNameOfEncoding`](https://developer.apple.com/documentation/corefoundation/1543585-cfstringgetnameofencoding).
     #[inline]
+    #[doc(alias = "CFStringGetNameOfEncoding")]
     pub fn name(&self) -> Option<Arc<NSString>> {
         // SAFETY: The string is immediately retained.
         Some(Arc::retain(unsafe { self.name_unretained()? }))

@@ -75,6 +75,7 @@ impl Class {
     /// Returns the class definition of a specified class, or `None` if the
     /// class is not registered with the Objective-C runtime.
     #[inline]
+    #[doc(alias = "objc_getClass")]
     pub fn get(name: &CStr) -> Option<&'static Class> {
         unsafe { objc_getClass(name.as_ptr()) }
     }
@@ -86,6 +87,7 @@ impl Class {
     }
 
     /// Returns all classes registered with the Objective-C runtime.
+    #[doc(alias = "objc_getClassList")]
     pub fn all() -> Vec<&'static Class> {
         let len = Self::count();
 
@@ -138,6 +140,7 @@ impl Class {
     ///
     /// See [documentation](https://developer.apple.com/documentation/objectivec/1418956-nsobject/1418583-respondstoselector).
     #[inline]
+    #[doc(alias = "respondsToSelector")]
     pub fn responds_to_selector(&self, selector: SEL) -> bool {
         unsafe { _msg_send_cached![self, respondsToSelector: selector => BOOL] }.into()
     }
@@ -147,12 +150,14 @@ impl Class {
     ///
     /// See [documentation](https://developer.apple.com/documentation/objectivec/nsobject/1418555-instancesrespondtoselector).
     #[inline]
+    #[doc(alias = "instancesRespondToSelector")]
     pub fn instances_respond_to_selector(&self, selector: SEL) -> bool {
         unsafe { _msg_send_cached![self, instancesRespondToSelector: selector => BOOL] }.into()
     }
 
     /// Returns the name of this class.
     #[inline]
+    #[doc(alias = "class_getName")]
     pub fn name(&self) -> &CStr {
         unsafe { CStr::from_ptr(class_getName(self)) }
     }
@@ -160,6 +165,7 @@ impl Class {
     /// Returns this class's superclass, or `None` if this is a root class
     /// (e.g. [`NSObject`](struct.NSObject.html)).
     #[inline]
+    #[doc(alias = "class_getSuperclass")]
     pub fn superclass(&self) -> Option<&Class> {
         unsafe { class_getSuperclass(self) }
     }

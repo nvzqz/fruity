@@ -43,6 +43,8 @@ impl DispatchQueueBuilder<'_> {
     /// Creates a new [`DispatchQueue`](struct.DispatchQueue.html) with the
     /// configuration specified by this builder.
     #[inline]
+    #[doc(alias = "dispatch_queue_create")]
+    #[doc(alias = "dispatch_queue_create_with_target")]
     pub fn build(&self) -> Arc<DispatchQueue> {
         extern "C" {
             // fn dispatch_queue_create(

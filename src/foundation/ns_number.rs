@@ -179,6 +179,7 @@ impl NSNumber {
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsnumber/1551475-numberwithbool).
     #[inline]
     #[doc(alias = "numberWithBool")]
+    #[doc(alias = "numberWithBool:")]
     pub fn from_bool(value: bool) -> Arc<Self> {
         unsafe { _msg_send![Self::class(), numberWithBool: BOOL::from(value)] }
     }
@@ -188,6 +189,7 @@ impl NSNumber {
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsnumber/1551471-numberwithfloat)
     #[inline]
     #[doc(alias = "numberWithFloat")]
+    #[doc(alias = "numberWithFloat:")]
     pub fn from_float(value: c_float) -> Arc<Self> {
         unsafe { _msg_send![Self::class(), numberWithFloat: value] }
     }
@@ -197,6 +199,7 @@ impl NSNumber {
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsnumber/1551463-numberwithdouble)
     #[inline]
     #[doc(alias = "numberWithDouble")]
+    #[doc(alias = "numberWithDouble:")]
     pub fn from_double(value: c_double) -> Arc<Self> {
         unsafe { _msg_send![Self::class(), numberWithDouble: value] }
     }
@@ -206,6 +209,7 @@ impl NSNumber {
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsnumber/1551464-numberwithchar)
     #[inline]
     #[doc(alias = "numberWithChar")]
+    #[doc(alias = "numberWithChar:")]
     pub fn from_char(value: c_char) -> Arc<Self> {
         unsafe { _msg_send![Self::class(), numberWithChar: value] }
     }
@@ -215,6 +219,7 @@ impl NSNumber {
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsnumber/1551476-numberwithshort)
     #[inline]
     #[doc(alias = "numberWithShort")]
+    #[doc(alias = "numberWithShort:")]
     pub fn from_short(value: c_short) -> Arc<Self> {
         unsafe { _msg_send![Self::class(), numberWithShort: value] }
     }
@@ -224,6 +229,7 @@ impl NSNumber {
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsnumber/1551470-numberwithint)
     #[inline]
     #[doc(alias = "numberWithInt")]
+    #[doc(alias = "numberWithInt:")]
     pub fn from_int(value: c_int) -> Arc<Self> {
         unsafe { _msg_send![Self::class(), numberWithInt: value] }
     }
@@ -233,6 +239,7 @@ impl NSNumber {
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsnumber/1551474-numberwithlong)
     #[inline]
     #[doc(alias = "numberWithLong")]
+    #[doc(alias = "numberWithLong:")]
     pub fn from_long(value: c_long) -> Arc<Self> {
         unsafe { _msg_send![Self::class(), numberWithLong: value] }
     }
@@ -242,6 +249,7 @@ impl NSNumber {
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsnumber/1551462-numberwithlonglong)
     #[inline]
     #[doc(alias = "numberWithLongLong")]
+    #[doc(alias = "numberWithLongLong:")]
     pub fn from_longlong(value: c_longlong) -> Arc<Self> {
         unsafe { _msg_send![Self::class(), numberWithLongLong: value] }
     }
@@ -251,6 +259,7 @@ impl NSNumber {
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsnumber/1551473-numberwithinteger)
     #[inline]
     #[doc(alias = "numberWithInteger")]
+    #[doc(alias = "numberWithInteger:")]
     pub fn from_integer(value: NSInteger) -> Arc<Self> {
         unsafe { _msg_send![Self::class(), numberWithInteger: value] }
     }
@@ -260,6 +269,7 @@ impl NSNumber {
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsnumber/1551468-numberwithunsignedchar)
     #[inline]
     #[doc(alias = "numberWithUnsignedChar")]
+    #[doc(alias = "numberWithUnsignedChar:")]
     pub fn from_unsigned_char(value: c_uchar) -> Arc<Self> {
         unsafe { _msg_send![Self::class(), numberWithUnsignedChar: value] }
     }
@@ -269,6 +279,7 @@ impl NSNumber {
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsnumber/1551467-numberwithunsignedshort)
     #[inline]
     #[doc(alias = "numberWithUnsignedShort")]
+    #[doc(alias = "numberWithUnsignedShort:")]
     pub fn from_unsigned_short(value: c_ushort) -> Arc<Self> {
         unsafe { _msg_send![Self::class(), numberWithUnsignedShort: value] }
     }
@@ -278,6 +289,7 @@ impl NSNumber {
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsnumber/1551472-numberwithunsignedint)
     #[inline]
     #[doc(alias = "numberWithUnsignedInt")]
+    #[doc(alias = "numberWithUnsignedInt:")]
     pub fn from_unsigned_int(value: c_uint) -> Arc<Self> {
         unsafe { _msg_send![Self::class(), numberWithUnsignedInt: value] }
     }
@@ -287,6 +299,7 @@ impl NSNumber {
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsnumber/1551477-numberwithunsignedlong)
     #[inline]
     #[doc(alias = "numberWithUnsignedLong")]
+    #[doc(alias = "numberWithUnsignedLong:")]
     pub fn from_unsigned_long(value: c_ulong) -> Arc<Self> {
         unsafe { _msg_send![Self::class(), numberWithUnsignedLong: value] }
     }
@@ -296,6 +309,7 @@ impl NSNumber {
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsnumber/1551465-numberwithunsignedlonglong)
     #[inline]
     #[doc(alias = "numberWithUnsignedLongLong")]
+    #[doc(alias = "numberWithUnsignedLongLong:")]
     pub fn from_unsigned_longlong(value: c_ulonglong) -> Arc<Self> {
         unsafe { _msg_send![Self::class(), numberWithUnsignedLongLong: value] }
     }
@@ -305,6 +319,7 @@ impl NSNumber {
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsnumber/1551469-numberwithunsignedinteger)
     #[inline]
     #[doc(alias = "numberWithUnsignedInteger")]
+    #[doc(alias = "numberWithUnsignedInteger:")]
     pub fn from_unsigned_integer(value: NSUInteger) -> Arc<Self> {
         unsafe { _msg_send![Self::class(), numberWithUnsignedInteger: value] }
     }
@@ -323,6 +338,7 @@ impl NSNumber {
     /// This internally references
     /// [`kCFBooleanFalse`](https://developer.apple.com/documentation/corefoundation/kCFBooleanFalse).
     #[inline]
+    #[doc(alias = "kCFBooleanFalse")]
     pub fn no() -> &'static NSNumber {
         extern "C" {
             static kCFBooleanFalse: NSNumber;
@@ -335,6 +351,7 @@ impl NSNumber {
     /// This internally references
     /// [`kCFBooleanTrue`](https://developer.apple.com/documentation/corefoundation/kCFBooleanTrue).
     #[inline]
+    #[doc(alias = "kCFBooleanTrue")]
     pub fn yes() -> &'static NSNumber {
         extern "C" {
             static kCFBooleanTrue: NSNumber;
@@ -348,6 +365,7 @@ impl NSNumber {
     /// This internally references
     /// [`kCFNumberNaN`](https://developer.apple.com/documentation/corefoundation/kCFNumberNaN).
     #[inline]
+    #[doc(alias = "kCFNumberNaN")]
     pub fn nan() -> &'static NSNumber {
         extern "C" {
             static kCFNumberNaN: NSNumber;
@@ -360,6 +378,7 @@ impl NSNumber {
     /// This internally references
     /// [`kCFNumberPositiveInfinity`](https://developer.apple.com/documentation/corefoundation/kcfnumberpositiveinfinity).
     #[inline]
+    #[doc(alias = "kCFNumberPositiveInfinity")]
     pub fn infinity() -> &'static NSNumber {
         extern "C" {
             static kCFNumberPositiveInfinity: NSNumber;
@@ -372,6 +391,7 @@ impl NSNumber {
     /// This internally references
     /// [`kCFNumberNegativeInfinity`](https://developer.apple.com/documentation/corefoundation/kcfnumbernegativeinfinity).
     #[inline]
+    #[doc(alias = "kCFNumberNegativeInfinity")]
     pub fn neg_infinity() -> &'static NSNumber {
         extern "C" {
             static kCFNumberNegativeInfinity: NSNumber;
@@ -411,6 +431,7 @@ impl NSNumber {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsnumber/1415802-stringvalue)
     #[inline]
+    #[doc(alias = "stringValue")]
     pub fn string_value(&self) -> Arc<NSString> {
         unsafe { _msg_send![self, stringValue] }
     }
@@ -420,6 +441,7 @@ impl NSNumber {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsnumber/1409984-descriptionwithlocale)
     #[inline]
+    #[doc(alias = "descriptionWithLocale")]
     pub fn description_with_locale<L>(&self, locale: Option<&L>) -> Arc<NSString>
     where
         L: AsRef<ObjCObject>,
@@ -441,6 +463,7 @@ impl NSNumber {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsnumber/1410865-boolvalue).
     #[inline]
+    #[doc(alias = "boolValue")]
     pub fn bool_value(&self) -> bool {
         unsafe { _msg_send![self, boolValue => BOOL] }.into()
     }
@@ -449,6 +472,7 @@ impl NSNumber {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsnumber/1418317-floatvalue).
     #[inline]
+    #[doc(alias = "floatValue")]
     pub fn float_value(&self) -> c_float {
         unsafe { _msg_send![self, floatValue] }
     }
@@ -457,6 +481,7 @@ impl NSNumber {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsnumber/1414104-doublevalue).
     #[inline]
+    #[doc(alias = "doubleValue")]
     pub fn double_value(&self) -> c_double {
         unsafe { _msg_send![self, doubleValue] }
     }
@@ -465,6 +490,7 @@ impl NSNumber {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsnumber/1407838-charvalue).
     #[inline]
+    #[doc(alias = "charValue")]
     pub fn char_value(&self) -> c_char {
         unsafe { _msg_send![self, charValue] }
     }
@@ -473,6 +499,7 @@ impl NSNumber {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsnumber/1407601-shortvalue).
     #[inline]
+    #[doc(alias = "shortValue")]
     pub fn short_value(&self) -> c_short {
         unsafe { _msg_send![self, shortValue] }
     }
@@ -481,6 +508,7 @@ impl NSNumber {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsnumber/1407153-intvalue).
     #[inline]
+    #[doc(alias = "intValue")]
     pub fn int_value(&self) -> c_int {
         unsafe { _msg_send![self, intValue] }
     }
@@ -489,6 +517,7 @@ impl NSNumber {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsnumber/1412566-longvalue).
     #[inline]
+    #[doc(alias = "longValue")]
     pub fn long_value(&self) -> c_long {
         unsafe { _msg_send![self, longValue] }
     }
@@ -497,6 +526,7 @@ impl NSNumber {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsnumber/1416870-longlongvalue).
     #[inline]
+    #[doc(alias = "longLongValue")]
     pub fn longlong_value(&self) -> c_longlong {
         unsafe { _msg_send![self, longLongValue] }
     }
@@ -505,6 +535,7 @@ impl NSNumber {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsnumber/1412554-integervalue).
     #[inline]
+    #[doc(alias = "integerValue")]
     pub fn integer_value(&self) -> NSInteger {
         unsafe { _msg_send![self, integerValue] }
     }
@@ -513,6 +544,7 @@ impl NSNumber {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsnumber/1409016-unsignedcharvalue).
     #[inline]
+    #[doc(alias = "unsignedCharValue")]
     pub fn unsigned_char_value(&self) -> c_uchar {
         unsafe { _msg_send![self, unsignedCharValue] }
     }
@@ -521,6 +553,7 @@ impl NSNumber {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsnumber/1410604-unsignedshortvalue).
     #[inline]
+    #[doc(alias = "unsignedShortValue")]
     pub fn unsigned_short_value(&self) -> c_ushort {
         unsafe { _msg_send![self, unsignedShortValue] }
     }
@@ -529,6 +562,7 @@ impl NSNumber {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsnumber/1417875-unsignedintvalue).
     #[inline]
+    #[doc(alias = "unsignedIntValue")]
     pub fn unsigned_int_value(&self) -> c_uint {
         unsafe { _msg_send![self, unsignedIntValue] }
     }
@@ -537,6 +571,7 @@ impl NSNumber {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsnumber/1415252-unsignedlongvalue).
     #[inline]
+    #[doc(alias = "unsignedLongValue")]
     pub fn unsigned_long_value(&self) -> c_ulong {
         unsafe { _msg_send![self, unsignedLongValue] }
     }
@@ -545,6 +580,7 @@ impl NSNumber {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsnumber/1414524-unsignedlonglongvalue).
     #[inline]
+    #[doc(alias = "unsignedLongLongValue")]
     pub fn unsigned_longlong_value(&self) -> c_ulonglong {
         unsafe { _msg_send![self, unsignedLongLongValue] }
     }
@@ -553,6 +589,7 @@ impl NSNumber {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsnumber/1413324-unsignedintegervalue).
     #[inline]
+    #[doc(alias = "unsignedIntegerValue")]
     pub fn unsigned_integer_value(&self) -> NSUInteger {
         unsafe { _msg_send![self, unsignedIntegerValue] }
     }

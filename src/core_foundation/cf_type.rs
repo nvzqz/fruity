@@ -27,6 +27,7 @@ pub struct CFType {
 
 impl ObjectType for CFType {
     #[inline]
+    #[doc(alias = "CFRetain")]
     fn retain(obj: &Self) -> Arc<Self> {
         extern "C" {
             fn CFRetain(obj: &CFType) -> Arc<CFType>;
@@ -35,6 +36,7 @@ impl ObjectType for CFType {
     }
 
     #[inline]
+    #[doc(alias = "CFRelease")]
     unsafe fn release(obj: NonNull<Self>) {
         extern "C" {
             fn CFRelease(obj: NonNull<CFType>);
@@ -56,6 +58,7 @@ impl AsRef<CFType> for CFType {
 
 impl PartialEq for CFType {
     #[inline]
+    #[doc(alias = "CFEqual")]
     fn eq(&self, other: &Self) -> bool {
         extern "C" {
             fn CFEqual(cf1: &CFType, cf2: &CFType) -> Boolean;
@@ -85,6 +88,7 @@ impl CFType {
     ///
     /// See [documentation](https://developer.apple.com/documentation/corefoundation/1521288-cfgetretaincount).
     #[inline]
+    #[doc(alias = "CFGetRetainCount")]
     pub fn retain_count(&self) -> CFIndex {
         extern "C" {
             fn CFGetRetainCount(cf: &CFType) -> CFIndex;
@@ -95,6 +99,7 @@ impl CFType {
     /// Returns a code that can be used to identify `self` in a hashing
     /// structure.
     #[inline]
+    #[doc(alias = "CFHash")]
     pub fn hash(&self) -> CFHashCode {
         extern "C" {
             fn CFHash(cf: &CFType) -> CFHashCode;
@@ -104,6 +109,7 @@ impl CFType {
 
     /// Returns the unique identifier of an opaque type to which `self` belongs.
     #[inline]
+    #[doc(alias = "CFGetTypeID")]
     pub fn get_type_id(&self) -> CFTypeID {
         extern "C" {
             fn CFGetTypeID(cf: &CFType) -> CFTypeID;

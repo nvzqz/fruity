@@ -28,6 +28,7 @@ impl CGPoint {
     /// This is equivalent to
     /// [`CGPointMake`](https://developer.apple.com/documentation/coregraphics/1455746-cgpointmake).
     #[inline]
+    #[doc(alias = "CGPointMake")]
     pub const fn new(x: CGFloat, y: CGFloat) -> Self {
         Self { x, y }
     }
@@ -43,6 +44,7 @@ impl CGPoint {
     ///
     /// See [documentation](https://developer.apple.com/documentation/coregraphics/1454251-cgpointapplyaffinetransform).
     #[inline]
+    #[doc(alias = "CGPointApplyAffineTransform")]
     pub fn apply(self, transform: CGAffineTransform) -> Self {
         extern "C" {
             // Looking at the disassembly, it appears that this operation is

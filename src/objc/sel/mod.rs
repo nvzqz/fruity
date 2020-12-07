@@ -27,6 +27,7 @@ unsafe impl Sync for SEL {}
 
 impl PartialEq for SEL {
     #[inline]
+    #[doc(alias = "sel_isEqual")]
     fn eq(&self, other: &Self) -> bool {
         extern "C" {
             fn sel_isEqual(lhs: SEL, rhs: SEL) -> BOOL;
@@ -52,6 +53,7 @@ impl SEL {
     ///
     /// The name must be a non-null UTF-8 C string.
     #[inline]
+    #[doc(alias = "sel_registerName")]
     pub unsafe fn register(name: *const c_char) -> Self {
         sel_registerName(name)
     }

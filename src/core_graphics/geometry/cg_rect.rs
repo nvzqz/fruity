@@ -16,11 +16,13 @@ pub struct CGRect {
 /// Rectangle construction.
 impl CGRect {
     /// A rectangle with zero origin and size.
+    #[doc(alias = "CGRectZero")]
     pub const ZERO: Self = Self::from_parts(CGPoint::ZERO, CGSize::ZERO);
 
     /// The null rectangle, representing an invalid value.
     ///
     /// See [documentation](https://developer.apple.com/documentation/coregraphics/cgrectnull).
+    #[doc(alias = "CGRectNull")]
     pub const NULL: Self = Self::from_parts(
         CGPoint::new(CGFloat::INFINITY, CGFloat::INFINITY),
         CGSize::ZERO,
@@ -29,6 +31,7 @@ impl CGRect {
     /// A rectangle that has infinite extent.
     ///
     /// See [documentation](https://developer.apple.com/documentation/coregraphics/cgrectinfinite).
+    #[doc(alias = "CGRectInfinite")]
     pub const INFINITE: Self = {
         let max = CGFloat::MAX;
         let min = CGFloat::MIN / 2.0;
@@ -41,6 +44,7 @@ impl CGRect {
     /// This is equivalent to
     /// [`CGRectMake`](https://developer.apple.com/documentation/coregraphics/1455245-cgrectmake).
     #[inline]
+    #[doc(alias = "CGRectMake")]
     pub const fn new(x: CGFloat, y: CGFloat, width: CGFloat, height: CGFloat) -> Self {
         Self::from_parts(CGPoint::new(x, y), CGSize::new(width, height))
     }
@@ -152,6 +156,7 @@ impl CGRect {
     ///
     /// See [documentation](https://developer.apple.com/documentation/coregraphics/1455948-cgrectgetminx).
     #[inline]
+    #[doc(alias = "CGRectGetMinX")]
     pub fn min_x(&self) -> CGFloat {
         extern "C" {
             fn CGRectGetMinX(rect: CGRect) -> CGFloat;
@@ -163,6 +168,7 @@ impl CGRect {
     ///
     /// See [documentation](https://developer.apple.com/documentation/coregraphics/1454832-cgrectgetminy).
     #[inline]
+    #[doc(alias = "CGRectGetMinY")]
     pub fn min_y(&self) -> CGFloat {
         extern "C" {
             fn CGRectGetMinY(rect: CGRect) -> CGFloat;
@@ -174,6 +180,7 @@ impl CGRect {
     ///
     /// See [documentation](https://developer.apple.com/documentation/coregraphics/1456175-cgrectgetmidx).
     #[inline]
+    #[doc(alias = "CGRectGetMidX")]
     pub fn mid_x(&self) -> CGFloat {
         extern "C" {
             fn CGRectGetMidX(rect: CGRect) -> CGFloat;
@@ -185,6 +192,7 @@ impl CGRect {
     ///
     /// See [documentation](https://developer.apple.com/documentation/coregraphics/1456550-cgrectgetmidy).
     #[inline]
+    #[doc(alias = "CGRectGetMidY")]
     pub fn mid_y(&self) -> CGFloat {
         extern "C" {
             fn CGRectGetMidY(rect: CGRect) -> CGFloat;
@@ -196,6 +204,7 @@ impl CGRect {
     ///
     /// See [documentation](https://developer.apple.com/documentation/coregraphics/1454334-cgrectgetmaxx).
     #[inline]
+    #[doc(alias = "CGRectGetMaxX")]
     pub fn max_x(&self) -> CGFloat {
         extern "C" {
             fn CGRectGetMaxX(rect: CGRect) -> CGFloat;
@@ -207,6 +216,7 @@ impl CGRect {
     ///
     /// See [documentation](https://developer.apple.com/documentation/coregraphics/1454060-cgrectgetmaxy).
     #[inline]
+    #[doc(alias = "CGRectGetMaxY")]
     pub fn max_y(&self) -> CGFloat {
         extern "C" {
             fn CGRectGetMaxY(rect: CGRect) -> CGFloat;
@@ -221,6 +231,7 @@ impl CGRect {
     ///
     /// See [documentation](https://developer.apple.com/documentation/coregraphics/1454917-cgrectisempty).
     #[inline]
+    #[doc(alias = "CGRectIsEmpty")]
     pub fn is_empty(&self) -> bool {
         extern "C" {
             fn CGRectIsEmpty(rect: CGRect) -> u8;
@@ -232,6 +243,7 @@ impl CGRect {
     ///
     /// See [documentation](https://developer.apple.com/documentation/coregraphics/1455471-cgrectisnull).
     #[inline]
+    #[doc(alias = "CGRectIsNull")]
     pub fn is_null(&self) -> bool {
         extern "C" {
             fn CGRectIsNull(rect: CGRect) -> u8;
@@ -243,6 +255,7 @@ impl CGRect {
     ///
     /// See [documentation](https://developer.apple.com/documentation/coregraphics/1455008-cgrectisinfinite).
     #[inline]
+    #[doc(alias = "CGRectIsInfinite")]
     pub fn is_infinite(&self) -> bool {
         extern "C" {
             fn CGRectIsInfinite(rect: CGRect) -> u8;
@@ -254,6 +267,7 @@ impl CGRect {
     ///
     /// See [documentation](https://developer.apple.com/documentation/coregraphics/1456316-cgrectcontainspoint).
     #[inline]
+    #[doc(alias = "CGRectContainsPoint")]
     pub fn contains_point(&self, point: CGPoint) -> bool {
         extern "C" {
             fn CGRectContainsPoint(rect: CGRect, point: CGPoint) -> u8;
@@ -265,6 +279,7 @@ impl CGRect {
     ///
     /// See [documentation](https://developer.apple.com/documentation/coregraphics/1454186-cgrectcontainsrect).
     #[inline]
+    #[doc(alias = "CGRectContainsRect")]
     pub fn contains_rect(&self, other: &Self) -> bool {
         extern "C" {
             fn CGRectContainsRect(r1: CGRect, r2: CGRect) -> u8;
@@ -276,6 +291,7 @@ impl CGRect {
     ///
     /// See [documentation](https://developer.apple.com/documentation/coregraphics/1454747-cgrectintersectsrect).
     #[inline]
+    #[doc(alias = "CGRectIntersectsRect")]
     pub fn intersects(&self, other: &Self) -> bool {
         extern "C" {
             fn CGRectIntersectsRect(r1: CGRect, r2: CGRect) -> u8;
@@ -287,6 +303,7 @@ impl CGRect {
     ///
     /// See [documentation](https://developer.apple.com/documentation/coregraphics/1456432-cgrectstandardize).
     #[inline]
+    #[doc(alias = "CGRectStandardize")]
     pub fn standardize(self) -> Self {
         extern "C" {
             fn CGRectStandardize(rect: CGRect) -> CGRect;
@@ -299,6 +316,7 @@ impl CGRect {
     ///
     /// See [documentation](https://developer.apple.com/documentation/coregraphics/1456348-cgrectintegral).
     #[inline]
+    #[doc(alias = "CGRectIntegral")]
     pub fn integral(self) -> Self {
         extern "C" {
             fn CGRectIntegral(rect: CGRect) -> CGRect;
@@ -310,6 +328,7 @@ impl CGRect {
     ///
     /// See [documentation](https://developer.apple.com/documentation/coregraphics/1455875-cgrectapplyaffinetransform).
     #[inline]
+    #[doc(alias = "CGRectApplyAffineTransform")]
     pub fn apply(self, transform: CGAffineTransform) -> Self {
         extern "C" {
             fn CGRectApplyAffineTransform(rect: CGRect, transform: CGAffineTransform) -> CGRect;
@@ -321,6 +340,7 @@ impl CGRect {
     ///
     /// See [documentation](https://developer.apple.com/documentation/coregraphics/1454841-cgrectoffset).
     #[inline]
+    #[doc(alias = "CGRectOffset")]
     pub fn offset(self, dx: CGFloat, dy: CGFloat) -> Self {
         extern "C" {
             fn CGRectOffset(rect: CGRect, dx: CGFloat, dy: CGFloat) -> CGRect;
@@ -333,6 +353,7 @@ impl CGRect {
     ///
     /// See [documentation](https://developer.apple.com/documentation/coregraphics/1454218-cgrectinset).
     #[inline]
+    #[doc(alias = "CGRectInset")]
     pub fn inset(self, dx: CGFloat, dy: CGFloat) -> Self {
         extern "C" {
             fn CGRectInset(rect: CGRect, dx: CGFloat, dy: CGFloat) -> CGRect;
@@ -356,6 +377,7 @@ impl CGRect {
     ///
     /// See [documentation](https://developer.apple.com/documentation/coregraphics/1455925-cgrectdivide).
     #[inline]
+    #[doc(alias = "CGRectDivide")]
     pub fn divide(self, amount: CGFloat, edge: CGRectEdge) -> (Self, Self) {
         extern "C" {
             fn CGRectDivide(
@@ -386,6 +408,7 @@ impl CGRect {
     ///
     /// See [documentation](https://developer.apple.com/documentation/coregraphics/1455837-cgrectunion).
     #[inline]
+    #[doc(alias = "CGRectUnion")]
     pub fn union(self, other: Self) -> Self {
         extern "C" {
             fn CGRectUnion(r1: CGRect, r2: CGRect) -> CGRect;
@@ -397,6 +420,7 @@ impl CGRect {
     ///
     /// See [documentation](https://developer.apple.com/documentation/coregraphics/1455346-cgrectintersection).
     #[inline]
+    #[doc(alias = "CGRectIntersection")]
     pub fn intersection(self, other: Self) -> Self {
         extern "C" {
             fn CGRectIntersection(r1: CGRect, r2: CGRect) -> CGRect;

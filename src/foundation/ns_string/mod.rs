@@ -211,6 +211,7 @@ impl NSString {
     /// The first time this is called, one pass is done to determine the length
     /// of the slice. The slice is then cached for subsequent calls.
     #[inline]
+    #[doc(alias = "availableStringEncodings")]
     pub fn available_encodings_slice() -> &'static [NSStringEncoding] {
         use std::sync::atomic::{AtomicPtr, AtomicUsize, Ordering};
 
@@ -261,6 +262,7 @@ impl NSString {
     /// Unlike [`available_encodings_slice`](#method.available_encodings_slice),
     /// this is implemented lazily and does not perform caching.
     #[inline]
+    #[doc(alias = "availableStringEncodings")]
     pub fn available_encodings_iter() -> impl Iterator<Item = NSStringEncoding> {
         #[repr(transparent)]
         struct Iter(*const NSStringEncoding);
@@ -293,6 +295,7 @@ impl NSString {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsstring/1417579-availablestringencodings).
     #[inline]
+    #[doc(alias = "availableStringEncodings")]
     pub fn available_encodings_ptr() -> *const NSStringEncoding {
         unsafe { _msg_send![Self::class(), availableStringEncodings] }
     }
@@ -304,6 +307,7 @@ impl NSString {
     /// the same cache as
     /// [`available_encodings_slice`](#method.available_encodings_slice).
     #[inline]
+    #[doc(alias = "availableStringEncodings")]
     pub fn available_encodings_count() -> usize {
         Self::available_encodings_slice().len()
     }
@@ -338,6 +342,8 @@ impl NSString {
 
     /// Creates an immutable string object from copying a slice.
     #[inline]
+    #[doc(alias = "initWithBytes")]
+    #[doc(alias = "initWithBytes:length:encoding:")]
     pub fn from_str(s: &str) -> Arc<NSString> {
         unsafe { Self::_from_str(s, Self::class()) }
     }
@@ -348,6 +354,8 @@ impl NSString {
     ///
     /// The returned string object or its clones must not outlive the referenced
     /// string slice.
+    #[doc(alias = "initWithBytesNoCopy")]
+    #[doc(alias = "initWithBytesNoCopy:length:encoding:freeWhenDone:")]
     pub unsafe fn from_str_no_copy(s: &str) -> Arc<NSString> {
         let value: Arc<Self> = Self::class().alloc();
 
@@ -377,6 +385,7 @@ impl NSString {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/1415155-nsstringfromrange).
     #[inline]
+    #[doc(alias = "NSStringFromRange")]
     pub fn from_nsrange(range: NSRange) -> Arc<Self> {
         extern "C" {
             fn NSStringFromRange(range: NSRange) -> Arc<NSString>;
@@ -419,6 +428,7 @@ impl NSString {
     /// and
     /// [`kCFStringEncodingUTF8`](https://developer.apple.com/documentation/corefoundation/cfstringbuiltinencodings/kcfstringencodingutf8).
     #[inline]
+    #[doc(alias = "CFStringGetCStringPtr")]
     pub fn as_utf8_ptr(&self) -> *const c_char {
         type CFStringEncoding = u32;
 
@@ -586,6 +596,7 @@ impl NSString {
     ///
     /// See [`as_utf8_ptr`](#method.as_utf8_ptr) for the UTF-8 equivalent.
     #[inline]
+    #[doc(alias = "CFStringGetCharactersPtr")]
     pub fn as_utf16_ptr(&self) -> *const u16 {
         extern "C" {
             fn CFStringGetCharactersPtr(s: &NSString) -> *const u16;
@@ -652,6 +663,7 @@ impl NSString {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsstring/1416999-localizedcompare).
     #[inline]
+    #[doc(alias = "localizedCompare")]
     pub fn localized_compare(&self, other: &NSString) -> NSComparisonResult {
         unsafe { _msg_send![self, localizedCompare: other] }
     }
@@ -660,6 +672,7 @@ impl NSString {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsstring/1414769-caseinsensitivecompare).
     #[inline]
+    #[doc(alias = "caseInsensitiveCompare")]
     pub fn case_insensitive_compare(&self, other: &NSString) -> NSComparisonResult {
         unsafe { _msg_send![self, caseInsensitiveCompare: other] }
     }
@@ -669,6 +682,7 @@ impl NSString {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsstring/1417333-localizedcaseinsensitivecompare).
     #[inline]
+    #[doc(alias = "localizedCaseInsensitiveCompare")]
     pub fn localized_case_insensitive_compare(&self, other: &NSString) -> NSComparisonResult {
         unsafe { _msg_send![self, localizedCaseInsensitiveCompare: other] }
     }
@@ -683,6 +697,7 @@ impl NSString {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsstring/1409742-localizedstandardcompare).
     #[inline]
+    #[doc(alias = "localizedStandardCompare")]
     pub fn localized_standard_compare(&self, other: &NSString) -> NSComparisonResult {
         unsafe { _msg_send![self, localizedStandardCompare: other] }
     }
@@ -692,6 +707,7 @@ impl NSString {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsstring/1410309-hasprefix).
     #[inline]
+    #[doc(alias = "hasPrefix")]
     pub fn has_prefix(&self, prefix: &NSString) -> bool {
         unsafe { _msg_send![self, hasPrefix: prefix => BOOL] }.into()
     }
@@ -701,6 +717,7 @@ impl NSString {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsstring/1416529-hassuffix).
     #[inline]
+    #[doc(alias = "hasSuffix")]
     pub fn has_suffix(&self, suffix: &NSString) -> bool {
         unsafe { _msg_send![self, hasSuffix: suffix => BOOL] }.into()
     }

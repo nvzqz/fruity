@@ -43,6 +43,7 @@ impl CGSize {
     ///
     /// See [documentation](https://developer.apple.com/documentation/coregraphics/1454806-cgsizeapplyaffinetransform).
     #[inline]
+    #[doc(alias = "CGSizeApplyAffineTransform")]
     pub fn apply(self, transform: CGAffineTransform) -> Self {
         extern "C" {
             fn CGSizeApplyAffineTransform(size: CGSize, transform: CGAffineTransform) -> CGSize;

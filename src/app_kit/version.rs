@@ -6,6 +6,7 @@ pub struct NSAppKitVersion(pub f64);
 impl NSAppKitVersion {
     /// The most recent version of AppKit.
     #[inline]
+    #[doc(alias = "NSAppKitVersionNumber")]
     pub fn current() -> Self {
         extern "C" {
             static NSAppKitVersionNumber: NSAppKitVersion;

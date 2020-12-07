@@ -51,6 +51,7 @@ impl NSRange {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/1408420-nsrangefromstring).
     #[inline]
+    #[doc(alias = "NSRangeFromString")]
     pub fn from_nsstring(string: &NSString) -> Self {
         extern "C" {
             fn NSRangeFromString(string: &NSString) -> NSRange;
@@ -100,6 +101,7 @@ impl NSRange {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/1412317-nsunionrange).
     #[inline]
+    #[doc(alias = "NSUnionRange")]
     pub fn union(self, other: Self) -> Self {
         extern "C" {
             fn NSUnionRange(r1: NSRange, r2: NSRange) -> NSRange;
@@ -114,6 +116,7 @@ impl NSRange {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/1413065-nsintersectionrange).
     #[inline]
+    #[doc(alias = "NSIntersectionRange")]
     pub fn intersection(self, other: Self) -> Self {
         extern "C" {
             fn NSIntersectionRange(r1: NSRange, r2: NSRange) -> NSRange;

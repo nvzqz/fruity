@@ -61,6 +61,7 @@ impl NSException {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsexception/1416135-raise).
     #[inline]
+    #[doc(alias = "objc_exception_throw")]
     pub fn raise(&self) -> ! {
         // TODO(#7): Use "C-unwind" ABI when stable.
         extern "C" {

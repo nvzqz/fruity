@@ -16,6 +16,7 @@ pub struct DispatchObject {
 
 impl ObjectType for DispatchObject {
     #[inline]
+    #[doc(alias = "dispatch_retain")]
     fn retain(obj: &Self) -> Arc<Self> {
         extern "C" {
             fn dispatch_retain(obj: &DispatchObject);
@@ -27,6 +28,7 @@ impl ObjectType for DispatchObject {
     }
 
     #[inline]
+    #[doc(alias = "dispatch_release")]
     unsafe fn release(obj: NonNull<Self>) {
         extern "C" {
             fn dispatch_release(obj: NonNull<DispatchObject>);
@@ -57,6 +59,7 @@ impl DispatchObject {
     ///
     /// See [documentation](https://developer.apple.com/documentation/dispatch/1641002-dispatch_activate).
     #[inline]
+    #[doc(alias = "dispatch_activate")]
     pub fn activate(&self) {
         extern "C" {
             fn dispatch_activate(obj: &DispatchObject);
@@ -68,6 +71,7 @@ impl DispatchObject {
     ///
     /// See [documentation](https://developer.apple.com/documentation/dispatch/1452929-dispatch_resume).
     #[inline]
+    #[doc(alias = "dispatch_resume")]
     pub fn resume(&self) {
         extern "C" {
             fn dispatch_resume(obj: &DispatchObject);
@@ -79,6 +83,7 @@ impl DispatchObject {
     ///
     /// See [documentation](https://developer.apple.com/documentation/dispatch/1452801-dispatch_suspend).
     #[inline]
+    #[doc(alias = "dispatch_suspend")]
     pub fn suspend(&self) {
         extern "C" {
             fn dispatch_suspend(obj: &DispatchObject);
@@ -93,6 +98,7 @@ impl DispatchObject {
     /// [Swift](https://developer.apple.com/documentation/dispatch/dispatchobject/1452989-settarget) |
     /// [Objective-C](https://developer.apple.com/documentation/dispatch/1452989-dispatch_set_target_queue)
     #[inline]
+    #[doc(alias = "dispatch_set_target_queue")]
     pub fn set_target<Q>(&self, queue: Q)
     where
         for<'q> Q: Into<Option<&'q DispatchQueue>>,
@@ -108,6 +114,7 @@ impl DispatchObject {
     ///
     /// See [documentation](https://developer.apple.com/documentation/dispatch/1453005-dispatch_get_context).
     #[inline]
+    #[doc(alias = "dispatch_get_context")]
     pub fn context(&self) -> *mut c_void {
         extern "C" {
             fn dispatch_get_context(obj: &DispatchObject) -> *mut c_void;
@@ -119,6 +126,7 @@ impl DispatchObject {
     ///
     /// See [documentation](https://developer.apple.com/documentation/dispatch/1452807-dispatch_set_context).
     #[inline]
+    #[doc(alias = "dispatch_set_context")]
     pub fn set_context(&self, context: *mut c_void) {
         extern "C" {
             fn dispatch_set_context(obj: &DispatchObject, context: *mut c_void);

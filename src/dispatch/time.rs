@@ -89,6 +89,7 @@ impl DispatchTime {
     /// This is equivalent to
     /// [`dispatch_time`](https://developer.apple.com/documentation/dispatch/1420519-dispatch_time).
     #[inline]
+    #[doc(alias = "dispatch_time")]
     pub fn offset_nanos(self, delta: i64) -> Self {
         extern "C" {
             fn dispatch_time(when: DispatchTime, delta: i64) -> DispatchTime;
