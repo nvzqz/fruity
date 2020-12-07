@@ -5,7 +5,7 @@ macro_rules! ns_string_wrapper {
         $(#[$meta:meta])+
         $vis:vis wrapper $wrapper:ident;
     ) => {
-        objc_class_wrapper! {
+        objc_object_wrapper! {
             $(#[$meta])+
             $vis wrapper $wrapper: $crate::foundation::NSString;
         }

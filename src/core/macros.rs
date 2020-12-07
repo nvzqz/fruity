@@ -63,7 +63,7 @@ macro_rules! subclass {
 
 // This macro is intentionally undocumented to ensure it is not publicly
 // exported.
-macro_rules! class_wrapper {
+macro_rules! object_wrapper {
     (
         $(#[$meta:meta])+
         $vis:vis wrapper $wrapper:ident : $target:ty ;

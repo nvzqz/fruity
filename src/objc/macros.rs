@@ -37,12 +37,12 @@ macro_rules! objc_subclass {
 
 // This macro is intentionally undocumented to ensure it is not publicly
 // exported.
-macro_rules! objc_class_wrapper {
+macro_rules! objc_object_wrapper {
     (
         $(#[$meta:meta])+
         $vis:vis wrapper $wrapper:ident : $target:ty ;
     ) => {
-        class_wrapper! {
+        object_wrapper! {
             $(#[$meta])+
             $vis wrapper $wrapper: $target;
         }

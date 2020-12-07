@@ -31,18 +31,18 @@ The format is based on [Keep a Changelog] and this project adheres to
     `Deref`) to make a new subclass easy to declare. This macro is
     runtime-agnostic.
 
-  - `class_wrapper!` for thin wrappers over classes. Unlike `subclass!`, this is
-    not meant for creating a new class type.
+  - `object_wrapper!` for thin wrappers over object types. Unlike `subclass!`,
+    this is not meant for creating a new class type.
 
   - `objc_class_type!` implements `objc::ClassType` using the given class name.
 
   - `objc_subclass!` calls `subclass!` and `objc_class_type!`.
 
-  - `objc_class_wrapper!` calls `class_wrapper!` and implements the
+  - `objc_object_wrapper!` calls `object_wrapper!` and implements the
     `objc::ObjectType` trait.
 
-  - `ns_string_wrapper!` calls `objc_class_wrapper!` with `foundation::NSString`
-    and implements the `Debug` and `Display` traits.
+  - `ns_string_wrapper!` calls `objc_object_wrapper!` with
+    `foundation::NSString` and implements the `Debug` and `Display` traits.
 
 - `objc::ClassType` trait for types whose classes are statically available.
 
