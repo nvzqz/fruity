@@ -1,4 +1,5 @@
 use super::NSString;
+use crate::core::Arc;
 use crate::objc::{NSInteger, NSObject};
 use std::fmt;
 
@@ -55,7 +56,7 @@ impl NSError {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nserror/1413924-domain).
     #[inline]
-    pub fn domain(&self) -> NSErrorDomain {
+    pub fn domain(&self) -> Arc<NSErrorDomain> {
         unsafe { _msg_send![self, domain] }
     }
 
@@ -73,7 +74,7 @@ impl NSError {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nserror/1413924-domain).
     #[inline]
-    pub fn localized_description(&self) -> NSString {
+    pub fn localized_description(&self) -> Arc<NSString> {
         unsafe { _msg_send![self, localizedDescription] }
     }
 
@@ -85,7 +86,7 @@ impl NSError {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nserror/1412752-localizedfailurereason).
     #[inline]
-    pub fn localized_failure_reason(&self) -> Option<NSString> {
+    pub fn localized_failure_reason(&self) -> Option<Arc<NSString>> {
         unsafe { _msg_send![self, localizedFailureReason] }
     }
 
@@ -99,7 +100,7 @@ impl NSError {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nserror/1407500-localizedrecoverysuggestion).
     #[inline]
-    pub fn localized_recovery_suggestion(&self) -> Option<NSString> {
+    pub fn localized_recovery_suggestion(&self) -> Option<Arc<NSString>> {
         unsafe { _msg_send![self, localizedRecoverySuggestion] }
     }
 
@@ -108,7 +109,7 @@ impl NSError {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nserror/1408864-recoveryattempter).
     #[inline]
-    pub fn recovery_attempter(&self) -> Option<NSErrorRecoveryAttempting> {
+    pub fn recovery_attempter(&self) -> Option<Arc<NSErrorRecoveryAttempting>> {
         unsafe { _msg_send![self, recoveryAttempter] }
     }
 
@@ -117,7 +118,7 @@ impl NSError {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nserror/1414718-helpanchor).
     #[inline]
-    pub fn help_anchor(&self) -> Option<NSString> {
+    pub fn help_anchor(&self) -> Option<Arc<NSString>> {
         unsafe { _msg_send![self, helpAnchor] }
     }
 }

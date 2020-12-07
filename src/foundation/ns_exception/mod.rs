@@ -1,4 +1,5 @@
 use super::NSString;
+use crate::core::Arc;
 use crate::objc::NSObject;
 
 mod name;
@@ -75,7 +76,7 @@ impl NSException {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsexception/1410925-name).
     #[inline]
-    pub fn name(&self) -> NSExceptionName {
+    pub fn name(&self) -> Arc<NSExceptionName> {
         unsafe { _msg_send![self, name] }
     }
 
@@ -83,7 +84,7 @@ impl NSException {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsexception/1415537-reason).
     #[inline]
-    pub fn reason(&self) -> Option<NSString> {
+    pub fn reason(&self) -> Option<Arc<NSString>> {
         unsafe { _msg_send![self, reason] }
     }
 

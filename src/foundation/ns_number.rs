@@ -146,7 +146,7 @@ impl From<NSNumber> for NSString {
     }
 }
 
-impl From<&NSNumber> for NSString {
+impl From<&NSNumber> for Arc<NSString> {
     #[inline]
     fn from(number: &NSNumber) -> Self {
         number.string_value()
@@ -418,7 +418,7 @@ impl NSNumber {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsnumber/1415802-stringvalue)
     #[inline]
-    pub fn string_value(&self) -> NSString {
+    pub fn string_value(&self) -> Arc<NSString> {
         unsafe { _msg_send![self, stringValue] }
     }
 
@@ -427,7 +427,7 @@ impl NSNumber {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsnumber/1409984-descriptionwithlocale)
     #[inline]
-    pub fn description_with_locale<L>(&self, locale: Option<&L>) -> NSString
+    pub fn description_with_locale<L>(&self, locale: Option<&L>) -> Arc<NSString>
     where
         L: AsRef<ObjCObject>,
     {
