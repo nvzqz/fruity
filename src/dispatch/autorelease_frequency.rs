@@ -5,6 +5,7 @@
 /// [Swift](https://developer.apple.com/documentation/dispatch/dispatchqueue/autoreleasefrequency) |
 /// [Objective-C](https://developer.apple.com/documentation/dispatch/dispatch_autorelease_frequency_t)
 #[derive(Copy, Clone, Debug, Ord, PartialOrd, Eq, PartialEq, Hash)]
+#[non_exhaustive]
 pub enum DispatchAutoreleaseFrequency {
     /// The queue inherits its autorelease frequency from its target queue.
     Inherit = 0,
