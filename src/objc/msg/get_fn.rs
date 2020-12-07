@@ -1,6 +1,7 @@
 #[allow(unused)]
 use std::{any::TypeId, mem};
 
+// TODO(#7): Use "C-unwind" ABI when stable.
 #[allow(unused)]
 extern "C" {
     fn objc_msgSend();

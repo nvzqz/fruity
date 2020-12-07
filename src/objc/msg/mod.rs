@@ -85,6 +85,7 @@ macro_rules! impl_msg_args_base {
                 sel: SEL,
                 ($($arg,)*): Self,
             ) -> Ret {
+                // TODO(#7): Use "C-unwind" ABI when stable.
                 let msg_send: unsafe extern "C" fn(*const c_void, SEL $(, $arg)*) -> Ret
                     = mem::transmute(get_fn::msg_send_fn::<Ret>());
 
