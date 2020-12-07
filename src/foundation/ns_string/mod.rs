@@ -356,8 +356,8 @@ impl<'a> NSString<'a> {
     /// string slice.
     #[doc(alias = "initWithBytesNoCopy")]
     #[doc(alias = "initWithBytesNoCopy:length:encoding:freeWhenDone:")]
-    pub unsafe fn from_str_no_copy(s: &str) -> Arc<Self> {
-        let value: Arc<Self> = Self::class().alloc();
+    pub fn from_str_no_copy(s: &'a str) -> Arc<Self> {
+        let value: Arc<Self> = unsafe { Self::class().alloc() };
 
         #[allow(clashing_extern_declarations)]
         extern "C" {
@@ -378,7 +378,7 @@ impl<'a> NSString<'a> {
         let encoding = NSStringEncoding::UTF8;
         let free_when_done = BOOL::NO;
 
-        objc_msgSend(obj, sel, bytes, length, encoding, free_when_done)
+        unsafe { objc_msgSend(obj, sel, bytes, length, encoding, free_when_done) }
     }
 
     /// Returns a string representation of `range`.
@@ -885,8 +885,8 @@ impl<'a> NSMutableString<'a> {
     ///
     /// The returned string object or its clones must not outlive the referenced
     /// string slice.
-    pub unsafe fn from_str_no_copy(s: &mut str) -> Arc<Self> {
-        let value: Arc<Self> = Self::class().alloc();
+    pub fn from_str_no_copy(s: &'a mut str) -> Arc<Self> {
+        let value: Arc<Self> = unsafe { Self::class().alloc() };
 
         #[allow(clashing_extern_declarations)]
         extern "C" {
@@ -907,6 +907,6 @@ impl<'a> NSMutableString<'a> {
         let encoding = NSStringEncoding::UTF8;
         let free_when_done = BOOL::NO;
 
-        objc_msgSend(obj, sel, bytes, length, encoding, free_when_done)
+        unsafe { objc_msgSend(obj, sel, bytes, length, encoding, free_when_done) }
     }
 }
