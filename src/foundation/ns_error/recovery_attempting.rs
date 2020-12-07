@@ -49,8 +49,6 @@ impl NSErrorRecoveryAttempting {
     ///
     /// See [documentation](https://developer.apple.com/documentation/objectivec/nsobject/1416402-attemptrecovery).
     pub fn attempt_recovery(&self, error: &NSError, recovery_option_index: NSUInteger) -> bool {
-        #![allow(unused)]
-
         let sel = selector!(attemptRecoveryFromError:optionIndex:);
 
         let this: &NSObject = &self.0;
@@ -77,8 +75,6 @@ impl NSErrorRecoveryAttempting {
         did_recover_selector: Option<SEL>,
         context_info: *mut c_void,
     ) {
-        #![allow(unused)]
-
         let sel = selector!(
             attemptRecoveryFromError:
             optionIndex:
