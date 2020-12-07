@@ -6,24 +6,24 @@ objc_subclass! {
     /// An instance of the root class for most Objective-C objects.
     ///
     /// See [documentation](https://developer.apple.com/documentation/objectivec/nsobject).
-    pub class NSObject: ObjCObject;
+    pub class NSObject<'a>: ObjCObject<'a>;
 }
 
-impl Default for Arc<NSObject> {
+impl Default for Arc<NSObject<'_>> {
     #[inline]
     fn default() -> Self {
         unsafe { NSObject::class().alloc_init() }
     }
 }
 
-impl PartialEq for NSObject {
+impl PartialEq for NSObject<'_> {
     #[inline]
     fn eq(&self, other: &NSObject) -> bool {
         unsafe { _msg_send_any_cached![self, isEqual: other => BOOL] }.into()
     }
 }
 
-impl NSObject {
+impl<'a> NSObject<'a> {
     /// Returns this object's reference count.
     ///
     /// This method is only useful for debugging certain objects.
@@ -73,7 +73,7 @@ impl NSObject {
     ///
     /// See [documentation](https://developer.apple.com/documentation/objectivec/nsobject/1418807-copy).
     #[inline]
-    pub fn copy(&self) -> Arc<NSObject> {
+    pub fn copy(&self) -> Arc<Self> {
         unsafe { _msg_send_any_cached![self, copy] }
     }
 
@@ -83,7 +83,7 @@ impl NSObject {
     /// See [documentation](https://developer.apple.com/documentation/objectivec/nsobject/1418978-mutablecopy).
     #[inline]
     #[doc(alias = "mutableCopy")]
-    pub fn mutable_copy(&self) -> Arc<NSObject> {
+    pub fn mutable_copy(&self) -> Arc<Self> {
         unsafe { _msg_send_any_cached![self, mutableCopy] }
     }
 }

@@ -7,7 +7,7 @@ macro_rules! ns_string_wrapper {
     ) => {
         objc_object_wrapper! {
             $(#[$meta])+
-            $vis wrapper $wrapper: $crate::foundation::NSString;
+            $vis wrapper $wrapper: $crate::foundation::NSString<'static>;
         }
 
         // Use `NSString` formatting.
@@ -25,7 +25,32 @@ macro_rules! ns_string_wrapper {
                 self.0.fmt(f)
             }
         }
-    }
+    };
+    (
+        $(#[$meta:meta])+
+        $vis:vis wrapper $wrapper:ident <$lifetime:lifetime>;
+    ) => {
+        objc_object_wrapper! {
+            $(#[$meta])+
+            $vis wrapper $wrapper<$lifetime>: $crate::foundation::NSString<$lifetime>;
+        }
+
+        // Use `NSString` formatting.
+
+        impl std::fmt::Debug for $wrapper<'_> {
+            #[inline]
+            fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+                self.0.fmt(f)
+            }
+        }
+
+        impl std::fmt::Display for $wrapper<'_> {
+            #[inline]
+            fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+                self.0.fmt(f)
+            }
+        }
+    };
 }
 
 /// Creates an [`NSString`](foundation/struct.NSString.html) from a static

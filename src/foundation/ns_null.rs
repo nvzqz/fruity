@@ -5,7 +5,7 @@ objc_subclass! {
     /// don’t allow `nil` values.
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsnull).
-    pub class NSNull: NSObject;
+    pub class NSNull: NSObject<'static>;
 }
 
 impl Default for &NSNull {

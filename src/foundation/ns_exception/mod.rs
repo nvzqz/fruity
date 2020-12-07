@@ -45,7 +45,7 @@ objc_subclass! {
     /// execution.
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsexception).
-    pub class NSException: NSObject;
+    pub class NSException: NSObject<'static>;
 }
 
 /// Creating and rasing exceptions.

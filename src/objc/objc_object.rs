@@ -1,6 +1,6 @@
 use super::Class;
 use crate::core::Arc;
-use std::{cell::UnsafeCell, fmt, panic::RefUnwindSafe, ptr::NonNull};
+use std::{cell::UnsafeCell, fmt, marker::PhantomData, panic::RefUnwindSafe, ptr::NonNull};
 
 /// An automatically-reference-counted pointer to a type-erased Objective-C
 /// object.
@@ -9,7 +9,7 @@ use std::{cell::UnsafeCell, fmt, panic::RefUnwindSafe, ptr::NonNull};
 ///
 /// See [documentation](https://developer.apple.com/documentation/objectivec/id).
 #[allow(non_camel_case_types)]
-pub type id = Arc<ObjCObject>;
+pub type id<'a> = Arc<ObjCObject<'a>>;
 
 /// A type-erased instance of any Objective-C class.
 ///
@@ -27,18 +27,20 @@ pub type id = Arc<ObjCObject>;
 /// `NSObject` is the root of _almost_ all Objective-C classes. Although very
 /// rare, it is possible for other root classes to exist, such as `NSProxy`.
 #[repr(C)]
-pub struct ObjCObject {
+pub struct ObjCObject<'a> {
+    // TODO: Figure out the correct lifetime variance for `'a`.
+    _marker: PhantomData<&'a ()>,
     // Stores data that may be mutated behind a shared reference. Internal
     // mutability triggers undefined behavior without `UnsafeCell`.
     _data: UnsafeCell<[u8; 0]>,
 }
 
-impl crate::core::ObjectType for ObjCObject {
+impl crate::core::ObjectType for ObjCObject<'_> {
     #[inline]
     #[doc(alias = "objc_retain")]
     fn retain(obj: &Self) -> Arc<Self> {
         extern "C" {
-            fn objc_retain(obj: &ObjCObject) -> Arc<ObjCObject>;
+            fn objc_retain<'a>(obj: &ObjCObject<'a>) -> Arc<ObjCObject<'a>>;
         }
         unsafe { objc_retain(obj) }
     }
@@ -53,19 +55,19 @@ impl crate::core::ObjectType for ObjCObject {
     }
 }
 
-impl super::ObjectType for ObjCObject {
+impl<'a> super::ObjectType<'a> for ObjCObject<'a> {
     #[inline]
-    fn class(&self) -> &Class {
+    fn class<'s>(&'s self) -> &'s Class where 'a: 's {
         // TODO: Call `_objc_opt_class` on:
         // - macOS 10.15+
         // - iOS (unknown)
         // - tvOS (unknown)
         // - watchOS (unknown)
-        unsafe { _msg_send_any_cached![self, class] }
+        unsafe { _msg_send_strict_cached![self, class] }
     }
 }
 
-impl AsRef<ObjCObject> for ObjCObject {
+impl<'a> AsRef<ObjCObject<'a>> for ObjCObject<'a> {
     #[inline]
     fn as_ref(&self) -> &Self {
         self
@@ -73,13 +75,13 @@ impl AsRef<ObjCObject> for ObjCObject {
 }
 
 // This type is used globally, so we must be able to share it across threads.
-unsafe impl Sync for ObjCObject {}
-unsafe impl Send for ObjCObject {}
+unsafe impl Sync for ObjCObject<'_> {}
+unsafe impl Send for ObjCObject<'_> {}
 
 // Although this uses `UnsafeCell`, it does not point to any Rust types.
-impl RefUnwindSafe for ObjCObject {}
+impl RefUnwindSafe for ObjCObject<'_> {}
 
-impl fmt::Debug for ObjCObject {
+impl fmt::Debug for ObjCObject<'_> {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         (self as *const Self).fmt(f)

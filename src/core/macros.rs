@@ -3,13 +3,13 @@
 macro_rules! subclass {
     (
         $(#[$meta:meta])+
-        $vis:vis class $a:ident : $b:ty ;
+        $vis:vis class $a:ident $(<$lifetime:lifetime>)? : $b:ty ;
     ) => {
         $(#[$meta])+
         #[repr(C)]
-        $vis struct $a($b);
+        $vis struct $a $(<$lifetime>)? ($b);
 
-        impl $crate::core::ObjectType for $a {
+        impl $(<$lifetime>)? $crate::core::ObjectType for $a $(<$lifetime>)? {
             #[inline]
             fn retain(obj: &Self) -> $crate::core::Arc<Self> {
                 let obj = $crate::core::Arc::retain(&obj.0);
@@ -22,7 +22,7 @@ macro_rules! subclass {
             }
         }
 
-        impl std::ops::Deref for $a {
+        impl $(<$lifetime>)? std::ops::Deref for $a $(<$lifetime>)? {
             type Target = $b;
 
             #[inline]
@@ -31,28 +31,28 @@ macro_rules! subclass {
             }
         }
 
-        impl AsRef<$a> for $a {
+        impl $(<$lifetime>)? AsRef<$a $(<$lifetime>)?> for $a $(<$lifetime>)? {
             #[inline]
-            fn as_ref(&self) -> &$a {
+            fn as_ref(&self) -> &Self {
                 self
             }
         }
 
-        impl AsMut<$a> for $a {
+        impl $(<$lifetime>)? AsMut<$a $(<$lifetime>)?> for $a $(<$lifetime>)? {
             #[inline]
-            fn as_mut(&mut self) -> &mut $a {
+            fn as_mut(&mut self) -> &mut Self {
                 self
             }
         }
 
-        impl<T> AsRef<T> for $a where $b: AsRef<T> {
+        impl<$($lifetime,)? T> AsRef<T> for $a $(<$lifetime>)? where $b: AsRef<T> {
             #[inline]
             fn as_ref(&self) -> &T {
                 self.0.as_ref()
             }
         }
 
-        impl<T> AsMut<T> for $a where $b: AsMut<T> {
+        impl<$($lifetime,)? T> AsMut<T> for $a $(<$lifetime>)? where $b: AsMut<T> {
             #[inline]
             fn as_mut(&mut self) -> &mut T {
                 self.0.as_mut()
@@ -66,13 +66,13 @@ macro_rules! subclass {
 macro_rules! object_wrapper {
     (
         $(#[$meta:meta])+
-        $vis:vis wrapper $wrapper:ident : $target:ty ;
+        $vis:vis wrapper $wrapper:ident $(<$lifetime:lifetime>)? : $target:ty ;
     ) => {
         $(#[$meta])+
         #[repr(C)]
-        $vis struct $wrapper(pub $target);
+        $vis struct $wrapper $(<$lifetime>)? (pub $target);
 
-        impl $crate::core::ObjectType for $wrapper {
+        impl $(<$lifetime>)? $crate::core::ObjectType for $wrapper $(<$lifetime>)? {
             #[inline]
             fn retain(obj: &Self) -> $crate::core::Arc<Self> {
                 <$target>::retain(&obj.0).into()
@@ -84,7 +84,7 @@ macro_rules! object_wrapper {
             }
         }
 
-        impl From<$crate::core::Arc<$target>> for $crate::core::Arc<$wrapper> {
+        impl $(<$lifetime>)? From<$crate::core::Arc<$target>> for $crate::core::Arc<$wrapper $(<$lifetime>)?> {
             #[inline]
             fn from(obj: $crate::core::Arc<$target>) -> Self {
                 // SAFETY: Both types have equivalent memory representations.
@@ -92,7 +92,7 @@ macro_rules! object_wrapper {
             }
         }
 
-        impl From<$crate::core::Arc<$wrapper>> for $crate::core::Arc<$target> {
+        impl $(<$lifetime>)? From<$crate::core::Arc<$wrapper $(<$lifetime>)?>> for $crate::core::Arc<$target> {
             #[inline]
             fn from(obj: $crate::core::Arc<$wrapper>) -> Self {
                 // SAFETY: Both types have equivalent memory representations.
@@ -100,31 +100,31 @@ macro_rules! object_wrapper {
             }
         }
 
-        impl<T> AsRef<T> for $wrapper where $target: AsRef<T> {
+        impl<$($lifetime,)? T> AsRef<T> for $wrapper $(<$lifetime>)? where $target: AsRef<T> {
             #[inline]
             fn as_ref(&self) -> &T {
                 self.0.as_ref()
             }
         }
 
-        impl<T> AsMut<T> for $wrapper where $target: AsMut<T> {
+        impl<$($lifetime,)? T> AsMut<T> for $wrapper $(<$lifetime>)? where $target: AsMut<T> {
             #[inline]
             fn as_mut(&mut self) -> &mut T {
                 self.0.as_mut()
             }
         }
 
-        impl AsRef<$wrapper> for $target {
+        impl $(<$lifetime>)? AsRef<$wrapper $(<$lifetime>)?> for $target {
             #[inline]
-            fn as_ref(&self) -> &$wrapper {
+            fn as_ref(&self) -> &$wrapper $(<$lifetime>)? {
                 // SAFETY: Both types have equivalent memory representations.
                 unsafe { &*(self as *const $target as *const $wrapper) }
             }
         }
 
-        impl AsMut<$wrapper> for $target {
+        impl $(<$lifetime>)? AsMut<$wrapper $(<$lifetime>)?> for $target {
             #[inline]
-            fn as_mut(&mut self) -> &mut $wrapper {
+            fn as_mut(&mut self) -> &mut $wrapper $(<$lifetime>)? {
                 // SAFETY: Both types have equivalent memory representations.
                 unsafe { &mut *(self as *mut $target as *mut $wrapper) }
             }
@@ -133,16 +133,16 @@ macro_rules! object_wrapper {
         // TODO: PartialOrd<$target> for $wrapper
         // TODO: PartialOrd<$wrapper> for $target
 
-        impl PartialEq<$target> for $wrapper where $target: PartialEq {
+        impl $(<$lifetime>)? PartialEq<$target> for $wrapper $(<$lifetime>)? where $target: PartialEq {
             #[inline]
             fn eq(&self, other: &$target) -> bool {
                 self.0 == *other
             }
         }
 
-        impl PartialEq<$wrapper> for $target where $target: PartialEq {
+        impl $(<$lifetime>)? PartialEq<$wrapper $(<$lifetime>)?> for $target where $target: PartialEq {
             #[inline]
-            fn eq(&self, other: &$wrapper) -> bool {
+            fn eq(&self, other: &$wrapper $(<$lifetime>)?) -> bool {
                 *self == other.0
             }
         }

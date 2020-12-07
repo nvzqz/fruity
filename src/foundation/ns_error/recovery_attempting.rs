@@ -24,10 +24,10 @@ objc_object_wrapper! {
     ///   [`attempt_recovery`](#method.attempt_recovery) is invoked.
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nserror/nserrorrecoveryattempting).
-    pub wrapper NSErrorRecoveryAttempting: NSObject;
+    pub wrapper NSErrorRecoveryAttempting<'a>: NSObject<'a>;
 }
 
-impl NSErrorRecoveryAttempting {
+impl NSErrorRecoveryAttempting<'_> {
     /// Attempts a recovery from an error noted in an application-modal dialog.
     ///
     /// See [documentation](https://developer.apple.com/documentation/objectivec/nsobject/1416402-attemptrecovery).

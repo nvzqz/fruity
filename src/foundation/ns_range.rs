@@ -93,7 +93,7 @@ impl NSRange {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/1415155-nsstringfromrange).
     #[inline]
-    pub fn to_nsstring(self) -> Arc<NSString> {
+    pub fn to_nsstring(self) -> Arc<NSString<'static>> {
         self.into()
     }
 

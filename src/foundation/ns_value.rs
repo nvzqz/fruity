@@ -13,7 +13,7 @@ objc_subclass! {
     /// A simple container for a single C or Objective-C data item.
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsvalue).
-    pub class NSValue: NSObject;
+    pub class NSValue: NSObject<'static>;
 }
 
 /// Arbitrary values.
@@ -145,7 +145,7 @@ impl NSValue {
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsvalue/1410668-pointervalue).
     #[inline]
     pub fn nonretained_object_value(&self) -> *mut ObjCObject {
-        unsafe { _msg_send_any![self, nonretainedObjectValue] }
+        unsafe { _msg_send_strict![self, nonretainedObjectValue] }
     }
 }
 

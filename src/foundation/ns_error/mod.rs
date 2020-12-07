@@ -24,24 +24,24 @@ objc_subclass! {
     /// The [`Display`](https://doc.rust-lang.org/std/fmt/trait.Display.html)
     /// implementation writes the result of
     /// [`localized_description`](#method.localized_description).
-    pub class NSError: NSObject;
+    pub class NSError<'a>: NSObject<'a>;
 }
 
 // TODO: `fmt::Debug`
 
-impl fmt::Display for NSError {
+impl fmt::Display for NSError<'_> {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         self.localized_description().fmt(f)
     }
 }
 
-impl NSError {
+impl NSError<'_> {
     // TODO: `new(domain: &NSErrorDomain, code: NSInteger, user_info: &NSDictionary<NSErrorUserInfoKey, id>) -> Arc<Self>`
 }
 
 /// Getting error properties.
-impl NSError {
+impl NSError<'_> {
     /// Returns the error code.
     ///
     /// Note that errors are domain-specific.
@@ -64,7 +64,7 @@ impl NSError {
 }
 
 /// Getting error user info.
-impl NSError {
+impl NSError<'_> {
     /// Returns a string containing the localized description of the error.
     ///
     /// This is the object in the user info dictionary for
@@ -129,7 +129,7 @@ impl NSError {
 }
 
 /// Providing error user info.
-impl NSError {
+impl NSError<'_> {
     // TODO: Methods that use blocks:
     // - `userInfoValueProviderForDomain:`
     // - `setUserInfoValueProviderForDomain:provider:`

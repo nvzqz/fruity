@@ -42,7 +42,7 @@ impl NSStringEncoding {
         extern "C" {
             fn CFStringConvertNSStringEncodingToEncoding(enc: NSStringEncoding)
                 -> CFStringEncoding;
-            fn CFStringGetNameOfEncoding<'a>(enc: CFStringEncoding) -> Option<&'a NSString>;
+            fn CFStringGetNameOfEncoding<'a>(enc: CFStringEncoding) -> Option<&'a NSString<'a>>;
         }
 
         CFStringGetNameOfEncoding(CFStringConvertNSStringEncodingToEncoding(*self))

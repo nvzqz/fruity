@@ -34,40 +34,40 @@ objc_subclass! {
     /// A static, plain-text Unicode string object.
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsstring).
-    pub class NSString: NSObject;
+    pub class NSString<'a>: NSObject<'a>;
 }
 
-impl Default for &NSString {
+impl Default for &NSString<'_> {
     #[inline]
     fn default() -> Self {
         ns_string!("")
     }
 }
 
-impl PartialEq for NSString {
+impl PartialEq for NSString<'_> {
     #[inline]
     fn eq(&self, other: &Self) -> bool {
         unsafe { _msg_send_any_cached![self, isEqualToString: other => BOOL] }.into()
     }
 }
 
-impl Eq for NSString {}
+impl Eq for NSString<'_> {}
 
-impl PartialOrd for NSString {
+impl PartialOrd for NSString<'_> {
     #[inline]
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
         Some(self.cmp(other))
     }
 }
 
-impl Ord for NSString {
+impl Ord for NSString<'_> {
     #[inline]
     fn cmp(&self, other: &Self) -> Ordering {
         self.compare(other).into()
     }
 }
 
-impl PartialEq<str> for NSString {
+impl PartialEq<str> for NSString<'_> {
     fn eq(&self, other: &str) -> bool {
         // SAFETY: This instance is not mutated while the UTF-16 slice exists.
         if let Some(this) = unsafe { self.as_utf16() } {
@@ -92,28 +92,28 @@ impl PartialEq<str> for NSString {
     }
 }
 
-impl PartialEq<&str> for NSString {
+impl PartialEq<&str> for NSString<'_> {
     #[inline]
     fn eq(&self, other: &&str) -> bool {
         *self == **other
     }
 }
 
-impl PartialEq<NSString> for str {
+impl PartialEq<NSString<'_>> for str {
     #[inline]
     fn eq(&self, other: &NSString) -> bool {
         other == self
     }
 }
 
-impl PartialEq<NSString> for &str {
+impl PartialEq<NSString<'_>> for &str {
     #[inline]
     fn eq(&self, other: &NSString) -> bool {
         other == self
     }
 }
 
-impl PartialOrd<str> for NSString {
+impl PartialOrd<str> for NSString<'_> {
     fn partial_cmp(&self, other: &str) -> Option<Ordering> {
         // SAFETY: This instance is not mutated while the UTF-16 slice exists.
         if let Some(this) = unsafe { self.as_utf16() } {
@@ -142,49 +142,49 @@ impl PartialOrd<str> for NSString {
     }
 }
 
-impl PartialOrd<&str> for NSString {
+impl PartialOrd<&str> for NSString<'_> {
     #[inline]
     fn partial_cmp(&self, other: &&str) -> Option<Ordering> {
         self.partial_cmp(*other)
     }
 }
 
-impl PartialOrd<NSString> for str {
+impl PartialOrd<NSString<'_>> for str {
     #[inline]
     fn partial_cmp(&self, other: &NSString) -> Option<Ordering> {
         Some(other.partial_cmp(self)?.reverse())
     }
 }
 
-impl PartialOrd<NSString> for &str {
+impl PartialOrd<NSString<'_>> for &str {
     #[inline]
     fn partial_cmp(&self, other: &NSString) -> Option<Ordering> {
         Some(other.partial_cmp(self)?.reverse())
     }
 }
 
-impl From<&str> for Arc<NSString> {
+impl From<&str> for Arc<NSString<'_>> {
     #[inline]
     fn from(s: &str) -> Self {
         NSString::from_str(s)
     }
 }
 
-impl From<&mut str> for Arc<NSString> {
+impl From<&mut str> for Arc<NSString<'_>> {
     #[inline]
     fn from(s: &mut str) -> Self {
         NSString::from_str(s)
     }
 }
 
-impl From<NSRange> for Arc<NSString> {
+impl From<NSRange> for Arc<NSString<'_>> {
     #[inline]
     fn from(range: NSRange) -> Self {
         NSString::from_nsrange(range)
     }
 }
 
-impl fmt::Debug for NSString {
+impl fmt::Debug for NSString<'_> {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         // SAFETY: The lifetime of `str` is very short.
@@ -194,7 +194,7 @@ impl fmt::Debug for NSString {
     }
 }
 
-impl fmt::Display for NSString {
+impl fmt::Display for NSString<'_> {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         // SAFETY: The lifetime of `str` is very short.
@@ -205,7 +205,7 @@ impl fmt::Display for NSString {
 }
 
 /// Getting available encodings.
-impl NSString {
+impl NSString<'_> {
     /// Returns a slice containing all supported encodings.
     ///
     /// The first time this is called, one pass is done to determine the length
@@ -313,11 +313,11 @@ impl NSString {
     }
 }
 
-impl NSString {
+impl<'a> NSString<'a> {
     // Shared non-inlined `from_str` implementation.
     //
     // This allows for reducing the code size of the final binary.
-    unsafe fn _from_str(s: &str, class: &Class) -> Arc<NSString> {
+    unsafe fn _from_str(s: &str, class: &Class) -> Arc<Self> {
         let value: Arc<Self> = class.alloc();
 
         #[allow(clashing_extern_declarations)]
@@ -344,7 +344,7 @@ impl NSString {
     #[inline]
     #[doc(alias = "initWithBytes")]
     #[doc(alias = "initWithBytes:length:encoding:")]
-    pub fn from_str(s: &str) -> Arc<NSString> {
+    pub fn from_str(s: &str) -> Arc<Self> {
         unsafe { Self::_from_str(s, Self::class()) }
     }
 
@@ -356,19 +356,19 @@ impl NSString {
     /// string slice.
     #[doc(alias = "initWithBytesNoCopy")]
     #[doc(alias = "initWithBytesNoCopy:length:encoding:freeWhenDone:")]
-    pub unsafe fn from_str_no_copy(s: &str) -> Arc<NSString> {
+    pub unsafe fn from_str_no_copy(s: &str) -> Arc<Self> {
         let value: Arc<Self> = Self::class().alloc();
 
         #[allow(clashing_extern_declarations)]
         extern "C" {
-            fn objc_msgSend(
-                obj: Arc<NSString>,
+            fn objc_msgSend<'a>(
+                obj: Arc<NSString<'a>>,
                 sel: SEL,
                 bytes: *const u8,
                 length: NSUInteger,
                 encoding: NSStringEncoding,
                 free_when_done: BOOL,
-            ) -> Arc<NSString>;
+            ) -> Arc<NSString<'a>>;
         }
 
         let obj = value;
@@ -388,7 +388,7 @@ impl NSString {
     #[doc(alias = "NSStringFromRange")]
     pub fn from_nsrange(range: NSRange) -> Arc<Self> {
         extern "C" {
-            fn NSStringFromRange(range: NSRange) -> Arc<NSString>;
+            fn NSStringFromRange<'a>(range: NSRange) -> Arc<NSString<'a>>;
         }
         unsafe { NSStringFromRange(range) }
     }
@@ -398,7 +398,7 @@ impl NSString {
     ///
     /// See [documentation](https://developer.apple.com/documentation/objectivec/nsobject/1418807-copy).
     #[inline]
-    pub fn copy(&self) -> Arc<NSString> {
+    pub fn copy(&self) -> Arc<Self> {
         let copy = NSObject::copy(self);
         unsafe { Arc::cast_unchecked(copy) }
     }
@@ -408,14 +408,14 @@ impl NSString {
     ///
     /// See [documentation](https://developer.apple.com/documentation/objectivec/nsobject/1418978-mutablecopy).
     #[inline]
-    pub fn mutable_copy(&self) -> Arc<NSMutableString> {
+    pub fn mutable_copy(&self) -> Arc<NSMutableString<'a>> {
         let copy = NSObject::mutable_copy(self);
         unsafe { Arc::cast_unchecked(copy) }
     }
 }
 
 /// Getting contents as [UTF-8](https://en.wikipedia.org/wiki/UTF-8).
-impl NSString {
+impl NSString<'_> {
     /// Returns a null-terminated UTF-8 representation of `self`, or null
     /// if the internal storage of `self` does not allow this to be returned
     /// efficiently.
@@ -586,7 +586,7 @@ impl NSString {
 }
 
 /// Getting contents as [UTF-16](https://en.wikipedia.org/wiki/UTF-16).
-impl NSString {
+impl NSString<'_> {
     /// Returns a pointer to the UTF-16 representation of `self`, or null if the
     /// internal storage of `self` does not allow this to be returned
     /// efficiently.
@@ -625,7 +625,7 @@ impl NSString {
     }
 }
 
-impl NSString {
+impl NSString<'_> {
     /// Returns the number of UTF-16 code units in `self`.
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsstring/1414212-length).
@@ -727,155 +727,155 @@ objc_subclass! {
     /// A dynamic plain-text Unicode string object.
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsmutablestring).
-    pub class NSMutableString: NSString;
+    pub class NSMutableString<'a>: NSString<'a>;
 }
 
-impl Default for Arc<NSMutableString> {
+impl Default for Arc<NSMutableString<'_>> {
     #[inline]
     fn default() -> Self {
         unsafe { NSMutableString::class().alloc_init() }
     }
 }
 
-impl PartialEq for NSMutableString {
+impl PartialEq for NSMutableString<'_> {
     #[inline]
     fn eq(&self, other: &Self) -> bool {
         NSString::eq(self, other)
     }
 }
 
-impl PartialEq<NSString> for NSMutableString {
+impl PartialEq<NSString<'_>> for NSMutableString<'_> {
     #[inline]
     fn eq(&self, other: &NSString) -> bool {
         (self as &NSString).eq(other)
     }
 }
 
-impl PartialEq<NSMutableString> for NSString {
+impl PartialEq<NSMutableString<'_>> for NSString<'_> {
     #[inline]
     fn eq(&self, other: &NSMutableString) -> bool {
         self.eq(other as &NSString)
     }
 }
 
-impl Eq for NSMutableString {}
+impl Eq for NSMutableString<'_> {}
 
-impl PartialOrd for NSMutableString {
+impl PartialOrd for NSMutableString<'_> {
     #[inline]
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
         Some(self.cmp(other))
     }
 }
 
-impl PartialOrd<NSString> for NSMutableString {
+impl PartialOrd<NSString<'_>> for NSMutableString<'_> {
     #[inline]
     fn partial_cmp(&self, other: &NSString) -> Option<Ordering> {
         Some(NSString::cmp(self, other))
     }
 }
 
-impl PartialOrd<NSMutableString> for NSString {
+impl PartialOrd<NSMutableString<'_>> for NSString<'_> {
     #[inline]
     fn partial_cmp(&self, other: &NSMutableString) -> Option<Ordering> {
         Some(NSString::cmp(self, other))
     }
 }
 
-impl Ord for NSMutableString {
+impl Ord for NSMutableString<'_> {
     #[inline]
     fn cmp(&self, other: &Self) -> Ordering {
         NSString::cmp(self, other)
     }
 }
 
-impl PartialEq<str> for NSMutableString {
+impl PartialEq<str> for NSMutableString<'_> {
     #[inline]
     fn eq(&self, other: &str) -> bool {
         NSString::eq(self, other)
     }
 }
 
-impl PartialEq<&str> for NSMutableString {
+impl PartialEq<&str> for NSMutableString<'_> {
     #[inline]
     fn eq(&self, other: &&str) -> bool {
         NSString::eq(self, other)
     }
 }
 
-impl PartialEq<NSMutableString> for str {
+impl PartialEq<NSMutableString<'_>> for str {
     #[inline]
     fn eq(&self, other: &NSMutableString) -> bool {
         other == self
     }
 }
 
-impl PartialEq<NSMutableString> for &str {
+impl PartialEq<NSMutableString<'_>> for &str {
     #[inline]
     fn eq(&self, other: &NSMutableString) -> bool {
         other == self
     }
 }
 
-impl PartialOrd<str> for NSMutableString {
+impl PartialOrd<str> for NSMutableString<'_> {
     #[inline]
     fn partial_cmp(&self, other: &str) -> Option<Ordering> {
         NSString::partial_cmp(self, other)
     }
 }
 
-impl PartialOrd<&str> for NSMutableString {
+impl PartialOrd<&str> for NSMutableString<'_> {
     #[inline]
     fn partial_cmp(&self, other: &&str) -> Option<Ordering> {
         NSString::partial_cmp(self, other)
     }
 }
 
-impl PartialOrd<NSMutableString> for str {
+impl PartialOrd<NSMutableString<'_>> for str {
     #[inline]
     fn partial_cmp(&self, other: &NSMutableString) -> Option<Ordering> {
         Some(other.partial_cmp(self)?.reverse())
     }
 }
 
-impl PartialOrd<NSMutableString> for &str {
+impl PartialOrd<NSMutableString<'_>> for &str {
     #[inline]
     fn partial_cmp(&self, other: &NSMutableString) -> Option<Ordering> {
         Some(other.partial_cmp(self)?.reverse())
     }
 }
 
-impl From<&str> for Arc<NSMutableString> {
+impl From<&str> for Arc<NSMutableString<'_>> {
     #[inline]
     fn from(s: &str) -> Self {
         NSMutableString::from_str(s)
     }
 }
 
-impl From<&mut str> for Arc<NSMutableString> {
+impl From<&mut str> for Arc<NSMutableString<'_>> {
     #[inline]
     fn from(s: &mut str) -> Self {
         NSMutableString::from_str(s)
     }
 }
 
-impl fmt::Debug for NSMutableString {
+impl fmt::Debug for NSMutableString<'_> {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         (self as &NSString).fmt(f)
     }
 }
 
-impl fmt::Display for NSMutableString {
+impl fmt::Display for NSMutableString<'_> {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         (self as &NSString).fmt(f)
     }
 }
 
-impl NSMutableString {
+impl<'a> NSMutableString<'a> {
     /// Creates a mutable string object from copying a slice.
     #[inline]
-    pub fn from_str(s: &str) -> Arc<NSMutableString> {
+    pub fn from_str(s: &str) -> Arc<Self> {
         unsafe { Arc::cast_unchecked(NSString::_from_str(s, Self::class())) }
     }
 
@@ -885,19 +885,19 @@ impl NSMutableString {
     ///
     /// The returned string object or its clones must not outlive the referenced
     /// string slice.
-    pub unsafe fn from_str_no_copy(s: &mut str) -> Arc<NSMutableString> {
+    pub unsafe fn from_str_no_copy(s: &mut str) -> Arc<Self> {
         let value: Arc<Self> = Self::class().alloc();
 
         #[allow(clashing_extern_declarations)]
         extern "C" {
-            fn objc_msgSend(
-                obj: Arc<NSMutableString>,
+            fn objc_msgSend<'a>(
+                obj: Arc<NSMutableString<'a>>,
                 sel: SEL,
                 bytes: *mut u8,
                 length: NSUInteger,
                 encoding: NSStringEncoding,
                 free_when_done: BOOL,
-            ) -> Arc<NSMutableString>;
+            ) -> Arc<NSMutableString<'a>>;
         }
 
         let obj = value;

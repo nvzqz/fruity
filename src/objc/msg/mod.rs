@@ -50,8 +50,8 @@ macro_rules! _msg_send_strict_cached {
     };
 }
 
-// Do not call these methods directly. Use the `_msg_send` macros instead.
-impl ObjCObject {
+// Do not call these methods directly. Use the `_msg_send!` macro instead.
+impl ObjCObject<'_> {
     #[inline]
     pub(crate) unsafe fn _msg_send_any<T>(&self, sel: SEL) -> T
     where
@@ -71,8 +71,7 @@ impl ObjCObject {
 
     #[inline]
     pub(crate) unsafe fn _msg_send_strict<T>(&self, sel: SEL) -> T
-    where
-    {
+where {
         self._msg_send_strict_with(sel, ())
     }
 
@@ -106,8 +105,7 @@ impl Class {
 
     #[inline]
     pub(crate) unsafe fn _msg_send_strict<T>(&self, sel: SEL) -> T
-    where
-    {
+where {
         self._msg_send_strict_with(sel, ())
     }
 

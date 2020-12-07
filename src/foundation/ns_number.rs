@@ -139,7 +139,7 @@ impl From<c_ushort> for Arc<NSNumber> {
     }
 }
 
-impl From<&NSNumber> for Arc<NSString> {
+impl From<&NSNumber> for Arc<NSString<'_>> {
     #[inline]
     fn from(number: &NSNumber) -> Self {
         number.string_value()
@@ -432,7 +432,7 @@ impl NSNumber {
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsnumber/1415802-stringvalue)
     #[inline]
     #[doc(alias = "stringValue")]
-    pub fn string_value(&self) -> Arc<NSString> {
+    pub fn string_value(&self) -> Arc<NSString<'static>> {
         unsafe { _msg_send_any![self, stringValue] }
     }
 
@@ -442,9 +442,9 @@ impl NSNumber {
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsnumber/1409984-descriptionwithlocale)
     #[inline]
     #[doc(alias = "descriptionWithLocale")]
-    pub fn description_with_locale<L>(&self, locale: Option<&L>) -> Arc<NSString>
+    pub fn description_with_locale<'l, L>(&self, locale: Option<&L>) -> Arc<NSString>
     where
-        L: AsRef<ObjCObject>,
+        L: AsRef<ObjCObject<'l>>,
     {
         let locale: Option<&ObjCObject> = match &locale {
             Some(locale) => Some(locale.as_ref()),
