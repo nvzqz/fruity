@@ -74,23 +74,11 @@ impl hash::Hash for CFType {
 impl fmt::Debug for CFType {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        self.as_ptr().fmt(f)
+        (self as *const Self).fmt(f)
     }
 }
 
 impl CFType {
-    /// Casts `self` to a raw nullable pointer.
-    #[inline]
-    pub fn as_ptr(&self) -> *mut CFType {
-        self._data.get().cast()
-    }
-
-    /// Casts `self` to a raw non-null pointer.
-    #[inline]
-    pub fn as_non_null_ptr(&self) -> NonNull<CFType> {
-        NonNull::from(self).cast()
-    }
-
     /// Returns this object's reference count.
     ///
     /// This method is only useful for debugging certain objects.
