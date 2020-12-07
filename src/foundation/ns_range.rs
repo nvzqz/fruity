@@ -8,15 +8,15 @@ use std::ops::Range;
 #[repr(C)]
 #[derive(Copy, Clone, Debug, Default, Ord, PartialOrd, Eq, PartialEq, Hash)]
 pub struct NSRange {
-    /// The number of items in the range (can be 0).
-    ///
-    /// For type compatibility with the rest of the system, `LONG_MAX` is the
-    /// maximum value you should use for length.
-    pub location: NSUInteger,
     /// The start index (0 is the first, as in C arrays).
     ///
     /// For type compatibility with the rest of the system, `LONG_MAX` is the
     /// maximum value you should use for location.
+    pub location: NSUInteger,
+    /// The number of items in the range (can be 0).
+    ///
+    /// For type compatibility with the rest of the system, `LONG_MAX` is the
+    /// maximum value you should use for length.
     pub length: NSUInteger,
 }
 
