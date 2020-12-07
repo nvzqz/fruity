@@ -9,15 +9,17 @@ ns_string_wrapper! {
 macro_rules! name {
     (
         $(#[$docs:meta])+
-        $fn:ident $value:ident
+        $fn:ident $value:literal
     ) => {
         $(#[$docs])+
         #[inline]
+        #[doc(alias = $value)]
         pub fn $fn() -> &'static NSExceptionName {
             extern "C" {
-                static $value: NSExceptionName;
+                #[link_name = $value]
+                static VALUE: NSExceptionName;
             }
-            unsafe { &$value }
+            unsafe { &VALUE }
         }
     };
 }
@@ -30,7 +32,7 @@ impl NSExceptionName {
         /// You should typically use a more specific exception name.
         ///
         /// See [documentation](https://developer.apple.com/documentation/foundation/nsgenericexception).
-        generic NSGenericException
+        generic "NSGenericException"
     }
 
     name! {
@@ -38,7 +40,7 @@ impl NSExceptionName {
         /// unexpected condition within the called code.
         ///
         /// See [documentation](https://developer.apple.com/documentation/foundation/nsinternalinconsistencyexception).
-        internal_inconsistency NSInternalInconsistencyException
+        internal_inconsistency "NSInternalInconsistencyException"
     }
 
     name! {
@@ -47,7 +49,7 @@ impl NSExceptionName {
         /// required.
         ///
         /// See [documentation](https://developer.apple.com/documentation/foundation/nsinvalidargumentexception).
-        invalid_argument NSInvalidArgumentException
+        invalid_argument "NSInvalidArgumentException"
     }
 }
 
@@ -58,7 +60,7 @@ impl NSExceptionName {
         /// file-system or string encoding.
         ///
         /// See [documentation](https://developer.apple.com/documentation/foundation/nscharacterconversionexception).
-        character_conversion NSCharacterConversionException
+        character_conversion "NSCharacterConversionException"
     }
 
     name! {
@@ -66,7 +68,7 @@ impl NSExceptionName {
         /// list.
         ///
         /// See [documentation](https://developer.apple.com/documentation/foundation/nsparseerrorexception).
-        parse_error NSParseErrorException
+        parse_error "NSParseErrorException"
     }
 }
 
@@ -76,28 +78,28 @@ impl NSExceptionName {
         /// The exception raised if there is an exactness error.
         ///
         /// See [documentation](https://developer.apple.com/documentation/foundation/nsdecimalnumberexactnessexception).
-        decimal_number_exactness NSDecimalNumberExactnessException
+        decimal_number_exactness "NSDecimalNumberExactnessException"
     }
 
     name! {
         /// The exception raised on overflow.
         ///
         /// See [documentation](https://developer.apple.com/documentation/foundation/nsdecimalnumberoverflowexception).
-        decimal_number_overflow NSDecimalNumberOverflowException
+        decimal_number_overflow "NSDecimalNumberOverflowException"
     }
 
     name! {
         /// The exception raised on underflow.
         ///
         /// See [documentation](https://developer.apple.com/documentation/foundation/nsdecimalnumberunderflowexception).
-        decimal_number_underflow NSDecimalNumberUnderflowException
+        decimal_number_underflow "NSDecimalNumberUnderflowException"
     }
 
     name! {
         /// The exception raised on divide by zero.
         ///
         /// See [documentation](https://developer.apple.com/documentation/foundation/nsdecimalnumberdividebyzeroexception).
-        decimal_number_divide_by_zero NSDecimalNumberDivideByZeroException
+        decimal_number_divide_by_zero "NSDecimalNumberDivideByZeroException"
     }
 }
 
@@ -110,7 +112,7 @@ impl NSExceptionName {
         /// or if attempts to read from a file or channel fail.
         ///
         /// See [documentation](https://developer.apple.com/documentation/foundation/nsfilehandleoperationexception).
-        file_handle_operation NSFileHandleOperationException
+        file_handle_operation "NSFileHandleOperationException"
     }
 }
 
@@ -121,7 +123,7 @@ impl NSExceptionName {
         /// operation was cancelled.
         ///
         /// See [documentation](https://developer.apple.com/documentation/foundation/nsinvalidarchiveoperationexception).
-        invocation_operation_cancelled NSInvocationOperationCancelledException
+        invocation_operation_cancelled "NSInvocationOperationCancelledException"
     }
 
     name! {
@@ -129,7 +131,7 @@ impl NSExceptionName {
         /// invocation method with a `void` return type.
         ///
         /// See [documentation](https://developer.apple.com/documentation/foundation/nsinvocationoperationvoidresultexception).
-        invocation_operation_void_result NSInvocationOperationVoidResultException
+        invocation_operation_void_result "NSInvocationOperationVoidResultException"
     }
 }
 
@@ -139,7 +141,7 @@ impl NSExceptionName {
         /// The exception raised if there are problems initializing or encoding.
         ///
         /// See [documentation](https://developer.apple.com/documentation/foundation/nsinvalidarchiveoperationexception).
-        inconsistent_archive NSInconsistentArchiveException
+        inconsistent_archive "NSInconsistentArchiveException"
     }
 }
 
@@ -151,14 +153,14 @@ impl NSExceptionName {
         /// The exception raised if there is a problem creating an archive.
         ///
         /// See [documentation](https://developer.apple.com/documentation/foundation/nsinvalidarchiveoperationexception).
-        invalid_archive_operation NSInvalidArchiveOperationException
+        invalid_archive_operation "NSInvalidArchiveOperationException"
     }
 
     name! {
         /// The exception raised if there is a problem extracting an archive.
         ///
         /// See [documentation](https://developer.apple.com/documentation/foundation/nsinvalidunarchiveoperationexception).
-        invalid_unarchive_operation NSInvalidUnarchiveOperationException
+        invalid_unarchive_operation "NSInvalidUnarchiveOperationException"
     }
 }
 
@@ -168,14 +170,14 @@ impl NSExceptionName {
         /// The exception raised when a generic error occurred on receive.
         ///
         /// See [documentation](https://developer.apple.com/documentation/foundation/nsportreceiveexception).
-        port_receive NSPortReceiveException
+        port_receive "NSPortReceiveException"
     }
 
     name! {
         /// The exception raised when a generic error occurred on send.
         ///
         /// See [documentation](https://developer.apple.com/documentation/foundation/nsportsendexception).
-        port_send NSPortSendException
+        port_send "NSPortSendException"
     }
 
     name! {
@@ -183,7 +185,7 @@ impl NSExceptionName {
         /// send or receive operation.
         ///
         /// See [documentation](https://developer.apple.com/documentation/foundation/nsporttimeoutexception).
-        port_timeout NSPortTimeoutException
+        port_timeout "NSPortTimeoutException"
     }
 }
 
@@ -194,7 +196,7 @@ impl NSExceptionName {
         /// some data, such as beyond the end of a string.
         ///
         /// See [documentation](https://developer.apple.com/documentation/foundation/nsrangeexception).
-        range NSRangeException
+        range "NSRangeException"
     }
 }
 
@@ -207,7 +209,7 @@ impl NSExceptionName {
         /// [NSUndefinedKeyException userInfo Keys](https://developer.apple.com/documentation/foundation/nsundefinedkeyexception).
         ///
         /// See [documentation](https://developer.apple.com/documentation/foundation/nsundefinedkeyexception).
-        undefined_key NSUndefinedKeyException
+        undefined_key "NSUndefinedKeyException"
     }
 }
 
@@ -218,7 +220,7 @@ impl NSExceptionName {
         /// implies an unexpected condition within the distributed objects.
         ///
         /// See [documentation](https://developer.apple.com/documentation/foundation/nsdestinationinvalidexception).
-        destination_invalid NSDestinationInvalidException
+        destination_invalid "NSDestinationInvalidException"
     }
 
     name! {
@@ -226,7 +228,7 @@ impl NSExceptionName {
         /// [`NSConnection`](struct.NSConnection.html) has become invalid.
         ///
         /// See [documentation](https://developer.apple.com/documentation/foundation/nsinvalidreceiveportexception).
-        invalid_receive_port NSInvalidReceivePortException
+        invalid_receive_port "NSInvalidReceivePortException"
     }
 
     name! {
@@ -234,7 +236,7 @@ impl NSExceptionName {
         /// [`NSConnection`](struct.NSConnection.html) has become invalid.
         ///
         /// See [documentation](https://developer.apple.com/documentation/foundation/nsinvalidsendportexception).
-        invalid_send_port NSInvalidSendPortException
+        invalid_send_port "NSInvalidSendPortException"
     }
 
     name! {
@@ -242,7 +244,7 @@ impl NSExceptionName {
         /// that should not access it.
         ///
         /// See [documentation](https://developer.apple.com/documentation/foundation/nsinvalidsendportexception).
-        object_inaccessible NSObjectInaccessibleException
+        object_inaccessible "NSObjectInaccessibleException"
     }
 
     name! {
@@ -251,7 +253,7 @@ impl NSExceptionName {
         /// message to the object because the object has never been vended.
         ///
         /// See [documentation](https://developer.apple.com/documentation/foundation/nsobjectnotavailableexception).
-        object_not_available NSObjectNotAvailableException
+        object_not_available "NSObjectNotAvailableException"
     }
 }
 
@@ -264,182 +266,182 @@ impl NSExceptionName {
 impl NSExceptionName {
     name! {
         /// See [documentation](https://developer.apple.com/documentation/appkit/nstextlinetoolongexception).
-        text_line_too_long NSTextLineTooLongException
+        text_line_too_long "NSTextLineTooLongException"
     }
 
     name! {
         /// See [documentation](https://developer.apple.com/documentation/appkit/nstextnoselectionexception).
-        text_no_selection NSTextNoSelectionException
+        text_no_selection "NSTextNoSelectionException"
     }
 
     name! {
         /// See [documentation](https://developer.apple.com/documentation/appkit/nswordtableswriteexception).
-        word_tables_write NSWordTablesWriteException
+        word_tables_write "NSWordTablesWriteException"
     }
 
     name! {
         /// See [documentation](https://developer.apple.com/documentation/appkit/nswordtablesreadexception).
-        word_tables_read NSWordTablesReadException
+        word_tables_read "NSWordTablesReadException"
     }
 
     name! {
         /// See [documentation](https://developer.apple.com/documentation/appkit/nstextreadexception).
-        text_read NSTextReadException
+        text_read "NSTextReadException"
     }
 
     name! {
         /// See [documentation](https://developer.apple.com/documentation/appkit/nstextwriteexception).
-        text_write NSTextWriteException
+        text_write "NSTextWriteException"
     }
 
     name! {
         /// See [documentation](https://developer.apple.com/documentation/appkit/nspasteboardcommunicationexception).
-        pasteboard_communication NSPasteboardCommunicationException
+        pasteboard_communication "NSPasteboardCommunicationException"
     }
 
     name! {
         /// See [documentation](https://developer.apple.com/documentation/appkit/nsprintingcommunicationexception).
-        printing_communication NSPrintingCommunicationException
+        printing_communication "NSPrintingCommunicationException"
     }
 
     name! {
         /// See [documentation](https://developer.apple.com/documentation/appkit/nsabortmodalexception).
-        abort_modal NSAbortModalException
+        abort_modal "NSAbortModalException"
     }
 
     name! {
         /// See [documentation](https://developer.apple.com/documentation/appkit/nsabortprintingexception).
-        abort_printing NSAbortPrintingException
+        abort_printing "NSAbortPrintingException"
     }
 
     name! {
         /// See [documentation](https://developer.apple.com/documentation/appkit/nsillegalselectorexception).
-        illegal_selector NSIllegalSelectorException
+        illegal_selector "NSIllegalSelectorException"
     }
 
     name! {
         /// See [documentation](https://developer.apple.com/documentation/appkit/nsappkitvirtualmemoryexception).
-        app_kit_virtual_memory NSAppKitVirtualMemoryException
+        app_kit_virtual_memory "NSAppKitVirtualMemoryException"
     }
 
     name! {
         /// See [documentation](https://developer.apple.com/documentation/appkit/nsbadrtfdirectiveexception).
-        bad_rtf_directive NSBadRTFDirectiveException
+        bad_rtf_directive "NSBadRTFDirectiveException"
     }
 
     name! {
         /// See [documentation](https://developer.apple.com/documentation/appkit/nsbadrtffonttableexception).
-        bad_rtf_font_table NSBadRTFFontTableException
+        bad_rtf_font_table "NSBadRTFFontTableException"
     }
 
     name! {
         /// See [documentation](https://developer.apple.com/documentation/appkit/nsbadrtfstylesheetexception).
-        bad_rtf_style_sheet NSBadRTFStyleSheetException
+        bad_rtf_style_sheet "NSBadRTFStyleSheetException"
     }
 
     name! {
         /// See [documentation](https://developer.apple.com/documentation/appkit/nstypedstreamversionexception).
-        typed_stream_version NSTypedStreamVersionException
+        typed_stream_version "NSTypedStreamVersionException"
     }
 
     name! {
         /// See [documentation](https://developer.apple.com/documentation/appkit/nstiffexception).
-        tiff NSTIFFException
+        tiff "NSTIFFException"
     }
 
     name! {
         /// See [documentation](https://developer.apple.com/documentation/appkit/nsprintpackageexception).
-        print_package NSPrintPackageException
+        print_package "NSPrintPackageException"
     }
 
     name! {
         /// See [documentation](https://developer.apple.com/documentation/appkit/nsbadrtfcolortableexception).
-        bad_rtf_color_table NSBadRTFColorTableException
+        bad_rtf_color_table "NSBadRTFColorTableException"
     }
 
     name! {
         /// See [documentation](https://developer.apple.com/documentation/appkit/nsdraggingexception).
-        dragging NSDraggingException
+        dragging "NSDraggingException"
     }
 
     name! {
         /// See [documentation](https://developer.apple.com/documentation/appkit/nscolorlistioexception).
-        color_list_io NSColorListIOException
+        color_list_io "NSColorListIOException"
     }
 
     name! {
         /// See [documentation](https://developer.apple.com/documentation/appkit/nscolorlistnoteditableexception).
-        color_list_not_editable NSColorListNotEditableException
+        color_list_not_editable "NSColorListNotEditableException"
     }
 
     name! {
         /// See [documentation](https://developer.apple.com/documentation/appkit/nsbadbitmapparametersexception).
-        bad_bitmap_parameters NSBadBitmapParametersException
+        bad_bitmap_parameters "NSBadBitmapParametersException"
     }
 
     name! {
         /// See [documentation](https://developer.apple.com/documentation/appkit/nswindowservercommunicationexception).
-        window_server_communication NSWindowServerCommunicationException
+        window_server_communication "NSWindowServerCommunicationException"
     }
 
     name! {
         /// See [documentation](https://developer.apple.com/documentation/appkit/nsfontunavailableexception).
-        font_unavailable NSFontUnavailableException
+        font_unavailable "NSFontUnavailableException"
     }
 
     name! {
         /// See [documentation](https://developer.apple.com/documentation/appkit/nsppdincludenotfoundexception).
-        ppd_include_not_found NSPPDIncludeNotFoundException
+        ppd_include_not_found "NSPPDIncludeNotFoundException"
     }
 
     name! {
         /// See [documentation](https://developer.apple.com/documentation/appkit/nsppdparseexception).
-        ppd_parse NSPPDParseException
+        ppd_parse "NSPPDParseException"
     }
 
     name! {
         /// See [documentation](https://developer.apple.com/documentation/appkit/nsppdincludestackoverflowexception).
-        ppd_include_stack_overflow NSPPDIncludeStackOverflowException
+        ppd_include_stack_overflow "NSPPDIncludeStackOverflowException"
     }
 
     name! {
         /// See [documentation](https://developer.apple.com/documentation/appkit/nsppdincludestackunderflowexception).
-        ppd_include_stack_underflow NSPPDIncludeStackUnderflowException
+        ppd_include_stack_underflow "NSPPDIncludeStackUnderflowException"
     }
 
     name! {
         /// See [documentation](https://developer.apple.com/documentation/appkit/nsrtfpropertystackoverflowexception).
-        rtf_property_stack_overflow NSRTFPropertyStackOverflowException
+        rtf_property_stack_overflow "NSRTFPropertyStackOverflowException"
     }
 
     name! {
         /// See [documentation](https://developer.apple.com/documentation/appkit/nsappkitignoredexception).
-        app_kit_ignored NSAppKitIgnoredException
+        app_kit_ignored "NSAppKitIgnoredException"
     }
 
     name! {
         /// See [documentation](https://developer.apple.com/documentation/appkit/nsbadcomparisonexception).
-        bad_comparison NSBadComparisonException
+        bad_comparison "NSBadComparisonException"
     }
 
     name! {
         /// See [documentation](https://developer.apple.com/documentation/appkit/nsimagecacheexception).
-        image_cache NSImageCacheException
+        image_cache "NSImageCacheException"
     }
 
     name! {
         /// See [documentation](https://developer.apple.com/documentation/appkit/nsnibloadingexception).
-        nib_loading NSNibLoadingException
+        nib_loading "NSNibLoadingException"
     }
 
     name! {
         /// See [documentation](https://developer.apple.com/documentation/appkit/nsbrowserillegaldelegateexception).
-        browser_illegal_delegate NSBrowserIllegalDelegateException
+        browser_illegal_delegate "NSBrowserIllegalDelegateException"
     }
 
     name! {
         /// See [documentation](https://developer.apple.com/documentation/appkit/nsaccessibilityexception).
-        accessibility NSAccessibilityException
+        accessibility "NSAccessibilityException"
     }
 
     name! {
@@ -448,7 +450,7 @@ impl NSExceptionName {
         /// process.
         ///
         /// See [documentation](https://developer.apple.com/documentation/appkit/nsprintoperationexistsexception).
-        print_operation_exists NSPrintOperationExistsException
+        print_operation_exists "NSPrintOperationExistsException"
     }
 }
 
@@ -467,7 +469,7 @@ impl NSExceptionName {
         /// orientations.
         ///
         /// See [documentation](https://developer.apple.com/documentation/uikit/uiapplicationinvalidinterfaceorientationexception).
-        ui_application_invalid_interface_orientation UIApplicationInvalidInterfaceOrientationException
+        ui_application_invalid_interface_orientation "UIApplicationInvalidInterfaceOrientationException"
     }
 
     name! {
@@ -475,6 +477,6 @@ impl NSExceptionName {
         /// inconsistent with the view hierarchy.
         ///
         /// See [documentation](https://developer.apple.com/documentation/uikit/uiviewcontrollerhierarchyinconsistencyexception).
-        ui_view_controller_hierarchy_inconsistency UIViewControllerHierarchyInconsistencyException
+        ui_view_controller_hierarchy_inconsistency "UIViewControllerHierarchyInconsistencyException"
     }
 }
