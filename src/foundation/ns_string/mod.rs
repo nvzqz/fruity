@@ -38,7 +38,7 @@ objc_subclass! {
 }
 
 impl Default for &NSString {
-    // #[inline]
+    #[inline]
     fn default() -> Self {
         ns_string!("")
     }
