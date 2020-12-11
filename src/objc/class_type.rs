@@ -5,7 +5,7 @@ use super::{Class, ObjectType};
 /// # Related Items
 ///
 /// - [`objc::ObjectType`](crate::objc::ObjectType)
-pub trait ClassType<'a>: ObjectType<'a> {
+pub trait ClassType<'data>: ObjectType<'data> {
     /// Returns the Objective-C class that can be used to instantiate a new
     /// instance of `Self`.
     ///

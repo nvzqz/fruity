@@ -34,7 +34,7 @@ objc_subclass! {
     /// A static, plain-text Unicode string object.
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsstring).
-    pub class NSString<'a>: NSObject<'a>;
+    pub class NSString<'data>: NSObject<'data>;
 }
 
 impl Default for &NSString<'_> {
@@ -313,7 +313,7 @@ impl NSString<'_> {
     }
 }
 
-impl<'a> NSString<'a> {
+impl<'data> NSString<'data> {
     // Shared non-inlined `from_str` implementation.
     //
     // This allows for reducing the code size of the final binary.
@@ -356,19 +356,19 @@ impl<'a> NSString<'a> {
     /// string slice.
     #[doc(alias = "initWithBytesNoCopy")]
     #[doc(alias = "initWithBytesNoCopy:length:encoding:freeWhenDone:")]
-    pub fn from_str_no_copy(s: &'a str) -> Arc<Self> {
+    pub fn from_str_no_copy(s: &'data str) -> Arc<Self> {
         let value: Arc<Self> = unsafe { Self::class().alloc() };
 
         #[allow(clashing_extern_declarations)]
         extern "C" {
-            fn objc_msgSend<'a>(
-                obj: Arc<NSString<'a>>,
+            fn objc_msgSend<'data>(
+                obj: Arc<NSString<'data>>,
                 sel: SEL,
                 bytes: *const u8,
                 length: NSUInteger,
                 encoding: NSStringEncoding,
                 free_when_done: BOOL,
-            ) -> Arc<NSString<'a>>;
+            ) -> Arc<NSString<'data>>;
         }
 
         let obj = value;
@@ -388,7 +388,7 @@ impl<'a> NSString<'a> {
     #[doc(alias = "NSStringFromRange")]
     pub fn from_nsrange(range: NSRange) -> Arc<Self> {
         extern "C" {
-            fn NSStringFromRange<'a>(range: NSRange) -> Arc<NSString<'a>>;
+            fn NSStringFromRange<'data>(range: NSRange) -> Arc<NSString<'data>>;
         }
         unsafe { NSStringFromRange(range) }
     }
@@ -408,7 +408,7 @@ impl<'a> NSString<'a> {
     ///
     /// See [documentation](https://developer.apple.com/documentation/objectivec/nsobject/1418978-mutablecopy).
     #[inline]
-    pub fn mutable_copy(&self) -> Arc<NSMutableString<'a>> {
+    pub fn mutable_copy(&self) -> Arc<NSMutableString<'data>> {
         let copy = NSObject::mutable_copy(self);
         unsafe { Arc::cast_unchecked(copy) }
     }
@@ -727,7 +727,7 @@ objc_subclass! {
     /// A dynamic plain-text Unicode string object.
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nsmutablestring).
-    pub class NSMutableString<'a>: NSString<'a>;
+    pub class NSMutableString<'data>: NSString<'data>;
 }
 
 impl Default for Arc<NSMutableString<'_>> {
@@ -872,7 +872,7 @@ impl fmt::Display for NSMutableString<'_> {
     }
 }
 
-impl<'a> NSMutableString<'a> {
+impl<'data> NSMutableString<'data> {
     /// Creates a mutable string object from copying a slice.
     #[inline]
     pub fn from_str(s: &str) -> Arc<Self> {
@@ -885,19 +885,19 @@ impl<'a> NSMutableString<'a> {
     ///
     /// The returned string object or its clones must not outlive the referenced
     /// string slice.
-    pub fn from_str_no_copy(s: &'a mut str) -> Arc<Self> {
+    pub fn from_str_no_copy(s: &'data mut str) -> Arc<Self> {
         let value: Arc<Self> = unsafe { Self::class().alloc() };
 
         #[allow(clashing_extern_declarations)]
         extern "C" {
-            fn objc_msgSend<'a>(
-                obj: Arc<NSMutableString<'a>>,
+            fn objc_msgSend<'data>(
+                obj: Arc<NSMutableString<'data>>,
                 sel: SEL,
                 bytes: *mut u8,
                 length: NSUInteger,
                 encoding: NSStringEncoding,
                 free_when_done: BOOL,
-            ) -> Arc<NSMutableString<'a>>;
+            ) -> Arc<NSMutableString<'data>>;
         }
 
         let obj = value;

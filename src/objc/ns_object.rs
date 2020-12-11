@@ -6,7 +6,7 @@ objc_subclass! {
     /// An instance of the root class for most Objective-C objects.
     ///
     /// See [documentation](https://developer.apple.com/documentation/objectivec/nsobject).
-    pub class NSObject<'a>: ObjCObject<'a>;
+    pub class NSObject<'data>: ObjCObject<'data>;
 }
 
 impl Default for Arc<NSObject<'_>> {
@@ -23,7 +23,7 @@ impl PartialEq for NSObject<'_> {
     }
 }
 
-impl<'a> NSObject<'a> {
+impl<'data> NSObject<'data> {
     /// Returns this object's reference count.
     ///
     /// This method is only useful for debugging certain objects.

@@ -6,16 +6,16 @@ use super::{Class, ObjCObject};
 ///
 /// - [`objc::ClassType`](crate::objc::ClassType)
 /// - [`core::ObjectType`](crate::core::ObjectType)
-pub trait ObjectType<'a>: 'a + crate::core::ObjectType + AsRef<ObjCObject<'a>> {
+pub trait ObjectType<'data>: 'data + crate::core::ObjectType + AsRef<ObjCObject<'data>> {
     /// Casts `self` into a type-erased Objective-C object.
     #[inline]
-    fn as_objc_object(&self) -> &ObjCObject<'a> {
+    fn as_objc_object(&self) -> &ObjCObject<'data> {
         self.as_ref()
     }
 
     /// Returns the class that this object is an instance of.
     #[inline]
-    fn class<'s>(&'s self) -> &'s Class where 'a: 's {
+    fn class<'s>(&'s self) -> &'s Class where 'data: 's {
         self.as_objc_object().class()
     }
 }

@@ -24,7 +24,7 @@ objc_subclass! {
     /// The [`Display`](https://doc.rust-lang.org/std/fmt/trait.Display.html)
     /// implementation writes the result of
     /// [`localized_description`](#method.localized_description).
-    pub class NSError<'a>: NSObject<'a>;
+    pub class NSError<'data>: NSObject<'data>;
 }
 
 // TODO: `fmt::Debug`

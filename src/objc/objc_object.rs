@@ -9,7 +9,7 @@ use std::{cell::UnsafeCell, fmt, marker::PhantomData, panic::RefUnwindSafe, ptr:
 ///
 /// See [documentation](https://developer.apple.com/documentation/objectivec/id).
 #[allow(non_camel_case_types)]
-pub type id<'a> = Arc<ObjCObject<'a>>;
+pub type id<'data> = Arc<ObjCObject<'data>>;
 
 /// A type-erased instance of any Objective-C class.
 ///
@@ -27,9 +27,9 @@ pub type id<'a> = Arc<ObjCObject<'a>>;
 /// `NSObject` is the root of _almost_ all Objective-C classes. Although very
 /// rare, it is possible for other root classes to exist, such as `NSProxy`.
 #[repr(C)]
-pub struct ObjCObject<'a> {
-    // TODO: Figure out the correct lifetime variance for `'a`.
-    _marker: PhantomData<&'a ()>,
+pub struct ObjCObject<'data> {
+    // TODO: Figure out the correct lifetime variance for `'data`.
+    _marker: PhantomData<&'data ()>,
     // Stores data that may be mutated behind a shared reference. Internal
     // mutability triggers undefined behavior without `UnsafeCell`.
     _data: UnsafeCell<[u8; 0]>,
@@ -40,7 +40,7 @@ impl crate::core::ObjectType for ObjCObject<'_> {
     #[doc(alias = "objc_retain")]
     fn retain(obj: &Self) -> Arc<Self> {
         extern "C" {
-            fn objc_retain<'a>(obj: &ObjCObject<'a>) -> Arc<ObjCObject<'a>>;
+            fn objc_retain<'data>(obj: &ObjCObject<'data>) -> Arc<ObjCObject<'data>>;
         }
         unsafe { objc_retain(obj) }
     }
@@ -55,9 +55,9 @@ impl crate::core::ObjectType for ObjCObject<'_> {
     }
 }
 
-impl<'a> super::ObjectType<'a> for ObjCObject<'a> {
+impl<'data> super::ObjectType<'data> for ObjCObject<'data> {
     #[inline]
-    fn class<'s>(&'s self) -> &'s Class where 'a: 's {
+    fn class<'s>(&'s self) -> &'s Class where 'data: 's {
         // TODO: Call `_objc_opt_class` on:
         // - macOS 10.15+
         // - iOS (unknown)
@@ -67,7 +67,7 @@ impl<'a> super::ObjectType<'a> for ObjCObject<'a> {
     }
 }
 
-impl<'a> AsRef<ObjCObject<'a>> for ObjCObject<'a> {
+impl<'data> AsRef<ObjCObject<'data>> for ObjCObject<'data> {
     #[inline]
     fn as_ref(&self) -> &Self {
         self

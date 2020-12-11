@@ -24,7 +24,7 @@ objc_object_wrapper! {
     ///   [`attempt_recovery`](#method.attempt_recovery) is invoked.
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nserror/nserrorrecoveryattempting).
-    pub wrapper NSErrorRecoveryAttempting<'a>: NSObject<'a>;
+    pub wrapper NSErrorRecoveryAttempting<'data>: NSObject<'data>;
 }
 
 impl NSErrorRecoveryAttempting<'_> {
