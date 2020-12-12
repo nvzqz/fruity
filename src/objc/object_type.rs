@@ -15,7 +15,10 @@ pub trait ObjectType<'data>: 'data + crate::core::ObjectType + AsRef<ObjCObject<
 
     /// Returns the class that this object is an instance of.
     #[inline]
-    fn class<'s>(&'s self) -> &'s Class where 'data: 's {
+    fn class<'s>(&'s self) -> &'s Class
+    where
+        'data: 's,
+    {
         self.as_objc_object().class()
     }
 }

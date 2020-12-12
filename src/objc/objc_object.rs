@@ -57,7 +57,10 @@ impl crate::core::ObjectType for ObjCObject<'_> {
 
 impl<'data> super::ObjectType<'data> for ObjCObject<'data> {
     #[inline]
-    fn class<'s>(&'s self) -> &'s Class where 'data: 's {
+    fn class<'s>(&'s self) -> &'s Class
+    where
+        'data: 's,
+    {
         // TODO: Call `_objc_opt_class` on:
         // - macOS 10.15+
         // - iOS (unknown)
