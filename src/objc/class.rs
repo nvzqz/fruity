@@ -1,4 +1,4 @@
-use super::{BOOL, SEL};
+use super::{Property, BOOL, SEL};
 use crate::core::{Arc, ObjectType};
 use std::{
     cell::UnsafeCell,
@@ -9,6 +9,9 @@ use std::{
     panic::RefUnwindSafe,
     ptr,
 };
+
+#[cfg(feature = "malloced")]
+use malloced::Malloced;
 
 /// An Objective-C class.
 ///
@@ -219,6 +222,50 @@ impl Class {
     #[inline]
     pub fn instance_size(&self) -> usize {
         unsafe { class_getInstanceSize(self) }
+    }
+
+    /// Returns a property of `self` with `name`.
+    ///
+    /// See [documentation](https://developer.apple.com/documentation/objectivec/1418597-class_getproperty).
+    #[inline]
+    #[doc(alias = "class_getProperty")]
+    pub fn get_property<'a>(&'a self, name: &CStr) -> Option<&'a Property> {
+        extern "C" {
+            fn class_getProperty(class: &Class, name: *const c_char) -> Option<&Property>;
+        }
+        unsafe { class_getProperty(self, name.as_ptr()) }
+    }
+
+    /// Returns a `malloc`-ed list of properties declared by `self`.
+    ///
+    /// Any properties declared by superclasses are not included.
+    ///
+    /// See [documentation](https://developer.apple.com/documentation/objectivec/1418553-class_copypropertylist).
+    #[cfg(feature = "malloced")]
+    #[inline]
+    #[doc(alias = "class_copyPropertyList")]
+    pub fn copy_property_list(&self) -> Option<Malloced<[&Property]>> {
+        use std::{mem::MaybeUninit, os::raw::c_uint};
+
+        extern "C" {
+            fn class_copyPropertyList<'a>(
+                class: &'a Class,
+                out_count: *mut c_uint,
+            ) -> *mut &'a Property;
+        }
+
+        let mut len = MaybeUninit::<c_uint>::uninit();
+        unsafe {
+            let data = class_copyPropertyList(self, len.as_mut_ptr());
+            if data.is_null() {
+                None
+            } else {
+                Some(Malloced::slice_from_raw_parts(
+                    data,
+                    len.assume_init() as usize,
+                ))
+            }
+        }
     }
 }
 
