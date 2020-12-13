@@ -14,6 +14,9 @@ pub(crate) mod sel;
 mod macros;
 
 #[macro_use]
+mod macros_pub;
+
+#[macro_use]
 mod msg;
 
 mod autoreleasepool;

@@ -13,11 +13,7 @@ macro_rules! objc_class_type {
         impl<$lifetime> $crate::objc::ClassType<$lifetime> for $obj<$lifetime> {
             #[inline]
             fn class() -> &'static $crate::objc::Class {
-                extern "C" {
-                    #[link_name = $class_symbol]
-                    static CLASS: $crate::objc::Class;
-                }
-                unsafe { &CLASS }
+                $crate::_objc_class!(@ $class_symbol)
             }
         }
     };
