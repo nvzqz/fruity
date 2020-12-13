@@ -25,6 +25,7 @@ mod method_description;
 mod ns_object;
 mod objc_object;
 mod object_type;
+mod property;
 
 pub use self::bool::*;
 pub use autoreleasepool::*;
@@ -35,6 +36,7 @@ pub use method_description::*;
 pub use ns_object::*;
 pub use objc_object::*;
 pub use object_type::*;
+pub use property::*;
 pub use sel::SEL;
 
 #[link(name = "objc", kind = "dylib")]
