@@ -14,25 +14,6 @@ pub struct ImageInfo {
     pub flags: ImageInfoFlags,
 }
 
-// TODO: Make this static work in debug builds.
-
-/// This tells the loader that the binary contains Objective-C sections that
-/// should be handled, such as registering selectors.
-#[used]
-#[link_section = "__DATA,__objc_imageinfo,regular,no_dead_strip"]
-#[export_name = "\x01L_OBJC_IMAGE_INFO.fruity"]
-static IMAGE_INFO: ImageInfo = {
-    let is_simulated = cfg!(all(
-        target_os = "ios",
-        any(target_arch = "x86", target_arch = "x86_64")
-    ));
-
-    ImageInfo {
-        version: 0,
-        flags: ImageInfoFlags::from_bits(64).with_simulated(is_simulated),
-    }
-};
-
 /// Runtime features indicated in [`ImageInfo`].
 #[repr(transparent)]
 #[derive(Copy, Clone, Ord, PartialOrd, Eq, PartialEq, Hash)]
