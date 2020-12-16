@@ -6,45 +6,45 @@
 // Ideally in the future we'd be able to have static selectors like those in
 // Objective-C binaries. See https://github.com/nvzqz/fruity/issues/2.
 
-use super::atomic::AtomicSEL;
+use super::atomic::AtomicSel;
 
-pub(crate) static class: AtomicSEL = AtomicSEL::null();
-pub(crate) static copy: AtomicSEL = AtomicSEL::null();
-pub(crate) static mutableCopy: AtomicSEL = AtomicSEL::null();
-pub(crate) static hash: AtomicSEL = AtomicSEL::null();
-pub(crate) static retainCount: AtomicSEL = AtomicSEL::null();
+pub(crate) static class: AtomicSel = AtomicSel::null();
+pub(crate) static copy: AtomicSel = AtomicSel::null();
+pub(crate) static mutableCopy: AtomicSel = AtomicSel::null();
+pub(crate) static hash: AtomicSel = AtomicSel::null();
+pub(crate) static retainCount: AtomicSel = AtomicSel::null();
 
 pub mod isEqual {
     use super::*;
-    pub(crate) static SELECTOR: AtomicSEL = AtomicSEL::null();
+    pub(crate) static SELECTOR: AtomicSel = AtomicSel::null();
 }
 
 pub mod isEqualToNumber {
     use super::*;
-    pub(crate) static SELECTOR: AtomicSEL = AtomicSEL::null();
+    pub(crate) static SELECTOR: AtomicSel = AtomicSel::null();
 }
 
 pub mod isEqualToString {
     use super::*;
-    pub(crate) static SELECTOR: AtomicSEL = AtomicSEL::null();
+    pub(crate) static SELECTOR: AtomicSel = AtomicSel::null();
 }
 
 pub mod isKindOfClass {
     use super::*;
-    pub(crate) static SELECTOR: AtomicSEL = AtomicSEL::null();
+    pub(crate) static SELECTOR: AtomicSel = AtomicSel::null();
 }
 
 pub mod isMemberOfClass {
     use super::*;
-    pub(crate) static SELECTOR: AtomicSEL = AtomicSEL::null();
+    pub(crate) static SELECTOR: AtomicSel = AtomicSel::null();
 }
 
 pub mod respondsToSelector {
     use super::*;
-    pub(crate) static SELECTOR: AtomicSEL = AtomicSEL::null();
+    pub(crate) static SELECTOR: AtomicSel = AtomicSel::null();
 }
 
 pub mod instancesRespondToSelector {
     use super::*;
-    pub(crate) static SELECTOR: AtomicSEL = AtomicSEL::null();
+    pub(crate) static SELECTOR: AtomicSel = AtomicSel::null();
 }

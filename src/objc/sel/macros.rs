@@ -1,6 +1,6 @@
 /// Creates a [`&'static str`](https://doc.rust-lang.org/std/primitive.str.html)
 /// from a selector literal, that may be used as the basis of a
-/// [`SEL`](objc/struct.SEL.html).
+/// [`Sel`](objc/struct.Sel.html).
 ///
 /// # Feature Flag
 ///
@@ -28,7 +28,7 @@
 ///
 /// ```
 /// # use fruity::selector_str;
-/// const SEL: &str = selector_str!(initWithArg:);
+/// const Sel: &str = selector_str!(initWithArg:);
 /// ```
 ///
 /// Invalid selectors will fail to compile:
@@ -57,7 +57,7 @@ macro_rules! selector_str {
     };
 }
 
-/// Creates a [`SEL`](objc/struct.SEL.html) from a selector literal.
+/// Creates a [`Sel`](objc/struct.Sel.html) from a selector literal.
 ///
 /// # Feature Flag
 ///
@@ -91,7 +91,7 @@ macro_rules! selector {
 
             // SAFETY: `selector_str!` creates a null-terminated UTF-8 string.
             #[allow(unused_unsafe)]
-            let sel = unsafe { $crate::objc::SEL::register(ptr as _) };
+            let sel = unsafe { $crate::objc::Sel::register(ptr as _) };
 
             sel
         }

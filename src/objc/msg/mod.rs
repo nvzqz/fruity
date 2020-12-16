@@ -1,4 +1,4 @@
-use super::{Class, ObjCObject, SEL};
+use super::{Class, ObjCObject, Sel};
 use std::{ffi::c_void, mem};
 
 mod get_fn;
@@ -53,7 +53,7 @@ macro_rules! _msg_send_strict_cached {
 // Do not call these methods directly. Use the `_msg_send!` macro instead.
 impl ObjCObject<'_> {
     #[inline]
-    pub(crate) unsafe fn _msg_send_any<T>(&self, sel: SEL) -> T
+    pub(crate) unsafe fn _msg_send_any<T>(&self, sel: Sel) -> T
     where
         T: 'static,
     {
@@ -61,7 +61,7 @@ impl ObjCObject<'_> {
     }
 
     #[inline]
-    pub(crate) unsafe fn _msg_send_any_with<A, T>(&self, sel: SEL, args: A) -> T
+    pub(crate) unsafe fn _msg_send_any_with<A, T>(&self, sel: Sel, args: A) -> T
     where
         A: super::msg::MsgArgs,
         T: 'static,
@@ -70,13 +70,13 @@ impl ObjCObject<'_> {
     }
 
     #[inline]
-    pub(crate) unsafe fn _msg_send_strict<T>(&self, sel: SEL) -> T
+    pub(crate) unsafe fn _msg_send_strict<T>(&self, sel: Sel) -> T
 where {
         self._msg_send_strict_with(sel, ())
     }
 
     #[inline]
-    pub(crate) unsafe fn _msg_send_strict_with<A, T>(&self, sel: SEL, args: A) -> T
+    pub(crate) unsafe fn _msg_send_strict_with<A, T>(&self, sel: Sel, args: A) -> T
     where
         A: super::msg::MsgArgs,
     {
@@ -87,7 +87,7 @@ where {
 // Do not call these methods directly. Use the `_msg_send_any!` macro instead.
 impl Class {
     #[inline]
-    pub(crate) unsafe fn _msg_send_any<T>(&self, sel: SEL) -> T
+    pub(crate) unsafe fn _msg_send_any<T>(&self, sel: Sel) -> T
     where
         T: 'static,
     {
@@ -95,7 +95,7 @@ impl Class {
     }
 
     #[inline]
-    pub(crate) unsafe fn _msg_send_any_with<A, T>(&self, sel: SEL, args: A) -> T
+    pub(crate) unsafe fn _msg_send_any_with<A, T>(&self, sel: Sel, args: A) -> T
     where
         A: super::msg::MsgArgs,
         T: 'static,
@@ -104,13 +104,13 @@ impl Class {
     }
 
     #[inline]
-    pub(crate) unsafe fn _msg_send_strict<T>(&self, sel: SEL) -> T
+    pub(crate) unsafe fn _msg_send_strict<T>(&self, sel: Sel) -> T
 where {
         self._msg_send_strict_with(sel, ())
     }
 
     #[inline]
-    pub(crate) unsafe fn _msg_send_strict_with<A, T>(&self, sel: SEL, args: A) -> T
+    pub(crate) unsafe fn _msg_send_strict_with<A, T>(&self, sel: Sel, args: A) -> T
     where
         A: super::msg::MsgArgs,
     {
@@ -124,10 +124,10 @@ where {
 pub trait MsgArgs: Sized {
     /// Dispatches the appropriate version of `objc_msgSend` based on the return
     /// type.
-    unsafe fn msg_send_any<Ret: 'static>(obj: *const c_void, sel: SEL, args: Self) -> Ret;
+    unsafe fn msg_send_any<Ret: 'static>(obj: *const c_void, sel: Sel, args: Self) -> Ret;
 
     /// Dispatches only to `objc_msgSend`.
-    unsafe fn msg_send_strict<Ret>(obj: *const c_void, sel: SEL, args: Self) -> Ret;
+    unsafe fn msg_send_strict<Ret>(obj: *const c_void, sel: Sel, args: Self) -> Ret;
 }
 
 /// Implements `MsgArgs` for tuples of different sizes.
@@ -138,11 +138,11 @@ macro_rules! impl_msg_args_base {
             #[allow(non_snake_case)]
             unsafe fn msg_send_any<Ret: 'static>(
                 obj: *const c_void,
-                sel: SEL,
+                sel: Sel,
                 ($($arg,)*): Self,
             ) -> Ret {
                 // TODO(#7): Use "C-unwind" ABI when stable.
-                let msg_send: unsafe extern "C" fn(*const c_void, SEL $(, $arg)*) -> Ret
+                let msg_send: unsafe extern "C" fn(*const c_void, Sel $(, $arg)*) -> Ret
                     = mem::transmute(get_fn::msg_send_fn::<Ret>());
 
                 msg_send(obj, sel $(, $arg)*)
@@ -152,12 +152,12 @@ macro_rules! impl_msg_args_base {
             #[allow(non_snake_case)]
             unsafe fn msg_send_strict<Ret>(
                 obj: *const c_void,
-                sel: SEL,
+                sel: Sel,
                 ($($arg,)*): Self,
             ) -> Ret {
                 // TODO(#7): Use "C-unwind" ABI when stable.
                 let msg_send: unsafe extern "C" fn() = get_fn::objc_msgSend;
-                let msg_send: unsafe extern "C" fn(*const c_void, SEL $(, $arg)*) -> Ret
+                let msg_send: unsafe extern "C" fn(*const c_void, Sel $(, $arg)*) -> Ret
                     = mem::transmute(msg_send);
 
                 msg_send(obj, sel $(, $arg)*)

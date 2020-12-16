@@ -1,4 +1,4 @@
-use super::SEL;
+use super::Sel;
 use std::{ffi::CStr, fmt, marker::PhantomData, os::raw::c_char, ptr::NonNull};
 
 /// An Objective-C method definition.
@@ -7,7 +7,7 @@ use std::{ffi::CStr, fmt, marker::PhantomData, os::raw::c_char, ptr::NonNull};
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct MethodDescription<'a> {
-    name: SEL,
+    name: Sel,
     types: NonNull<c_char>,
     _marker: PhantomData<&'a CStr>,
 }
@@ -27,7 +27,7 @@ impl fmt::Debug for MethodDescription<'_> {
 impl<'a> MethodDescription<'a> {
     /// Creates a new instance with the method name and argument types.
     #[inline]
-    pub const fn new(name: SEL, types: &'a CStr) -> Self {
+    pub const fn new(name: Sel, types: &'a CStr) -> Self {
         unsafe { Self::from_raw_parts(name, types.as_ptr()) }
     }
 
@@ -42,7 +42,7 @@ impl<'a> MethodDescription<'a> {
     /// `types` must point to a valid C string that will not live shorter than
     /// the lifetime `'a`.
     #[inline]
-    pub const unsafe fn from_raw_parts(name: SEL, types: *const c_char) -> Self {
+    pub const unsafe fn from_raw_parts(name: Sel, types: *const c_char) -> Self {
         Self {
             name,
             types: NonNull::new_unchecked(types as *mut c_char),
@@ -52,7 +52,7 @@ impl<'a> MethodDescription<'a> {
 
     /// The name of the method at runtime.
     #[inline]
-    pub fn name(&self) -> SEL {
+    pub fn name(&self) -> Sel {
         self.name
     }
 

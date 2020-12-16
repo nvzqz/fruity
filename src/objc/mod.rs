@@ -42,7 +42,7 @@ pub use ns_object::*;
 pub use objc_object::*;
 pub use object_type::*;
 pub use property::*;
-pub use sel::SEL;
+pub use sel::Sel;
 
 #[link(name = "objc", kind = "dylib")]
 extern "C" {}

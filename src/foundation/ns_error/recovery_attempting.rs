@@ -1,5 +1,5 @@
 use super::NSError;
-use crate::objc::{NSObject, NSUInteger, ObjCObject, BOOL, SEL};
+use crate::objc::{NSObject, NSUInteger, ObjCObject, Sel, BOOL};
 use std::ffi::c_void;
 
 // TODO: Create `NSObjectProtocol` and wrap that.
@@ -60,7 +60,7 @@ impl NSErrorRecoveryAttempting<'_> {
         error: &NSError,
         recovery_option_index: NSUInteger,
         delegate: Option<&ObjCObject>,
-        did_recover_selector: Option<SEL>,
+        did_recover_selector: Option<Sel>,
         context_info: *mut c_void,
     ) {
         let sel = selector!(

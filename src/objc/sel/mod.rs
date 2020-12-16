@@ -20,32 +20,32 @@ pub(crate) mod cached;
 /// See [documentation](https://developer.apple.com/documentation/objectivec/sel).
 #[repr(transparent)]
 #[derive(Copy, Clone)]
-pub struct SEL(NonNull<c_void>);
+pub struct Sel(NonNull<c_void>);
 
-unsafe impl Send for SEL {}
-unsafe impl Sync for SEL {}
+unsafe impl Send for Sel {}
+unsafe impl Sync for Sel {}
 
-impl PartialEq for SEL {
+impl PartialEq for Sel {
     #[inline]
     #[doc(alias = "sel_isEqual")]
     fn eq(&self, other: &Self) -> bool {
         extern "C" {
-            fn sel_isEqual(lhs: SEL, rhs: SEL) -> BOOL;
+            fn sel_isEqual(lhs: Sel, rhs: Sel) -> BOOL;
         }
         unsafe { sel_isEqual(*self, *other) }.into()
     }
 }
 
-impl Eq for SEL {}
+impl Eq for Sel {}
 
-impl fmt::Debug for SEL {
+impl fmt::Debug for Sel {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         self.name().fmt(f)
     }
 }
 
-impl SEL {
+impl Sel {
     /// Registers a method name with the Objective-C runtime and returns the
     /// selector.
     ///
@@ -98,6 +98,6 @@ impl SEL {
 }
 
 extern "C" {
-    fn sel_registerName(name: *const c_char) -> SEL;
-    fn sel_getName(sel: SEL) -> *const c_char;
+    fn sel_registerName(name: *const c_char) -> Sel;
+    fn sel_getName(sel: Sel) -> *const c_char;
 }

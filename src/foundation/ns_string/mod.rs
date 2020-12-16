@@ -1,6 +1,6 @@
 use super::{NSComparisonResult, NSRange};
 use crate::core::Arc;
-use crate::objc::{Class, ClassType, NSObject, NSUInteger, BOOL, SEL};
+use crate::objc::{Class, ClassType, NSObject, NSUInteger, Sel, BOOL};
 use std::{cmp::Ordering, ffi::CStr, fmt, os::raw::c_char, ptr, slice, str};
 
 #[macro_use]
@@ -23,9 +23,9 @@ pub use encoding::*;
 /// See [documentation](https://developer.apple.com/documentation/foundation/1395294-nsselectorfromstring).
 #[inline]
 #[allow(non_snake_case)]
-pub fn NSSelectorFromString(string: &NSString) -> Option<SEL> {
+pub fn NSSelectorFromString(string: &NSString) -> Option<Sel> {
     extern "C" {
-        fn NSSelectorFromString(string: &NSString) -> Option<SEL>;
+        fn NSSelectorFromString(string: &NSString) -> Option<Sel>;
     }
     unsafe { NSSelectorFromString(string) }
 }
@@ -324,7 +324,7 @@ impl<'data> NSString<'data> {
         extern "C" {
             fn objc_msgSend(
                 obj: Arc<NSString>,
-                sel: SEL,
+                sel: Sel,
                 bytes: *const u8,
                 length: NSUInteger,
                 encoding: NSStringEncoding,
@@ -363,7 +363,7 @@ impl<'data> NSString<'data> {
         extern "C" {
             fn objc_msgSend<'data>(
                 obj: Arc<NSString<'data>>,
-                sel: SEL,
+                sel: Sel,
                 bytes: *const u8,
                 length: NSUInteger,
                 encoding: NSStringEncoding,
@@ -642,7 +642,7 @@ impl NSString<'_> {
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/1395294-nsselectorfromstring).
     #[inline]
-    pub fn to_selector(&self) -> Option<SEL> {
+    pub fn to_selector(&self) -> Option<Sel> {
         NSSelectorFromString(self)
     }
 
@@ -892,7 +892,7 @@ impl<'data> NSMutableString<'data> {
         extern "C" {
             fn objc_msgSend<'data>(
                 obj: Arc<NSMutableString<'data>>,
-                sel: SEL,
+                sel: Sel,
                 bytes: *mut u8,
                 length: NSUInteger,
                 encoding: NSStringEncoding,

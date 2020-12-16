@@ -1,4 +1,4 @@
-use super::{Property, BOOL, SEL};
+use super::{Property, Sel, BOOL};
 use crate::core::{Arc, ObjectType};
 use std::{
     cell::UnsafeCell,
@@ -144,7 +144,7 @@ impl Class {
     /// See [documentation](https://developer.apple.com/documentation/objectivec/1418956-nsobject/1418583-respondstoselector).
     #[inline]
     #[doc(alias = "respondsToSelector")]
-    pub fn responds_to_selector(&self, selector: SEL) -> bool {
+    pub fn responds_to_selector(&self, selector: Sel) -> bool {
         unsafe { _msg_send_any_cached![self, respondsToSelector: selector => BOOL] }.into()
     }
 
@@ -154,7 +154,7 @@ impl Class {
     /// See [documentation](https://developer.apple.com/documentation/objectivec/nsobject/1418555-instancesrespondtoselector).
     #[inline]
     #[doc(alias = "instancesRespondToSelector")]
-    pub fn instances_respond_to_selector(&self, selector: SEL) -> bool {
+    pub fn instances_respond_to_selector(&self, selector: Sel) -> bool {
         unsafe { _msg_send_any_cached![self, instancesRespondToSelector: selector => BOOL] }.into()
     }
 

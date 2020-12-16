@@ -1,4 +1,4 @@
-use super::{Class, ClassType, NSUInteger, ObjCObject, BOOL, SEL};
+use super::{Class, ClassType, NSUInteger, ObjCObject, Sel, BOOL};
 use crate::core::Arc;
 
 // TODO: Create `NSObjectProtocol` for `@protocol NSObject` and `Deref` to that.
@@ -39,7 +39,7 @@ impl<'data> NSObject<'data> {
     ///
     /// See [documentation](https://developer.apple.com/documentation/objectivec/1418956-nsobject/1418583-respondstoselector).
     #[inline]
-    pub fn responds_to_selector(&self, selector: SEL) -> bool {
+    pub fn responds_to_selector(&self, selector: Sel) -> bool {
         unsafe { _msg_send_any_cached![self, respondsToSelector: selector => BOOL] }.into()
     }
 
