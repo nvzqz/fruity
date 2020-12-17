@@ -9,22 +9,6 @@ The format is based on [Keep a Changelog] and this project adheres to
 
 ### Added
 
-- `core` module for core types and traits are not specific to any wrapped
-  library.
-
-  - `ObjectType` trait to generalize retain/release.
-
-  - `Arc` type to handle automatic reference counting. Built on top of the
-    methods in `ObjectType`.
-
-    - Implements `Default`:
-
-      - `Arc<NSObject>` from `[[NSObject alloc] init]`.
-
-      - `Arc<NSMutableString>` from `[[NSMutableString alloc] init]`.
-
-      - `Arc<NSNull>` from retaining `kCFNull`.
-
 - Internal macros to simplify creating class types and wrappers:
 
   - `subclass!` performs all the wrapping and trait impls (e.g. `obj::Object`,
@@ -46,31 +30,17 @@ The format is based on [Keep a Changelog] and this project adheres to
 
 - `objc::ClassType` trait for types whose classes are statically available.
 
-- `BOOL::NO` and `BOOL::YES` associated constants as alternatives to the
-  constants in in the `objc` module. These should be preferred.
+- Improvements to `ns_string!` macro:
 
-- `DispatchQueue::current_queue_label_owned` as safe owned alternative to
-  `current_queue_label`.
+  - Can take `const X: &str` as input, not just string literals.
 
-- `DispatchQueue::with_current_queue_label` as safe scoped alternative to
-  `current_queue_label`.
+  - Allows interior null bytes, transcoding the string to UTF-16.
 
-- The `ns_string!` macro can now take `const X: &str` as input, not just string
-  literals.
+  - Allows trailing null bytes and uses the constant as-is.
 
-- The `ns_string!` macro now allows interior null bytes, transcoding the string
-  to UTF-16.
-
-- The `ns_string!` macro now allows trailing null bytes and uses the constant
-  as-is.
-
-  This makes it possible for input data to not get emitted in the binary twice.
-  The compiler currently does not coalesce string prefixes and instead emits the
-  same prefix data twice.
-
-- Equivalent to `@autoreleasepool` that drains on panic.
-
-- Correct dispatching of the appropriate `objc_msgSend` based on return type.
+    This makes it possible for input data to not get emitted in the binary twice.
+    The compiler currently does not coalesce string prefixes and instead emits the
+    same prefix data twice.
 
 - Internal convenience `_msg_send!` macro for dispatching `objc_msgSend` and
   associating arguments with the appropriate selector part.
@@ -78,35 +48,25 @@ The format is based on [Keep a Changelog] and this project adheres to
   - Also `_msg_send_cached!` that internally caches the selector in a global
     atomic pointer.
 
-- Foundation types: `NSNumber`, `NSEdgeInsets`, `NSRange`, `NSValue`, `NSNull`,
-  `NSException`, `NSExceptionName`, `NSError`, `NSErrorDomain`, `NSErrorUserInfoKey`, `NSErrorRecoveryAttempting`.
+- Created `core` module for core types and traits are not specific to any
+  wrapped library:
 
-- Core Foundation types: `CFType`, `CFTypeRef`, `CFTypeID`, `CFOptionFlags`,
-  `CFIndex`, `CFHashCode`, `CFComparisonResult`.
+  - `ObjectType` trait to generalize retain/release.
 
-- Foundation constants: `NSNotFound`.
+  - `Arc` type to handle automatic reference counting. Built on top of the
+    methods in `ObjectType`.
 
-- Core Foundation constants: `kCFNotFound`.
+    - Implements `Default`:
 
-- Methods for `NSStringEncoding`: `name`.
+      - `Arc<T>` where `&T` implements `Default` by retaining the value.
 
-- Methods for `NSString`:
+      - `Arc<NSObject>` from `[[NSObject alloc] init]`.
 
-  - `length`
+      - `Arc<NSMutableString>` from `[[NSMutableString alloc] init]`.
 
-  - Efficiently getting an `Option<&str>` if it's UTF-8 or an `Option<&[u16]>` if it's UTF-16.
-
-    Unlike `to_str` and friends, these do not allocate and transcode to a new
-    string if the original string does not represent the encoding.
-
-  - Efficiently comparing against `&str`.
-
-- Methods for getting all available `NSStringEncoding`s.
-
-- Foundation error codes.
-
-- `core_graphics` module for [Core Graphics](https://developer.apple.com/documentation/coregraphics)
-  framework.
+- Created `core_graphics` module for
+  [Core Graphics](https://developer.apple.com/documentation/coregraphics)
+  framework:
 
   - Geometry types: `CGFloat`, `CGPoint`, `CGSize`, `CGRect`, `CGRectEdge`,
     `CGVector`, and `CGAffineTransform`.
@@ -114,25 +74,83 @@ The format is based on [Keep a Changelog] and this project adheres to
     These are aliased in `foundation` as: `NSPoint`, `NSSize`, `NSRect`, and
     `NSRectEdge`.
 
-- `app_kit` module for [AppKit](https://developer.apple.com/documentation/appkit)
+- Created `app_kit` module for
+  [AppKit](https://developer.apple.com/documentation/appkit)
   framework.
 
   - `NSAppKitVersion` type and version constants through 10.15.
 
-- `dispatch` module for [Dispatch](https://developer.apple.com/documentation/dispatch)
-  library.
+- Created `dispatch` module for
+  [Dispatch](https://developer.apple.com/documentation/dispatch)
+  library:
 
-  - Types: `DispatchObject`, `DispatchQueue`, `DispatchQueueBuilder`,
-    `DispatchQueuePriority`, `DispatchQueueAttributes`, `DispatchTime`,
-    `DispatchQos`, `DispatchQosClass`, `DispatchAutoreleaseFrequency`.
+  - Types: `DispatchObject`, `DispatchQueueBuilder`, `DispatchQueuePriority`,
+    `DispatchQueueAttributes`, `DispatchTime`, `DispatchQos`,
+    `DispatchQosClass`, `DispatchAutoreleaseFrequency`.
 
-- Pointer methods for `SEL`.
+  - `DispatchQueue`
 
-- Implemented `PartialEq` for `NSObject`.
+    - `current_queue_label_owned` as safe owned alternative to
+      `current_queue_label`.
 
-- Implemented `Default` for `NSString` and `NSMutableString`.
+    - `with_current_queue_label` as safe scoped alternative to
+      `current_queue_label`.
+
+- Added APIs to `foundation` module:
+
+  - Constants: `NSNotFound`.
+
+  - Types: `NSNumber`, `NSEdgeInsets`, `NSRange`, `NSValue`, `NSNull`,
+    `NSException`, `NSExceptionName`, `NSError`, `NSErrorDomain`,
+    `NSErrorUserInfoKey`, `NSErrorRecoveryAttempting`.
+
+  - `NSError` error codes.
+
+  - Methods for `NSString`:
+
+    - `length`
+
+    - Efficiently getting an `Option<&str>` if it's UTF-8 or an `Option<&[u16]>` if it's UTF-16.
+
+      Unlike `to_str` and friends, these do not allocate and transcode to a new
+      string if the original string does not represent the encoding.
+
+    - Efficiently comparing against `&str`.
+
+    - Getting all available encodings: `available_encodings_slice`,
+      `available_encodings_iter`, `available_encodings_ptr`.
+
+    - `available_encodings_count` for number of available encodings. This calls
+      `available_encodings_slice().len()`.
+
+  - Methods for `NSStringEncoding`:
+
+    - `name`.
+
+    - Methods for getting all available `NSStringEncoding`s.
+
+- Added APIs to `core_foundation` module:
+
+  - Constants: `kCFNotFound`.
+
+  - Types: `CFType`, `CFTypeRef`, `CFTypeID`, `CFOptionFlags`, `CFIndex`,
+    `CFHashCode`, `CFComparisonResult`.
+
+- Added APIs to `objc` module:
+
+  - Pointer methods for `Sel`.
+
+  - Implemented `PartialEq` for `NSObject`.
+
+  - `autoreleasepool` function equivalent to `@autoreleasepool` that drains on
+    panic.
+
+  - `BOOL::NO` and `BOOL::YES` associated constants as alternatives to the
+    freestanding constants. These should be preferred.
 
 ### Fixed
+
+- Correct dispatching of the appropriate `objc_msgSend` based on return type.
 
 - **\[breaking\]** The safety of `DispatchQueue::current_queue_label_owned` by
   marking it as `unsafe`. It is unspecified whether the label may outlive the
@@ -144,12 +162,10 @@ The format is based on [Keep a Changelog] and this project adheres to
   a C/C++ `Bool`.
 
 - The `ns_string!` macro now transcodes non-ASCII strings to UTF-16, instead of
-  allowing UTF-8 data where only ASCII data is expected.
+  allowing UTF-8 data where only ASCII data is expected (see issue [#3]).
 
   Transcoding was implemented by [@thomcc]. Iterator technique was provided by
   [@rodrimati1992].
-
-  See issue [#3].
 
 ### Changed
 
@@ -157,34 +173,29 @@ The format is based on [Keep a Changelog] and this project adheres to
   `&NSString` in Rust is like `NSString *` in Objective-C. The new `Arc<T>` type
   handles releasing the reference on `Drop`.
 
-  As a result, constructors now
-
-- **\[breaking\]** Renamed `get_class` to `class` for Objective-C objects.
+  As a result, constructors now return `Arc<Self>`.
 
 - **\[breaking\]** Shortened lifetime of `class` on Objective-C objects from
   static to `self`.
 
-- **\[breaking\]** Changed `BOOL` from a type alias to a newtype.
+- **\[breaking\]** Renamed `SEL` to `Sel`.
+
+- **\[breaking\]** Renamed `get_class` to `class` for Objective-C objects.
 
 - **\[breaking\]** Renamed `nsstring!` macro to `ns_string!`.
-
-- **\[breaking\]** Increased crate `#[cfg]` strictness from any 32/64 bit to
-  only target x86 and ARM.
-
-- **\[breaking\]**  The `ns_string!` macro can only take ASCII strings.
-
-  The canonical Unicode representation is UTF-16, so any non-ASCII strings must
-  be transcoded to UTF-16. See issue [#3].
 
 - **\[breaking\]** Renamed constants in `NSStringEncoding` to be simpler and use
   UPPER_SNAKE_CASE.
 
-- `NSStringEncoding` is formatted like a Rust `enum`. This improves debugging.
+- **\[breaking\]** Changed `BOOL` from a type alias to a newtype.
+
+- **\[breaking\]** Increased crate `#[cfg]` strictness from any 32/64 bit to
+  only target x86 and ARM.
 
 ### Removed
 
-- Pointer conversion methods on object types. These are now handled through
-  `Arc`.
+- Pointer conversion methods on object types. These are now handled through the
+  new `Arc<T>` object wrapper type.
 
 ## [0.2.0] - 2020-09-11
 
