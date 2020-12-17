@@ -199,6 +199,13 @@ impl DispatchQueue {
     /// [Swift](https://developer.apple.com/documentation/dispatch/dispatchqueue/2016088-concurrentperform) |
     /// [Objective-C](https://developer.apple.com/documentation/dispatch/1452846-dispatch_apply_f?language=objc)
     ///
+    /// # Availability
+    ///
+    /// - **macOS:** 10.9
+    /// - **iOS:** 7.0
+    /// - **tvOS:** 9.0
+    /// - **watchOS:** 2.0
+    ///
     /// # Safety
     ///
     /// It is safe to panic within the `work` function. Panics will abort the
@@ -240,6 +247,13 @@ impl DispatchQueue {
     /// Documentation:
     /// [Swift](https://developer.apple.com/documentation/dispatch/dispatchqueue/2016088-concurrentperform) |
     /// [Objective-C](https://developer.apple.com/documentation/dispatch/1452846-dispatch_apply_f?language=objc)
+    ///
+    /// # Availability
+    ///
+    /// - **macOS:** 10.9
+    /// - **iOS:** 7.0
+    /// - **tvOS:** 9.0
+    /// - **watchOS:** 2.0
     ///
     /// # Safety
     ///
@@ -300,6 +314,13 @@ impl DispatchQueue {
     ///
     /// Documentation:
     /// [Objective-C](https://developer.apple.com/documentation/dispatch/1452846-dispatch_apply_f?language=objc)
+    ///
+    /// # Availability
+    ///
+    /// - **macOS:** 10.9
+    /// - **iOS:** 7.0
+    /// - **tvOS:** 9.0
+    /// - **watchOS:** 2.0
     #[inline]
     #[doc(alias = "dispatch_apply")]
     #[doc(alias = "dispatch_apply_f")]
