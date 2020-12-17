@@ -11,6 +11,7 @@ mod macros;
 
 pub(crate) mod atomic;
 pub(crate) mod cached;
+pub(crate) mod global;
 
 /// A method selector.
 ///

@@ -8,7 +8,6 @@
 
 use super::atomic::AtomicSel;
 
-pub(crate) static class: AtomicSel = AtomicSel::null();
 pub(crate) static copy: AtomicSel = AtomicSel::null();
 pub(crate) static mutableCopy: AtomicSel = AtomicSel::null();
 pub(crate) static hash: AtomicSel = AtomicSel::null();

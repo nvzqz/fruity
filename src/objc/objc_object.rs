@@ -91,7 +91,10 @@ impl<'data> super::ObjectType<'data> for ObjCObject<'data> {
         // - iOS (unknown)
         // - tvOS (unknown)
         // - watchOS (unknown)
-        unsafe { _msg_send_strict_cached![self, class] }
+
+        // TODO: Use macro to dereference a `GlobalSel`.
+        let sel = crate::objc::sel::global::class.get();
+        unsafe { self._msg_send_strict(sel) }
     }
 }
 
