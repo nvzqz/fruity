@@ -1,9 +1,10 @@
 use super::{DispatchObject, DispatchQos, DispatchQosClass};
 use std::{
-    ffi::{CStr, CString},
+    ffi::{c_void, CStr, CString},
     fmt,
+    mem::{self, ManuallyDrop, MaybeUninit},
     os::raw::{c_char, c_int, c_long, c_ulong},
-    ptr,
+    panic, ptr,
 };
 
 mod attr;
@@ -169,7 +170,123 @@ impl DispatchQueue {
     }
 }
 
+type DispatchFn = extern "C" fn(ctx: *mut c_void);
+
+extern "C" {
+    fn dispatch_sync_f(queue: &DispatchQueue, ctx: *mut c_void, work: DispatchFn);
+}
+
 /// Queue operations.
 impl DispatchQueue {
-    // TODO: Implement operations.
+    /// Submits a function for synchronous execution and returns the function's
+    /// result after it finishes executing.
+    ///
+    /// Documentation:
+    /// [Swift](https://developer.apple.com/documentation/dispatch/dispatchqueue/1452870-sync) |
+    /// [Objective-C](https://developer.apple.com/documentation/dispatch/1453123-dispatch_sync_f?language=objc)
+    ///
+    /// # Safety
+    ///
+    /// It is safe to panic within the `work` function. Panics are propagated
+    /// back to the caller context.
+    ///
+    /// If the overhead of the extra setup is undesirable or you would like to
+    /// handle panics yourself, use
+    /// [`spawn_sync_no_panic`](Self::spawn_sync_no_panic) or
+    /// [`spawn_sync_raw`](Self::spawn_sync_raw) instead.
+    #[inline]
+    #[doc(alias = "dispatch_sync")]
+    #[doc(alias = "dispatch_sync_f")]
+    pub fn spawn_sync<F, R>(&self, work: F) -> R
+    where
+        F: Send + FnOnce() -> R,
+        R: Send,
+    {
+        // SAFETY: Any panics within `work` are caught.
+        let result = unsafe {
+            self.spawn_sync_no_panic(|| panic::catch_unwind(panic::AssertUnwindSafe(work)))
+        };
+
+        match result {
+            Ok(result) => result,
+            Err(error) => panic::resume_unwind(error),
+        }
+    }
+
+    /// Submits a function for synchronous execution and returns the function's
+    /// result after it finishes executing, without catching panics.
+    ///
+    /// Documentation:
+    /// [Swift](https://developer.apple.com/documentation/dispatch/dispatchqueue/1452870-sync) |
+    /// [Objective-C](https://developer.apple.com/documentation/dispatch/1453123-dispatch_sync_f?language=objc)
+    ///
+    /// # Safety
+    ///
+    /// It is undefined behavior to panic within the `work` function because it
+    /// is called from an `extern "C" fn`. Catch the panic yourself or call
+    /// [`spawn_sync`](Self::spawn_sync) instead.
+    #[inline]
+    #[doc(alias = "dispatch_sync")]
+    #[doc(alias = "dispatch_sync_f")]
+    pub unsafe fn spawn_sync_no_panic<F, R>(&self, work: F) -> R
+    where
+        F: Send + FnOnce() -> R,
+        R: Send,
+    {
+        struct StackCtx<F, R> {
+            work: ManuallyDrop<F>,
+            result: MaybeUninit<R>,
+        }
+
+        let mut ctx = StackCtx::<F, R> {
+            work: ManuallyDrop::new(work),
+            result: MaybeUninit::uninit(),
+        };
+
+        extern "C" fn wrapped_work<F, R>(ctx: *mut StackCtx<F, R>)
+        where
+            F: Send + FnOnce() -> R,
+            R: Send,
+        {
+            // SAFETY: `ctx` is exclusively owned by this function.
+            let ctx = unsafe { &mut *ctx };
+
+            // SAFETY: `work` is only used from within this function.
+            let work = unsafe { ManuallyDrop::take(&mut ctx.work) };
+
+            let result = work();
+
+            // SAFETY: The pointer is valid to write to.
+            //
+            // TODO: Use `MaybeUninit::write` when it's stabilized.
+            unsafe { ctx.result.as_mut_ptr().write(result) };
+        }
+
+        self.spawn_sync_raw(&mut ctx, wrapped_work);
+
+        // SAFETY: This is assigned within `wrapped_work`.
+        ctx.result.assume_init()
+    }
+
+    /// Submits a C function with a context pointer for synchronous execution
+    /// and returns the function's result after it finishes executing.
+    ///
+    /// Documentation:
+    /// [Objective-C](https://developer.apple.com/documentation/dispatch/1453123-dispatch_sync_f?language=objc)
+    #[inline]
+    #[doc(alias = "dispatch_sync")]
+    #[doc(alias = "dispatch_sync_f")]
+    pub fn spawn_sync_raw<Ctx>(&self, ctx: *mut Ctx, work: extern "C" fn(*mut Ctx)) {
+        unsafe {
+            // SAFETY: Both functions have the same ABI.
+            let work: DispatchFn = mem::transmute(work);
+
+            // SAFETY: The queue and `work` are non-null, which is required by
+            // this function.
+            //
+            // And `work` is not an `unsafe fn`, so it needs to handle safety
+            // internally.
+            dispatch_sync_f(self, ctx.cast(), work);
+        }
+    }
 }
