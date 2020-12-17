@@ -171,14 +171,155 @@ impl DispatchQueue {
 }
 
 type DispatchFn = extern "C" fn(ctx: *mut c_void);
+type DispatchApplyFn = extern "C" fn(ctx: *mut c_void, iteration: usize);
 
 extern "C" {
     fn dispatch_async_f(queue: &DispatchQueue, ctx: *mut c_void, work: DispatchFn);
     fn dispatch_sync_f(queue: &DispatchQueue, ctx: *mut c_void, work: DispatchFn);
+    fn dispatch_apply_f(
+        iterations: usize,
+        queue: Option<&DispatchQueue>,
+        ctx: *mut c_void,
+        work: DispatchApplyFn,
+    );
 }
 
 /// Queue operations.
 impl DispatchQueue {
+    /// Submits a function to execute the specified number of times.
+    ///
+    /// The current index of iteration is passed to each invocation of the
+    /// function.
+    ///
+    /// The function run on a queue whose quality-of-service class is most
+    /// appropriate for the current execution context. Use
+    /// [`apply`](Self::apply) to perform this operation on a specific queue.
+    ///
+    /// Documentation:
+    /// [Swift](https://developer.apple.com/documentation/dispatch/dispatchqueue/2016088-concurrentperform) |
+    /// [Objective-C](https://developer.apple.com/documentation/dispatch/1452846-dispatch_apply_f?language=objc)
+    ///
+    /// # Safety
+    ///
+    /// It is safe to panic within the `work` function. Panics will abort the
+    /// process.
+    ///
+    /// If the overhead of the extra setup is undesirable or you would like to
+    /// handle panics yourself, use
+    /// [`apply_auto_no_panic`](Self::apply_auto_no_panic) or
+    /// [`apply_auto_raw`](Self::apply_auto_raw) instead.
+    #[inline]
+    #[doc(alias = "dispatch_apply")]
+    #[doc(alias = "dispatch_apply_f")]
+    pub fn apply_auto<F>(iterations: usize, work: F)
+    where
+        F: Sync + Fn(usize),
+    {
+        // Wrap `work` to abort on panic.
+        let work =
+            |iteration| match panic::catch_unwind(panic::AssertUnwindSafe(|| work(iteration))) {
+                Ok(()) => {}
+                Err(_error) => process::abort(),
+            };
+
+        // SAFETY: Any panics within `work` are caught.
+        unsafe { Self::apply_auto_no_panic(iterations, work) };
+    }
+
+    /// Submits a function to execute the specified number of times, without
+    /// catching panics.
+    ///
+    /// The current index of iteration is passed to each invocation of the
+    /// function.
+    ///
+    /// The function run on a queue whose quality-of-service class is most
+    /// appropriate for the current execution context. Use
+    /// [`apply_no_panic`](Self::apply_no_panic) to perform this operation on a
+    /// specific queue.
+    ///
+    /// Documentation:
+    /// [Swift](https://developer.apple.com/documentation/dispatch/dispatchqueue/2016088-concurrentperform) |
+    /// [Objective-C](https://developer.apple.com/documentation/dispatch/1452846-dispatch_apply_f?language=objc)
+    ///
+    /// # Safety
+    ///
+    /// It is undefined behavior to panic within the `work` function because it
+    /// is called from an `extern "C" fn`. Catch the panic yourself or call
+    /// [`apply_auto`](Self::apply_auto) instead.
+    #[inline]
+    #[doc(alias = "dispatch_apply")]
+    #[doc(alias = "dispatch_apply_f")]
+    pub unsafe fn apply_auto_no_panic<F>(iterations: usize, work: F)
+    where
+        F: Sync + Fn(usize),
+    {
+        Self::_apply_auto_no_panic(None, iterations, work)
+    }
+
+    // This ensures that the wrapper function is never emitted twice for the
+    // same generic function input, if used for both an auto and specific queue.
+    #[inline]
+    unsafe fn _apply_auto_no_panic<F>(queue: Option<&Self>, iterations: usize, work: F)
+    where
+        F: Sync + Fn(usize),
+    {
+        extern "C" fn wrapped_work<F>(ctx: *mut F, iteration: usize)
+        where
+            F: Sync + Fn(usize),
+        {
+            // SAFETY: `work` is never read mutably. A mutable pointer is
+            // required by `apply_raw`.
+            let work = unsafe { &*ctx };
+
+            work(iteration);
+        }
+
+        let ctx = &work as *const F as *mut F;
+
+        // SAFETY: Both functions have the same ABI.
+        let work: extern "C" fn(_, _) = wrapped_work::<F>;
+        let work: DispatchApplyFn = mem::transmute(work);
+
+        // SAFETY: `work` is non-null, which is required by this function.
+        //
+        // And `work` is not an `unsafe fn`, so it needs to handle safety
+        // internally.
+        dispatch_apply_f(iterations, queue, ctx.cast(), work);
+    }
+
+    /// Submits a C function with a context pointer to execute the specified
+    /// number of times.
+    ///
+    /// The current index of iteration is passed to each invocation of the
+    /// function.
+    ///
+    /// The function run on a queue whose quality-of-service class is most
+    /// appropriate for the current execution context. Use
+    /// [`apply_raw`](Self::apply_raw) to perform this operation on a specific
+    /// queue.
+    ///
+    /// Documentation:
+    /// [Objective-C](https://developer.apple.com/documentation/dispatch/1452846-dispatch_apply_f?language=objc)
+    #[inline]
+    #[doc(alias = "dispatch_apply")]
+    #[doc(alias = "dispatch_apply_f")]
+    pub fn apply_auto_raw<Ctx>(
+        iterations: usize,
+        ctx: *mut Ctx,
+        work: extern "C" fn(ctx: *mut Ctx, iteration: usize),
+    ) {
+        unsafe {
+            // SAFETY: Both functions have the same ABI.
+            let work: DispatchApplyFn = mem::transmute(work);
+
+            // SAFETY: `work` is non-null, which is required by this function.
+            //
+            // And `work` is not an `unsafe fn`, so it needs to handle safety
+            // internally.
+            dispatch_apply_f(iterations, None, ctx.cast(), work);
+        }
+    }
+
     /// Submits a function for asynchronous execution.
     ///
     /// Documentation:
@@ -372,6 +513,93 @@ impl DispatchQueue {
             // And `work` is not an `unsafe fn`, so it needs to handle safety
             // internally.
             dispatch_sync_f(self, ctx.cast(), work);
+        }
+    }
+
+    /// Submits a function to execute the specified number of times.
+    ///
+    /// The current index of iteration is passed to each invocation of the
+    /// function.
+    ///
+    /// Documentation:
+    /// [Objective-C](https://developer.apple.com/documentation/dispatch/1452846-dispatch_apply_f?language=objc)
+    ///
+    /// # Safety
+    ///
+    /// It is safe to panic within the `work` function. Panics will abort the
+    /// process.
+    ///
+    /// If the overhead of the extra setup is undesirable or you would like to
+    /// handle panics yourself, use [`apply_no_panic`](Self::apply_no_panic) or
+    /// [`apply_raw`](Self::apply_raw) instead.
+    #[inline]
+    #[doc(alias = "dispatch_apply")]
+    #[doc(alias = "dispatch_apply_f")]
+    pub fn apply<F>(&self, iterations: usize, work: F)
+    where
+        F: Sync + Fn(usize),
+    {
+        // Wrap `work` to abort on panic.
+        let work =
+            |iteration| match panic::catch_unwind(panic::AssertUnwindSafe(|| work(iteration))) {
+                Ok(()) => {}
+                Err(_error) => process::abort(),
+            };
+
+        // SAFETY: Any panics within `work` are caught.
+        unsafe { self.apply_no_panic(iterations, work) };
+    }
+
+    /// Submits a function to execute the specified number of times, without
+    /// catching panics.
+    ///
+    /// The current index of iteration is passed to each invocation of the
+    /// function.
+    ///
+    /// Documentation:
+    /// [Objective-C](https://developer.apple.com/documentation/dispatch/1452846-dispatch_apply_f?language=objc)
+    ///
+    /// # Safety
+    ///
+    /// It is undefined behavior to panic within the `work` function because it
+    /// is called from an `extern "C" fn`. Catch the panic yourself or call
+    /// [`apply`](Self::apply) instead.
+    #[inline]
+    #[doc(alias = "dispatch_apply")]
+    #[doc(alias = "dispatch_apply_f")]
+    pub unsafe fn apply_no_panic<F>(&self, iterations: usize, work: F)
+    where
+        F: Sync + Fn(usize),
+    {
+        Self::_apply_auto_no_panic(Some(self), iterations, work)
+    }
+
+    /// Submits a C function with a context pointer to execute the specified
+    /// number of times.
+    ///
+    /// The current index of iteration is passed to each invocation of the
+    /// function.
+    ///
+    /// Documentation:
+    /// [Objective-C](https://developer.apple.com/documentation/dispatch/1452846-dispatch_apply_f?language=objc)
+    #[inline]
+    #[doc(alias = "dispatch_apply")]
+    #[doc(alias = "dispatch_apply_f")]
+    pub fn apply_raw<Ctx>(
+        &self,
+        iterations: usize,
+        ctx: *mut Ctx,
+        work: extern "C" fn(ctx: *mut Ctx, iteration: usize),
+    ) {
+        unsafe {
+            // SAFETY: Both functions have the same ABI.
+            let work: DispatchApplyFn = mem::transmute(work);
+
+            // SAFETY: `work` is non-null, which is required by this function.
+            //
+            // And `work` is not an `unsafe fn`, so it needs to handle safety
+            // internally.
+            dispatch_apply_f(iterations, Some(self), ctx.cast(), work);
         }
     }
 }
