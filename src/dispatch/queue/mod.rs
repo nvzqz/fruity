@@ -4,7 +4,7 @@ use std::{
     fmt,
     mem::{self, ManuallyDrop, MaybeUninit},
     os::raw::{c_char, c_int, c_long, c_ulong},
-    panic, ptr,
+    panic, process, ptr,
 };
 
 mod attr;
@@ -173,11 +173,96 @@ impl DispatchQueue {
 type DispatchFn = extern "C" fn(ctx: *mut c_void);
 
 extern "C" {
+    fn dispatch_async_f(queue: &DispatchQueue, ctx: *mut c_void, work: DispatchFn);
     fn dispatch_sync_f(queue: &DispatchQueue, ctx: *mut c_void, work: DispatchFn);
 }
 
 /// Queue operations.
 impl DispatchQueue {
+    /// Submits a function for asynchronous execution.
+    ///
+    /// Documentation:
+    /// [Swift](https://developer.apple.com/documentation/dispatch/dispatchqueue/2016098-async) |
+    /// [Objective-C](https://developer.apple.com/documentation/dispatch/1452834-dispatch_async_f?language=objc)
+    ///
+    /// # Safety
+    ///
+    /// It is safe to panic within the `work` function. Panics will abort the
+    /// process.
+    ///
+    /// If the overhead of the extra setup is undesirable or you would like to
+    /// handle panics yourself, use
+    /// [`spawn_async_no_panic`](Self::spawn_async_no_panic) or
+    /// [`spawn_async_raw`](Self::spawn_async_raw) instead.
+    #[inline]
+    #[doc(alias = "dispatch_async")]
+    #[doc(alias = "dispatch_async_f")]
+    pub fn spawn_async<F>(&self, work: F)
+    where
+        F: Send + FnOnce() + 'static,
+    {
+        // Wrap `work` to abort on panic.
+        let work = || match panic::catch_unwind(panic::AssertUnwindSafe(work)) {
+            Ok(()) => {}
+            Err(_error) => process::abort(),
+        };
+
+        // SAFETY: Any panics within `work` are caught.
+        unsafe { self.spawn_async_no_panic(work) };
+    }
+
+    /// Submits a function for asynchronous execution, without catching panics.
+    ///
+    /// Documentation:
+    /// [Swift](https://developer.apple.com/documentation/dispatch/dispatchqueue/2016098-async) |
+    /// [Objective-C](https://developer.apple.com/documentation/dispatch/1452834-dispatch_async_f?language=objc)
+    ///
+    /// # Safety
+    ///
+    /// It is undefined behavior to panic within the `work` function because it
+    /// is called from an `extern "C" fn`. Catch the panic yourself or call
+    /// [`spawn_async`](Self::spawn_async) instead.
+    #[inline]
+    #[doc(alias = "dispatch_async")]
+    #[doc(alias = "dispatch_async_f")]
+    pub unsafe fn spawn_async_no_panic<F>(&self, work: F)
+    where
+        F: Send + FnOnce() + 'static,
+    {
+        extern "C" fn wrapped_work<F>(ctx: *mut F)
+        where
+            F: Send + FnOnce() + 'static,
+        {
+            // SAFETY: `work` is only used from within this function.
+            let work = unsafe { Box::from_raw(ctx) };
+
+            work();
+        }
+
+        self.spawn_async_raw(Box::into_raw(Box::new(work)), wrapped_work);
+    }
+
+    /// Submits a C function with a context pointer for asynchronous execution.
+    ///
+    /// Documentation:
+    /// [Objective-C](https://developer.apple.com/documentation/dispatch/1452834-dispatch_async_f?language=objc)
+    #[inline]
+    #[doc(alias = "dispatch_async")]
+    #[doc(alias = "dispatch_async_f")]
+    pub fn spawn_async_raw<Ctx>(&self, ctx: *mut Ctx, work: extern "C" fn(*mut Ctx)) {
+        unsafe {
+            // SAFETY: Both functions have the same ABI.
+            let work: DispatchFn = mem::transmute(work);
+
+            // SAFETY: The queue and `work` are non-null, which is required by
+            // this function.
+            //
+            // And `work` is not an `unsafe fn`, so it needs to handle safety
+            // internally.
+            dispatch_async_f(self, ctx.cast(), work);
+        }
+    }
+
     /// Submits a function for synchronous execution and returns the function's
     /// result after it finishes executing.
     ///
