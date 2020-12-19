@@ -1,4 +1,4 @@
-use super::Sel;
+use crate::objc::Sel;
 use std::{ffi::CStr, fmt, marker::PhantomData, os::raw::c_char, ptr::NonNull};
 
 /// An Objective-C method definition.
