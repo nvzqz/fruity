@@ -7,6 +7,8 @@
 
 #![cfg(feature = "objc")]
 
+pub mod sys;
+
 #[macro_use]
 pub(crate) mod sel;
 
