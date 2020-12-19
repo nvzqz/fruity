@@ -158,7 +158,7 @@ impl fmt::Display for NSNumber {
         match self._cfboolean_value() {
             Some(false) => "NO".fmt(f),
             Some(true) => "YES".fmt(f),
-            None => match unsafe { *self.objc_type() as u8 } {
+            None => match self.objc_type_single() as u8 {
                 // https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtTypeEncodings.html
                 b'f' => self.float_value().fmt(f),
                 b'd' => self.double_value().fmt(f),

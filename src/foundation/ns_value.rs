@@ -32,6 +32,16 @@ impl NSValue {
         ]
     }
 
+    pub(crate) fn objc_type_single(&self) -> c_char {
+        let objc_type = self.objc_type();
+        let single = unsafe { *objc_type };
+        if single == 0 || unsafe { *objc_type.add(1) != 0 } {
+            0
+        } else {
+            single
+        }
+    }
+
     /// Returns a pointer to a C string containing the Objective-C type of this
     /// object's value.
     ///
