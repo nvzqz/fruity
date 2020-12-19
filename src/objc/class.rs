@@ -1,4 +1,4 @@
-use super::{Property, Sel, BOOL};
+use super::{sys, Method, Property, Sel, BOOL};
 use crate::core::{Arc, ObjectType};
 use std::{
     cell::UnsafeCell,
@@ -222,6 +222,99 @@ impl Class {
     #[inline]
     pub fn instance_size(&self) -> usize {
         unsafe { class_getInstanceSize(self) }
+    }
+
+    /// Returns a reference to the data for a class method defined by `name`, or
+    /// `None` if this class or its superclasses do not implement a class method
+    /// with the specified selector.
+    ///
+    /// Note that this function searches superclasses for implementations,
+    /// whereas [`copy_class_method_list`](Self::copy_class_method_list) does
+    /// not.
+    ///
+    /// See [documentation](https://developer.apple.com/documentation/objectivec/1418887-class_getclassmethod?language=objc).
+    #[inline]
+    #[doc(alias = "class_getClassMethod")]
+    pub fn get_class_method(&self, name: Sel) -> Option<&Method> {
+        unsafe { sys::class_getClassMethod(self, name).as_ref() }
+    }
+
+    /// Returns the class methods implemented by this class, or `None` if this
+    /// class implements no instance methods.
+    ///
+    /// To get the implementations of instance methods that may be implemented
+    /// by superclasses, use [`get_class_method`](Self::get_class_method).
+    ///
+    /// This calls
+    /// [`class_copyMethodList`](https://developer.apple.com/documentation/objectivec/1418490-class_copymethodlist?language=objc)
+    /// on the metaclass of this class.
+    #[cfg(feature = "malloced")]
+    #[inline]
+    #[doc(alias = "class_copyMethodList")]
+    pub fn copy_class_method_list(&self) -> Option<Malloced<[&Method]>> {
+        use std::{mem::MaybeUninit, os::raw::c_uint};
+
+        // TODO: Move this function into `objc::sys` module.
+        extern "C" {
+            fn object_getClass(obj: *const Class) -> *const Class;
+        }
+
+        let superclass = unsafe { object_getClass(self) };
+
+        let mut len = MaybeUninit::<c_uint>::uninit();
+        unsafe {
+            let data = sys::class_copyMethodList(superclass, len.as_mut_ptr());
+            if data.is_null() {
+                None
+            } else {
+                Some(Malloced::slice_from_raw_parts(
+                    data.cast::<&Method>(),
+                    len.assume_init() as usize,
+                ))
+            }
+        }
+    }
+
+    /// Returns a reference to the data for an instance method defined by
+    /// `name`, or `None` if this class or its superclasses do not implement an
+    /// instance method with the specified selector.
+    ///
+    /// Note that this function searches superclasses for implementations,
+    /// whereas [`copy_instance_method_list`](Self::copy_instance_method_list)
+    /// does not.
+    ///
+    /// See [documentation](https://developer.apple.com/documentation/objectivec/1418887-class_getclassmethod?language=objc).
+    #[inline]
+    #[doc(alias = "class_getInstanceMethod")]
+    pub fn get_instance_method(&self, name: Sel) -> Option<&Method> {
+        unsafe { sys::class_getInstanceMethod(self, name).as_ref() }
+    }
+
+    /// Returns the instance methods implemented by this class, or `None` if
+    /// this class implements no instance methods.
+    ///
+    /// To get the implementations of instance methods that may be implemented
+    /// by superclasses, use [`get_instance_method`](Self::get_instance_method).
+    ///
+    /// See [`documentation`](https://developer.apple.com/documentation/objectivec/1418490-class_copymethodlist?language=objc).
+    #[cfg(feature = "malloced")]
+    #[inline]
+    #[doc(alias = "class_copyMethodList")]
+    pub fn copy_instance_method_list(&self) -> Option<Malloced<[&Method]>> {
+        use std::{mem::MaybeUninit, os::raw::c_uint};
+
+        let mut len = MaybeUninit::<c_uint>::uninit();
+        unsafe {
+            let data = sys::class_copyMethodList(self, len.as_mut_ptr());
+            if data.is_null() {
+                None
+            } else {
+                Some(Malloced::slice_from_raw_parts(
+                    data.cast::<&Method>(),
+                    len.assume_init() as usize,
+                ))
+            }
+        }
     }
 
     /// Returns a property of `self` with `name`.

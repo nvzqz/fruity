@@ -1,14 +1,14 @@
 use crate::objc::Sel;
 use std::{ffi::CStr, fmt, marker::PhantomData, os::raw::c_char, ptr::NonNull};
 
-/// An Objective-C method definition.
+/// A [`Method`](super::Method) definition.
 ///
 /// See [documentation](https://developer.apple.com/documentation/objectivec/objc_method_description).
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct MethodDescription<'a> {
     name: Sel,
-    types: NonNull<c_char>,
+    type_encoding: NonNull<c_char>,
     _marker: PhantomData<&'a CStr>,
 }
 
@@ -19,7 +19,7 @@ impl fmt::Debug for MethodDescription<'_> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         f.debug_struct("MethodDescription")
             .field("name", &self.name())
-            .field("types", &self.types())
+            .field("type_encoding", &self.type_encoding())
             .finish()
     }
 }
@@ -39,13 +39,13 @@ impl<'a> MethodDescription<'a> {
     ///
     /// # Safety
     ///
-    /// `types` must point to a valid C string that will not live shorter than
-    /// the lifetime `'a`.
+    /// `type_encoding` must point to a valid C string that will not live
+    /// shorter than the lifetime `'a`.
     #[inline]
-    pub const unsafe fn from_raw_parts(name: Sel, types: *const c_char) -> Self {
+    pub const unsafe fn from_raw_parts(name: Sel, type_encoding: *const c_char) -> Self {
         Self {
             name,
-            types: NonNull::new_unchecked(types as *mut c_char),
+            type_encoding: NonNull::new_unchecked(type_encoding as *mut c_char),
             _marker: PhantomData,
         }
     }
@@ -56,9 +56,9 @@ impl<'a> MethodDescription<'a> {
         self.name
     }
 
-    /// The types of the method arguments.
+    /// Returns a C string describing this method's parameter and return types.
     #[inline]
-    pub fn types(&self) -> &'a CStr {
-        unsafe { CStr::from_ptr(self.types.as_ptr()) }
+    pub fn type_encoding(&self) -> &'a CStr {
+        unsafe { CStr::from_ptr(self.type_encoding.as_ptr()) }
     }
 }
