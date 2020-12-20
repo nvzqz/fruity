@@ -104,6 +104,10 @@ The format is based on [Keep a Changelog] and this project adheres to
   [Core Animation](https://developer.apple.com/documentation/quartzcore)
   framework.
 
+- Created `core_image` module for
+  [Core Image](https://developer.apple.com/documentation/coreimage)
+  framework.
+
 - Added APIs to `foundation` module:
 
   - Constants: `NSNotFound`.
