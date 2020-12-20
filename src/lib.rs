@@ -200,6 +200,7 @@ pub mod core_audio;
 pub mod core_foundation;
 pub mod core_graphics;
 pub mod core_image;
+pub mod core_services;
 pub mod core_text;
 pub mod core_video;
 pub mod dispatch;
