@@ -102,7 +102,7 @@ The format is based on [Keep a Changelog] and this project adheres to
 
   - Types: `NSNumber`, `NSEdgeInsets`, `NSRange`, `NSValue`, `NSNull`,
     `NSException`, `NSExceptionName`, `NSError`, `NSErrorDomain`,
-    `NSErrorUserInfoKey`, `NSErrorRecoveryAttempting`.
+    `NSErrorUserInfoKey`, `NSErrorRecoveryAttempting`, `NSTimeInterval`.
 
   - `NSError` error codes.
 

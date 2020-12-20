@@ -34,6 +34,18 @@ pub use ns_range::*;
 pub use ns_string::*;
 pub use ns_value::*;
 
+/// A number of seconds.
+///
+/// A `NSTimeInterval` value is always specified in seconds; it yields
+/// sub-millisecond precision over a range of 10,000 years.
+///
+/// On its own, a time interval does not specify a unique point in time, or even
+/// a span between specific times. Combining a time interval with one or more
+/// known reference points yields a `NSDate` or `NSDateInterval` value.
+///
+/// See [documentation](https://developer.apple.com/documentation/foundation/nstimeinterval?language=objc).
+pub type NSTimeInterval = f64;
+
 /// A value indicating that a requested item couldn't be found or doesn’t exist.
 ///
 /// See [documentation](https://developer.apple.com/documentation/foundation/nsnotfound).
