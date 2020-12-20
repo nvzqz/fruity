@@ -116,6 +116,10 @@ The format is based on [Keep a Changelog] and this project adheres to
   [Core Audio](https://developer.apple.com/documentation/coreaudio)
   framework.
 
+- Created `system_configuration` module for
+  [System Configuration](https://developer.apple.com/documentation/systemconfiguration)
+  framework.
+
 - Added APIs to `foundation` module:
 
   - Constants: `NSNotFound`.

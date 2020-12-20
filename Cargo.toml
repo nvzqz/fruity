@@ -39,6 +39,7 @@ core_video = ["foundation"]
 dispatch = []
 foundation = ["objc", "core_graphics"]
 objc = []
+system_configuration = ["core_foundation"]
 ui_kit = ["foundation"]
 
 [dependencies]
