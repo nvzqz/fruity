@@ -132,6 +132,10 @@ The format is based on [Keep a Changelog] and this project adheres to
   [CFNetwork](https://developer.apple.com/documentation/cfnetwork)
   framework.
 
+- Created `io_kit` module for
+  [IOKit](https://developer.apple.com/documentation/iokit)
+  framework.
+
 - Added APIs to `foundation` module:
 
   - Constants: `NSNotFound`.
