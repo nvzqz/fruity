@@ -30,11 +30,13 @@ default = ["malloced"]
 
 # Libraries and frameworks
 app_kit = ["foundation"]
+cf_network = ["core_foundation"]
 core_animation = ["foundation"]
 core_audio = []
 core_foundation = ["objc"]
 core_graphics = []
 core_image = ["foundation"]
+core_text = ["core_foundation"]
 core_video = ["foundation"]
 dispatch = []
 foundation = ["objc", "core_graphics"]

@@ -194,11 +194,13 @@ pub mod _priv;
 pub mod objc;
 
 pub mod app_kit;
+pub mod cf_network;
 pub mod core_animation;
 pub mod core_audio;
 pub mod core_foundation;
 pub mod core_graphics;
 pub mod core_image;
+pub mod core_text;
 pub mod core_video;
 pub mod dispatch;
 pub mod foundation;

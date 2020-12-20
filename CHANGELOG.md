@@ -116,8 +116,16 @@ The format is based on [Keep a Changelog] and this project adheres to
   [Core Audio](https://developer.apple.com/documentation/coreaudio)
   framework.
 
+- Created `core_text` module for
+  [Core Text](https://developer.apple.com/documentation/coretext)
+  framework.
+
 - Created `system_configuration` module for
   [System Configuration](https://developer.apple.com/documentation/systemconfiguration)
+  framework.
+
+- Created `cf_network` module for
+  [CFNetwork](https://developer.apple.com/documentation/cfnetwork)
   framework.
 
 - Added APIs to `foundation` module:
