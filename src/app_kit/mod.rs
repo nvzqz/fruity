@@ -12,5 +12,8 @@ mod version;
 
 pub use version::*;
 
+#[doc(inline)]
+pub use crate::common::NSDirectionalEdgeInsets;
+
 #[link(name = "AppKit", kind = "framework")]
 extern "C" {}

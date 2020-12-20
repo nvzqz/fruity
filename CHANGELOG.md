@@ -48,6 +48,10 @@ The format is based on [Keep a Changelog] and this project adheres to
   - Also `_msg_send_cached!` that internally caches the selector in a global
     atomic pointer.
 
+- Created private `common` module for types exposed in multiple public modules:
+
+  - `NSDirectionalEdgeInsets`
+
 - Created `core` module for core types and traits are not specific to any
   wrapped library:
 

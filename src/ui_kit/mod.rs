@@ -9,5 +9,8 @@
 
 mod ext;
 
+#[doc(inline)]
+pub use crate::common::NSDirectionalEdgeInsets;
+
 #[link(name = "UIKit", kind = "framework")]
 extern "C" {}

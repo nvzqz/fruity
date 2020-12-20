@@ -180,6 +180,8 @@
 #![deny(improper_ctypes)]
 #![warn(missing_docs)]
 
+pub(crate) mod common;
+
 #[macro_use]
 pub mod core;
 
