@@ -194,6 +194,7 @@ pub mod _priv;
 pub mod objc;
 
 pub mod app_kit;
+pub mod core_animation;
 pub mod core_foundation;
 pub mod core_graphics;
 pub mod dispatch;

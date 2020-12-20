@@ -100,6 +100,10 @@ The format is based on [Keep a Changelog] and this project adheres to
     - `with_current_queue_label` as safe scoped alternative to
       `current_queue_label`.
 
+- Created `core_animation` module for
+  [Core Animation](https://developer.apple.com/documentation/quartzcore)
+  framework.
+
 - Added APIs to `foundation` module:
 
   - Constants: `NSNotFound`.
