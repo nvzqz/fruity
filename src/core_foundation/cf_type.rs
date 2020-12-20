@@ -1,4 +1,4 @@
-use super::{Boolean, CFHashCode, CFIndex};
+use super::{sys, CFHashCode, CFIndex};
 use crate::core::{Arc, ObjectType};
 use std::{cell::UnsafeCell, fmt, hash, ptr::NonNull};
 
@@ -29,19 +29,13 @@ impl ObjectType for CFType {
     #[inline]
     #[doc(alias = "CFRetain")]
     fn retain(obj: &Self) -> Arc<Self> {
-        extern "C" {
-            fn CFRetain(obj: &CFType) -> Arc<CFType>;
-        }
-        unsafe { CFRetain(obj) }
+        unsafe { Arc::from_raw(sys::CFRetain(obj)) }
     }
 
     #[inline]
     #[doc(alias = "CFRelease")]
     unsafe fn release(obj: NonNull<Self>) {
-        extern "C" {
-            fn CFRelease(obj: NonNull<CFType>);
-        }
-        CFRelease(obj);
+        sys::CFRelease(obj.as_ptr());
     }
 }
 
@@ -60,10 +54,7 @@ impl PartialEq for CFType {
     #[inline]
     #[doc(alias = "CFEqual")]
     fn eq(&self, other: &Self) -> bool {
-        extern "C" {
-            fn CFEqual(cf1: &CFType, cf2: &CFType) -> Boolean;
-        }
-        unsafe { CFEqual(self, other) != 0 }
+        unsafe { sys::CFEqual(self, other) != 0 }
     }
 }
 
@@ -90,10 +81,7 @@ impl CFType {
     #[inline]
     #[doc(alias = "CFGetRetainCount")]
     pub fn retain_count(&self) -> CFIndex {
-        extern "C" {
-            fn CFGetRetainCount(cf: &CFType) -> CFIndex;
-        }
-        unsafe { CFGetRetainCount(self) }
+        unsafe { sys::CFGetRetainCount(self) }
     }
 
     /// Returns a code that can be used to identify `self` in a hashing
@@ -101,20 +89,14 @@ impl CFType {
     #[inline]
     #[doc(alias = "CFHash")]
     pub fn hash(&self) -> CFHashCode {
-        extern "C" {
-            fn CFHash(cf: &CFType) -> CFHashCode;
-        }
-        unsafe { CFHash(self) }
+        unsafe { sys::CFHash(self) }
     }
 
     /// Returns the unique identifier of an opaque type to which `self` belongs.
     #[inline]
     #[doc(alias = "CFGetTypeID")]
     pub fn get_type_id(&self) -> CFTypeID {
-        extern "C" {
-            fn CFGetTypeID(cf: &CFType) -> CFTypeID;
-        }
-        unsafe { CFGetTypeID(self) }
+        unsafe { sys::CFGetTypeID(self) }
     }
 
     // TODO: `CFGetAllocator`

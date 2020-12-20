@@ -9,8 +9,7 @@
 
 #![cfg(feature = "core_foundation")]
 
-#[link(name = "CoreFoundation", kind = "framework")]
-extern "C" {}
+pub mod sys;
 
 mod cf_type;
 mod cmp;
