@@ -68,6 +68,8 @@ The format is based on [Keep a Changelog] and this project adheres to
 
       - `Arc<NSMutableString>` from `[[NSMutableString alloc] init]`.
 
+  - `OSErr` and `OSStatus` non-zero structs for error codes.
+
 - Created `core_graphics` module for
   [Core Graphics](https://developer.apple.com/documentation/coregraphics)
   framework:
