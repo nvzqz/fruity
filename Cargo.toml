@@ -31,6 +31,7 @@ default = ["malloced"]
 # Libraries and frameworks
 app_kit = ["foundation"]
 core_animation = ["foundation"]
+core_audio = []
 core_foundation = ["objc"]
 core_graphics = []
 core_image = ["foundation"]

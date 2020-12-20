@@ -112,6 +112,10 @@ The format is based on [Keep a Changelog] and this project adheres to
   [Core Video](https://developer.apple.com/documentation/corevideo)
   framework.
 
+- Created `core_audio` module for
+  [Core Audio](https://developer.apple.com/documentation/coreaudio)
+  framework.
+
 - Added APIs to `foundation` module:
 
   - Constants: `NSNotFound`.
