@@ -30,12 +30,12 @@ default = ["malloced"]
 
 # Libraries and frameworks
 app_kit = ["foundation"]
-objc = []
+core_animation = ["foundation"]
 core_foundation = ["objc"]
 core_graphics = []
-core_animation = ["foundation"]
 dispatch = []
 foundation = ["objc", "core_graphics"]
+objc = []
 ui_kit = ["foundation"]
 
 [dependencies]
