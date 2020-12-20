@@ -108,6 +108,10 @@ The format is based on [Keep a Changelog] and this project adheres to
   [Core Image](https://developer.apple.com/documentation/coreimage)
   framework.
 
+- Created `core_video` module for
+  [Core Video](https://developer.apple.com/documentation/corevideo)
+  framework.
+
 - Added APIs to `foundation` module:
 
   - Constants: `NSNotFound`.
