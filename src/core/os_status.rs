@@ -21,10 +21,7 @@ pub struct OSStatus(NonZeroI32);
 impl From<OSErr> for OSStatus {
     #[inline]
     fn from(error: OSErr) -> Self {
-        let value = error.value() as i32;
-
-        // SAFETY: `OSErr` can never have a zero value.
-        unsafe { Self::new_unchecked(value) }
+        Self::from_os_err(error)
     }
 }
 
@@ -59,6 +56,13 @@ impl OSStatus {
     #[inline]
     pub const unsafe fn new_unchecked(value: i32) -> Self {
         Self(NonZeroI32::new_unchecked(value))
+    }
+
+    /// Converts an `OSErr` instance to an `OSStatus`.
+    #[inline]
+    pub const fn from_os_err(error: OSErr) -> Self {
+        // SAFETY: `OSErr` can never have a zero value.
+        unsafe { Self::new_unchecked(error.value() as i32) }
     }
 
     /// Returns this error's integer value.
