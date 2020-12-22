@@ -1,3 +1,4 @@
+use super::OSStatus;
 use std::num::NonZeroI16;
 
 /// A non-zero 16-bit error code.
@@ -48,6 +49,20 @@ impl OSErr {
     #[inline]
     pub const unsafe fn new_unchecked(value: i16) -> Self {
         Self(NonZeroI16::new_unchecked(value))
+    }
+
+    /// Converts an `OSStatus` instance to an `OSErr` if it's within the 16-bit
+    /// range.
+    #[inline]
+    pub const fn from_os_status(status: OSStatus) -> Option<Self> {
+        let value = status.value();
+
+        if (value as i16 as i32) == value {
+            // SAFETY: `OSStatus` can never have a zero value.
+            Some(unsafe { Self::new_unchecked(value as i16) })
+        } else {
+            None
+        }
     }
 
     /// Returns this error's integer value.
