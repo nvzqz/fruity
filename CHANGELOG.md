@@ -194,6 +194,8 @@ The format is based on [Keep a Changelog] and this project adheres to
   - Types: `CFType`, `CFTypeRef`, `CFTypeID`, `CFOptionFlags`, `CFIndex`,
     `CFHashCode`, `CFComparisonResult`, `CFAllocator`.
 
+  - Callback function type aliases for `CFAllocator`.
+
 - Added APIs to `objc` module:
 
   - Pointer methods for `Sel`.
