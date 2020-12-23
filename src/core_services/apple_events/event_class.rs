@@ -57,6 +57,8 @@ impl AEEventClass {
     /// interface to the user should be able to any events sent by the Mac OS
     /// that apply to the application.
     ///
+    /// See [`AEEventID` constants](struct.AEEventID.html#kCoreEventClass).
+    ///
     /// See [documentation](https://developer.apple.com/documentation/coreservices/kcoreeventclass?language=objc).
     #[doc(alias = "kCoreEventClass")]
     pub const CORE: Self = Self::from_chars(*b"aevt");

@@ -113,7 +113,8 @@ The format is based on [Keep a Changelog] and this project adheres to
 
   - `apple_events` module for low level Apple Events API in `AE.framework`:
 
-    - `AEDescType` and `AEEventClass` newtype structs over `FourCharCode`.
+    - `AEDescType`, `AEEventClass`, and `AEEventID` newtype structs over
+      `FourCharCode`.
 
 - Created `core_animation` module for
   [Core Animation](https://developer.apple.com/documentation/quartzcore)
