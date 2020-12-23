@@ -12,10 +12,12 @@
 pub mod sys;
 
 mod cf_allocator;
+mod cf_number;
 mod cf_type;
 mod cmp;
 
 pub use cf_allocator::*;
+pub use cf_number::*;
 pub use cf_type::*;
 pub use cmp::*;
 

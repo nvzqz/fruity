@@ -192,7 +192,8 @@ The format is based on [Keep a Changelog] and this project adheres to
   - Constants: `kCFNotFound`.
 
   - Types: `CFType`, `CFTypeRef`, `CFTypeID`, `CFOptionFlags`, `CFIndex`,
-    `CFHashCode`, `CFComparisonResult`, `CFAllocator`, `CFAllocatorContext`.
+    `CFHashCode`, `CFComparisonResult`, `CFAllocator`, `CFAllocatorContext`,
+    `CFNumber`, `CFNumberType`.
 
   - Callback function type aliases for `CFAllocator`.
 
