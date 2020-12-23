@@ -2,7 +2,7 @@ use super::ObjectType;
 use std::{
     fmt,
     hash::{Hash, Hasher},
-    mem,
+    mem::{self, ManuallyDrop},
     ops::Deref,
     ptr::NonNull,
 };
@@ -109,6 +109,16 @@ impl<T: ObjectType> Arc<T> {
         Self {
             obj: NonNull::new_unchecked(obj as *mut T),
         }
+    }
+
+    /// Constructs an `Arc<T>` from a raw pointer and retains it.
+    ///
+    /// # Safety
+    ///
+    /// The value at `obj` must be a valid instance of `T`.
+    #[inline]
+    pub unsafe fn retain_raw(obj: *const T) -> Self {
+        Self::retain(&ManuallyDrop::new(Self::from_raw(obj)))
     }
 
     /// Consumes the `Arc`, returning the wrapped pointer.
