@@ -73,6 +73,8 @@ The format is based on [Keep a Changelog] and this project adheres to
   - `FourCharCode` struct for
     [four-character codes](https://en.wikipedia.org/wiki/FourCC).
 
+  - `OSType` alias for `FourCharCode`.
+
 - Created `core_graphics` module for
   [Core Graphics](https://developer.apple.com/documentation/coregraphics)
   framework:
