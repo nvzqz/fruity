@@ -70,6 +70,9 @@ The format is based on [Keep a Changelog] and this project adheres to
 
   - `OSErr` and `OSStatus` non-zero structs for error codes.
 
+  - `FourCharCode` struct for
+    [four-character codes](https://en.wikipedia.org/wiki/FourCC).
+
 - Created `core_graphics` module for
   [Core Graphics](https://developer.apple.com/documentation/coregraphics)
   framework:
