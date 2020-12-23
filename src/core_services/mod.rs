@@ -12,3 +12,7 @@
 #![cfg(feature = "core_services")]
 
 pub mod sys;
+
+mod apple_events;
+
+pub use apple_events::*;
