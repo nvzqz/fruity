@@ -1,6 +1,6 @@
 use super::{sys, CFHashCode, CFIndex};
 use crate::core::{Arc, ObjectType};
-use std::{cell::UnsafeCell, fmt, hash, ptr::NonNull};
+use std::{cell::UnsafeCell, fmt, hash, marker::PhantomData, ptr::NonNull};
 
 /// Unique constant integer value that identifies particular Core Foundation
 /// opaque types.
@@ -19,13 +19,15 @@ pub type CFTypeID = usize;
 /// All Core Foundation types within this crate ultimately
 /// [`Deref`](https://doc.rust-lang.org/std/ops/trait.Deref.html) to this type.
 #[repr(C)]
-pub struct CFType {
+pub struct CFType<'data> {
+    // TODO: Figure out the correct lifetime variance for `'data`.
+    _marker: PhantomData<&'data ()>,
     // Stores data that may be mutated behind a shared reference. Internal
     // mutability triggers undefined behavior without `UnsafeCell`.
     _data: UnsafeCell<[u8; 0]>,
 }
 
-impl ObjectType for CFType {
+impl ObjectType for CFType<'_> {
     #[inline]
     #[doc(alias = "CFRetain")]
     fn retain(obj: &Self) -> Arc<Self> {
@@ -40,39 +42,39 @@ impl ObjectType for CFType {
 }
 
 // This type is used globally, so we must be able to share it across threads.
-unsafe impl Sync for CFType {}
-unsafe impl Send for CFType {}
+unsafe impl Sync for CFType<'_> {}
+unsafe impl Send for CFType<'_> {}
 
-impl AsRef<CFType> for CFType {
+impl<'data> AsRef<CFType<'data>> for CFType<'data> {
     #[inline]
-    fn as_ref(&self) -> &CFType {
+    fn as_ref(&self) -> &Self {
         self
     }
 }
 
-impl PartialEq for CFType {
+impl<'a, 'b> PartialEq<CFType<'b>> for CFType<'a> {
     #[inline]
     #[doc(alias = "CFEqual")]
-    fn eq(&self, other: &Self) -> bool {
+    fn eq(&self, other: &CFType) -> bool {
         unsafe { sys::CFEqual(self, other) != 0 }
     }
 }
 
-impl hash::Hash for CFType {
+impl hash::Hash for CFType<'_> {
     #[inline]
     fn hash<H: hash::Hasher>(&self, state: &mut H) {
         self.hash().hash(state)
     }
 }
 
-impl fmt::Debug for CFType {
+impl fmt::Debug for CFType<'_> {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         (self as *const Self).fmt(f)
     }
 }
 
-impl CFType {
+impl<'data> CFType<'data> {
     /// Returns this object's reference count.
     ///
     /// This method is only useful for debugging certain objects.
@@ -110,4 +112,4 @@ impl CFType {
 /// Documentation:
 /// [Swift](https://developer.apple.com/documentation/corefoundation/cftyperef?language=swift) |
 /// [Objective-C](https://developer.apple.com/documentation/corefoundation/cftyperef?language=objc)
-pub type CFTypeRef = Arc<CFType>;
+pub type CFTypeRef<'data> = Arc<CFType<'data>>;
