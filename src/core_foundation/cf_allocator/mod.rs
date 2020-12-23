@@ -1,8 +1,10 @@
 use super::CFType;
 
 mod callbacks;
+mod context;
 
 pub use callbacks::*;
+pub use context::*;
 
 subclass! {
     /// An allocator object.
