@@ -1,5 +1,6 @@
 // This macro is intentionally undocumented to ensure it is not publicly
 // exported.
+#[allow(unused)]
 macro_rules! subclass {
     (
         $(#[$meta:meta])+
@@ -63,6 +64,7 @@ macro_rules! subclass {
 
 // This macro is intentionally undocumented to ensure it is not publicly
 // exported.
+#[allow(unused)]
 macro_rules! object_wrapper {
     (
         $(#[$meta:meta])+

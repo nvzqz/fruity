@@ -62,6 +62,7 @@ macro_rules! objc_subclass {
 
 // This macro is intentionally undocumented to ensure it is not publicly
 // exported.
+#[allow(unused)]
 macro_rules! objc_object_wrapper {
     (
         $(#[$meta:meta])+
