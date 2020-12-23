@@ -24,6 +24,9 @@ subclass! {
     pub class CFNumber: CFType<'static>;
 }
 
+#[cfg(feature = "foundation")]
+cf_bridge!(CFNumber, crate::foundation::NSNumber);
+
 impl Eq for CFNumber {}
 
 impl PartialOrd for CFNumber {

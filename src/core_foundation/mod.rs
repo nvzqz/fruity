@@ -11,6 +11,9 @@
 
 pub mod sys;
 
+#[macro_use]
+mod bridge;
+
 mod cf_allocator;
 mod cf_number;
 mod cf_type;
