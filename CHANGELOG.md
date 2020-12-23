@@ -192,7 +192,7 @@ The format is based on [Keep a Changelog] and this project adheres to
   - Constants: `kCFNotFound`.
 
   - Types: `CFType`, `CFTypeRef`, `CFTypeID`, `CFOptionFlags`, `CFIndex`,
-    `CFHashCode`, `CFComparisonResult`.
+    `CFHashCode`, `CFComparisonResult`, `CFAllocator`.
 
 - Added APIs to `objc` module:
 
