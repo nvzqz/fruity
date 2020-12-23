@@ -120,6 +120,8 @@ The format is based on [Keep a Changelog] and this project adheres to
 
     - `AETransactionID` and `AESendMode` newtype structs over `i32`.
 
+    - `AEDataStorage` and `AEDataStorageType` pointer type aliases.
+
 - Created `core_animation` module for
   [Core Animation](https://developer.apple.com/documentation/quartzcore)
   framework.
