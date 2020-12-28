@@ -193,7 +193,7 @@ The format is based on [Keep a Changelog] and this project adheres to
 
   - Types: `CFType`, `CFTypeRef`, `CFTypeID`, `CFOptionFlags`, `CFIndex`,
     `CFHashCode`, `CFComparisonResult`, `CFAllocator`, `CFAllocatorContext`,
-    `CFNumber`, `CFNumberType`.
+    `CFNumber`, `CFNumberType`, `CFBoolean`.
 
   - Callback function type aliases for `CFAllocator`.
 

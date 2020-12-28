@@ -1,8 +1,8 @@
 //! Raw unsafe C functions exposed by `CoreFoundation.framework`.
 
 use super::{
-    Boolean, CFAllocator, CFAllocatorContext, CFComparisonResult, CFHashCode, CFIndex, CFNumber,
-    CFNumberType, CFOptionFlags, CFType, CFTypeID,
+    Boolean, CFAllocator, CFAllocatorContext, CFBoolean, CFComparisonResult, CFHashCode, CFIndex,
+    CFNumber, CFNumberType, CFOptionFlags, CFType, CFTypeID,
 };
 use std::ffi::c_void;
 
@@ -76,4 +76,8 @@ extern "C" {
         number_type: CFNumberType,
         value_ptr: *mut c_void,
     ) -> Boolean;
+
+    pub fn CFBooleanGetTypeID() -> CFTypeID;
+
+    pub fn CFBooleanGetValue(boolean: *const CFBoolean) -> Boolean;
 }

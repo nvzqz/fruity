@@ -15,11 +15,13 @@ pub mod sys;
 mod bridge;
 
 mod cf_allocator;
+mod cf_boolean;
 mod cf_number;
 mod cf_type;
 mod cmp;
 
 pub use cf_allocator::*;
+pub use cf_boolean::*;
 pub use cf_number::*;
 pub use cf_type::*;
 pub use cmp::*;
