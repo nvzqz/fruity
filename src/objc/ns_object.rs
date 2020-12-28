@@ -1,5 +1,6 @@
 use super::{Class, ClassType, NSUInteger, ObjCObject, Sel, BOOL};
 use crate::core::Arc;
+use crate::foundation::NSString;
 
 // TODO: Create `NSObjectProtocol` for `@protocol NSObject` and `Deref` to that.
 objc_subclass! {
@@ -85,5 +86,11 @@ impl<'data> NSObject<'data> {
     #[doc(alias = "mutableCopy")]
     pub fn mutable_copy(&self) -> Arc<Self> {
         unsafe { _msg_send_any_cached![self, mutableCopy] }
+    }
+
+    /// Returns a string that describes the contents of this object.
+    #[inline]
+    pub fn description(&self) -> Arc<NSString<'static>> {
+        unsafe { _msg_send_any![self, description] }
     }
 }
