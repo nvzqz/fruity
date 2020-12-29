@@ -158,10 +158,9 @@ This is true for the following:
 
 - **Getting a static class.**
 
-  Getters like
-  [`NSString::class`](https://docs.rs/fruity/0.2.0/fruity/foundation/struct.NSString.html#method.class)
-  retrieve the class directly through its symbol. This is instantaneous,
-  especially when compared to calling into the Objective-C runtime via
+  Getters like `NSString::class` retrieve the class directly through its symbol.
+  This is instantaneous, especially when compared to calling into the
+  Objective-C runtime via
   [`objc_getClass`](https://developer.apple.com/documentation/objectivec/1418952-objc_getclass).
 
 - **Creating an `NSString` from a Rust string literal.**
