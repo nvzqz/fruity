@@ -84,20 +84,29 @@ impl DispatchObject {
     /// Specifies the dispatch queue on which to perform work associated with
     /// `self`.
     ///
+    /// If this queue has already been activated, then this method will fail.
+    ///
+    /// **Important:** When setting up target queues, it is a programmer error
+    /// to create cycles in the dispatch queue hierarchy. In other words, don't
+    /// set the target of queue A to queue B and set the target of queue B to
+    /// queue A.
+    ///
     /// Documentation:
     /// [Swift](https://developer.apple.com/documentation/dispatch/dispatchobject/1452989-settarget) |
     /// [Objective-C](https://developer.apple.com/documentation/dispatch/1452989-dispatch_set_target_queue)
+    ///
+    /// # Safety
+    ///
+    /// The target queue must be expected for this dispatch object. For example,
+    /// an object may expect to dispatch to the main queue.
     #[inline]
     #[doc(alias = "dispatch_set_target_queue")]
-    pub fn set_target<Q>(&self, queue: Q)
-    where
-        for<'q> Q: Into<Option<&'q DispatchQueue>>,
-    {
-        let queue = match queue.into() {
+    pub unsafe fn set_target<Q>(&self, queue: Option<&DispatchQueue>) {
+        let queue = match queue {
             Some(queue) => queue,
             None => ptr::null(),
         };
-        unsafe { sys::dispatch_set_target_queue(self, queue) };
+        sys::dispatch_set_target_queue(self, queue);
     }
 
     /// Returns the application-defined context of an object.
