@@ -5,7 +5,7 @@
 //! This module corresponds to the **`ui_kit`**
 //! [feature flag](../index.html#feature-flags).
 
-#![cfg(all(feature = "ui_kit", not(target_os = "macos")))]
+#![cfg(all(feature = "ui_kit", any(mac_catalyst, not(target_os = "macos"))))]
 
 mod ext;
 
