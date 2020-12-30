@@ -1,9 +1,8 @@
-use super::{DispatchObject, DispatchQos, DispatchQosClass};
+use super::{sys, DispatchObject, DispatchQos, DispatchQosClass};
 use std::{
     ffi::{c_void, CStr, CString},
     fmt,
     mem::{self, ManuallyDrop, MaybeUninit},
-    os::raw::{c_char, c_int, c_long, c_ulong},
     panic, process, ptr,
 };
 
@@ -37,10 +36,6 @@ impl fmt::Debug for DispatchQueue {
     }
 }
 
-extern "C" {
-    fn dispatch_get_global_queue(identifier: c_long, flags: c_ulong) -> &'static DispatchQueue;
-}
-
 /// Getting global queues.
 impl DispatchQueue {
     /// The serial dispatch queue associated with the main thread of the current
@@ -48,10 +43,7 @@ impl DispatchQueue {
     #[inline]
     #[doc(alias = "dispatch_get_main_queue")]
     pub fn main() -> &'static Self {
-        extern "C" {
-            static mut _dispatch_main_q: DispatchQueue;
-        }
-        unsafe { &_dispatch_main_q }
+        unsafe { &sys::_dispatch_main_q }
     }
 
     /// Returns the global system concurrent queue with the specified
@@ -59,14 +51,14 @@ impl DispatchQueue {
     #[inline]
     #[doc(alias = "dispatch_get_global_queue")]
     pub fn global_with_qos(qos_class: DispatchQosClass) -> &'static Self {
-        unsafe { dispatch_get_global_queue(qos_class as _, 0) }
+        unsafe { &*sys::dispatch_get_global_queue(qos_class as _, 0) }
     }
 
     /// Returns the global system concurrent queue with the specified priority.
     #[inline]
     #[doc(alias = "dispatch_get_global_queue")]
     pub fn global_with_priority(priority: DispatchQueuePriority) -> &'static Self {
-        unsafe { dispatch_get_global_queue(priority as _, 0) }
+        unsafe { &*sys::dispatch_get_global_queue(priority as _, 0) }
     }
 }
 
@@ -81,10 +73,6 @@ impl DispatchQueue {
     pub fn builder<'a>() -> DispatchQueueBuilder<'a> {
         DispatchQueueBuilder::new()
     }
-}
-
-extern "C" {
-    fn dispatch_queue_get_label(queue: *const DispatchQueue) -> *const c_char;
 }
 
 /// Queue properties.
@@ -102,7 +90,7 @@ impl DispatchQueue {
     #[inline]
     #[doc(alias = "dispatch_queue_get_label")]
     pub unsafe fn current_queue_label<'a>() -> Option<&'a CStr> {
-        let label = dispatch_queue_get_label(ptr::null());
+        let label = sys::dispatch_queue_get_label(ptr::null());
         if label.is_null() {
             None
         } else {
@@ -139,7 +127,7 @@ impl DispatchQueue {
     #[doc(alias = "dispatch_queue_get_label")]
     pub fn label(&self) -> Option<&CStr> {
         unsafe {
-            let label = dispatch_queue_get_label(self);
+            let label = sys::dispatch_queue_get_label(self);
             if label.is_null() {
                 None
             } else {
@@ -156,33 +144,15 @@ impl DispatchQueue {
     #[inline]
     #[doc(alias = "dispatch_queue_get_qos_class")]
     pub fn qos(&self) -> DispatchQos {
-        extern "C" {
-            fn dispatch_queue_get_qos_class(
-                queue: *const DispatchQueue,
-                relative_priority_ptr: *mut c_int,
-            ) -> DispatchQosClass;
-        }
-
         let mut relative_priority = 0;
-        let qos_class = unsafe { dispatch_queue_get_qos_class(self, &mut relative_priority) };
+        let qos_class = unsafe { sys::dispatch_queue_get_qos_class(self, &mut relative_priority) };
 
         DispatchQos::new(qos_class, relative_priority)
     }
 }
 
-type DispatchFn = extern "C" fn(ctx: *mut c_void);
-type DispatchApplyFn = extern "C" fn(ctx: *mut c_void, iteration: usize);
-
-extern "C" {
-    fn dispatch_async_f(queue: &DispatchQueue, ctx: *mut c_void, work: DispatchFn);
-    fn dispatch_sync_f(queue: &DispatchQueue, ctx: *mut c_void, work: DispatchFn);
-    fn dispatch_apply_f(
-        iterations: usize,
-        queue: Option<&DispatchQueue>,
-        ctx: *mut c_void,
-        work: DispatchApplyFn,
-    );
-}
+type DispatchFn = unsafe extern "C" fn(ctx: *mut c_void);
+type DispatchApplyFn = unsafe extern "C" fn(ctx: *mut c_void, iteration: usize);
 
 /// Queue operations.
 impl DispatchQueue {
@@ -294,11 +264,16 @@ impl DispatchQueue {
         let work: extern "C" fn(_, _) = wrapped_work::<F>;
         let work: DispatchApplyFn = mem::transmute(work);
 
+        let queue = match queue {
+            Some(queue) => queue,
+            None => ptr::null(),
+        };
+
         // SAFETY: `work` is non-null, which is required by this function.
         //
         // And `work` is not an `unsafe fn`, so it needs to handle safety
         // internally.
-        dispatch_apply_f(iterations, queue, ctx.cast(), work);
+        sys::dispatch_apply_f(iterations, queue, ctx.cast(), work);
     }
 
     /// Submits a C function with a context pointer to execute the specified
@@ -337,7 +312,7 @@ impl DispatchQueue {
             //
             // And `work` is not an `unsafe fn`, so it needs to handle safety
             // internally.
-            dispatch_apply_f(iterations, None, ctx.cast(), work);
+            sys::dispatch_apply_f(iterations, ptr::null(), ctx.cast(), work);
         }
     }
 
@@ -421,7 +396,7 @@ impl DispatchQueue {
             //
             // And `work` is not an `unsafe fn`, so it needs to handle safety
             // internally.
-            dispatch_async_f(self, ctx.cast(), work);
+            sys::dispatch_async_f(self, ctx.cast(), work);
         }
     }
 
@@ -533,7 +508,7 @@ impl DispatchQueue {
             //
             // And `work` is not an `unsafe fn`, so it needs to handle safety
             // internally.
-            dispatch_sync_f(self, ctx.cast(), work);
+            sys::dispatch_sync_f(self, ctx.cast(), work);
         }
     }
 
@@ -620,7 +595,7 @@ impl DispatchQueue {
             //
             // And `work` is not an `unsafe fn`, so it needs to handle safety
             // internally.
-            dispatch_apply_f(iterations, Some(self), ctx.cast(), work);
+            sys::dispatch_apply_f(iterations, self, ctx.cast(), work);
         }
     }
 }

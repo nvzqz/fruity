@@ -1,3 +1,5 @@
+use super::sys;
+
 /// A point in time relative to the default clock, with nanosecond precision.
 ///
 /// Documentation:
@@ -91,9 +93,6 @@ impl DispatchTime {
     #[inline]
     #[doc(alias = "dispatch_time")]
     pub fn offset_nanos(self, delta: i64) -> Self {
-        extern "C" {
-            fn dispatch_time(when: DispatchTime, delta: i64) -> DispatchTime;
-        }
-        unsafe { dispatch_time(self, delta) }
+        unsafe { sys::dispatch_time(self, delta) }
     }
 }

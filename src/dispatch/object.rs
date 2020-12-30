@@ -1,6 +1,11 @@
-use super::DispatchQueue;
+use super::{sys, DispatchQueue};
 use crate::core::{Arc, ObjectType};
-use std::{cell::UnsafeCell, ffi::c_void, panic::RefUnwindSafe, ptr::NonNull};
+use std::{
+    cell::UnsafeCell,
+    ffi::c_void,
+    panic::RefUnwindSafe,
+    ptr::{self, NonNull},
+};
 
 /// The base type for dispatch objects.
 ///
@@ -18,11 +23,8 @@ impl ObjectType for DispatchObject {
     #[inline]
     #[doc(alias = "dispatch_retain")]
     fn retain(obj: &Self) -> Arc<Self> {
-        extern "C" {
-            fn dispatch_retain(obj: &DispatchObject);
-        }
         unsafe {
-            dispatch_retain(obj);
+            sys::dispatch_retain(obj);
             Arc::from_raw(obj)
         }
     }
@@ -30,10 +32,7 @@ impl ObjectType for DispatchObject {
     #[inline]
     #[doc(alias = "dispatch_release")]
     unsafe fn release(obj: NonNull<Self>) {
-        extern "C" {
-            fn dispatch_release(obj: NonNull<DispatchObject>);
-        }
-        dispatch_release(obj);
+        sys::dispatch_release(obj.as_ptr());
     }
 }
 
@@ -61,10 +60,7 @@ impl DispatchObject {
     #[inline]
     #[doc(alias = "dispatch_activate")]
     pub fn activate(&self) {
-        extern "C" {
-            fn dispatch_activate(obj: &DispatchObject);
-        }
-        unsafe { dispatch_activate(self) }
+        unsafe { sys::dispatch_activate(self) };
     }
 
     /// Resumes the invocation of block objects on `self`.
@@ -73,10 +69,7 @@ impl DispatchObject {
     #[inline]
     #[doc(alias = "dispatch_resume")]
     pub fn resume(&self) {
-        extern "C" {
-            fn dispatch_resume(obj: &DispatchObject);
-        }
-        unsafe { dispatch_resume(self) }
+        unsafe { sys::dispatch_resume(self) };
     }
 
     /// Suspends the invocation of block objects on `self`.
@@ -85,10 +78,7 @@ impl DispatchObject {
     #[inline]
     #[doc(alias = "dispatch_suspend")]
     pub fn suspend(&self) {
-        extern "C" {
-            fn dispatch_suspend(obj: &DispatchObject);
-        }
-        unsafe { dispatch_suspend(self) }
+        unsafe { sys::dispatch_suspend(self) };
     }
 
     /// Specifies the dispatch queue on which to perform work associated with
@@ -103,11 +93,11 @@ impl DispatchObject {
     where
         for<'q> Q: Into<Option<&'q DispatchQueue>>,
     {
-        extern "C" {
-            fn dispatch_set_target_queue(obj: &DispatchObject, queue: Option<&DispatchQueue>);
-        }
-
-        unsafe { dispatch_set_target_queue(self, queue.into()) };
+        let queue = match queue.into() {
+            Some(queue) => queue,
+            None => ptr::null(),
+        };
+        unsafe { sys::dispatch_set_target_queue(self, queue) };
     }
 
     /// Returns the application-defined context of an object.
@@ -116,10 +106,7 @@ impl DispatchObject {
     #[inline]
     #[doc(alias = "dispatch_get_context")]
     pub fn context(&self) -> *mut c_void {
-        extern "C" {
-            fn dispatch_get_context(obj: &DispatchObject) -> *mut c_void;
-        }
-        unsafe { dispatch_get_context(self) }
+        unsafe { sys::dispatch_get_context(self) }
     }
 
     /// Associates an application-defined context with the object.
@@ -128,9 +115,6 @@ impl DispatchObject {
     #[inline]
     #[doc(alias = "dispatch_set_context")]
     pub fn set_context(&self, context: *mut c_void) {
-        extern "C" {
-            fn dispatch_set_context(obj: &DispatchObject, context: *mut c_void);
-        }
-        unsafe { dispatch_set_context(self, context) }
+        unsafe { sys::dispatch_set_context(self, context) };
     }
 }

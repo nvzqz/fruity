@@ -1,5 +1,6 @@
 use std::fmt;
 
+// TODO: Expose raw type publicly and move relevant C functions to `sys` module.
 #[allow(non_camel_case_types)]
 pub(crate) type dispatch_queue_attr_t = *mut dispatch_queue_attr_s;
 
