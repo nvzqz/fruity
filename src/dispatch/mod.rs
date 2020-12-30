@@ -7,10 +7,7 @@
 
 #![cfg(feature = "dispatch")]
 
-// Dispatch is reexported by libSystem on Apple platforms.
-#[cfg_attr(target_vendor = "apple", link(name = "System", kind = "dylib"))]
-#[cfg_attr(not(target_vendor = "apple"), link(name = "dispatch", kind = "dylib"))]
-extern "C" {}
+pub mod sys;
 
 mod autorelease_frequency;
 mod object;

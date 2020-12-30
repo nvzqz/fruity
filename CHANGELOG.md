@@ -95,6 +95,8 @@ The format is based on [Keep a Changelog] and this project adheres to
   [Dispatch](https://developer.apple.com/documentation/dispatch)
   library:
 
+  - `sys` module for raw unsafe C functions exposed by libdispatch.
+
   - Types: `DispatchObject`, `DispatchQueueBuilder`, `DispatchQueuePriority`,
     `DispatchQueueAttributes`, `DispatchTime`, `DispatchQos`,
     `DispatchQosClass`, `DispatchAutoreleaseFrequency`.
