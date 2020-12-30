@@ -99,7 +99,8 @@ The format is based on [Keep a Changelog] and this project adheres to
 
   - Types: `DispatchObject`, `DispatchQueueBuilder`, `DispatchQueuePriority`,
     `DispatchQueueAttributes`, `DispatchTime`, `DispatchQos`,
-    `DispatchQosClass`, `DispatchAutoreleaseFrequency`.
+    `DispatchQosClass`, `DispatchAutoreleaseFrequency`, `DispatchSource`,
+    `DispatchSourceType`.
 
   - `DispatchQueue`
 
