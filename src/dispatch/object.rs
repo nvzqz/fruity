@@ -121,9 +121,14 @@ impl DispatchObject {
     /// Associates an application-defined context with the object.
     ///
     /// See [documentation](https://developer.apple.com/documentation/dispatch/1452807-dispatch_set_context).
+    ///
+    /// # Safety
+    ///
+    /// The object or dependent code may make assumptions about its current
+    /// context. Callers must be careful to not invalidate any assumptions.
     #[inline]
     #[doc(alias = "dispatch_set_context")]
-    pub fn set_context(&self, context: *mut c_void) {
-        unsafe { sys::dispatch_set_context(self, context) };
+    pub unsafe fn set_context(&self, context: *mut c_void) {
+        sys::dispatch_set_context(self, context);
     }
 }
