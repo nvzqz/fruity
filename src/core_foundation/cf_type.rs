@@ -17,7 +17,7 @@ pub type CFTypeID = usize;
 /// [`extern type`](https://github.com/rust-lang/rfcs/blob/master/text/1861-extern-types.md).
 ///
 /// All Core Foundation types within this crate ultimately
-/// [`Deref`](https://doc.rust-lang.org/std/ops/trait.Deref.html) to this type.
+/// [`Deref`](std::ops::Deref) to this type.
 #[repr(C)]
 pub struct CFType<'data> {
     // TODO: Figure out the correct lifetime variance for `'data`.

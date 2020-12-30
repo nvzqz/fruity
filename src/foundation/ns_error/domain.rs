@@ -1,5 +1,5 @@
 ns_string_wrapper! {
-    /// The context in which an [`NSError`](struct.NSError.html) code should be
+    /// The context in which an [`NSError`](super::NSError) code should be
     /// understood.
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nserrordomain).
@@ -57,8 +57,9 @@ impl NSErrorDomain {
     // NSNetServices.h
 
     domain! {
-        /// The error domain used by [`NSNetService`](struct.NSNetService.html)
-        /// or the mach network layer.
+        /// The error domain used by
+        /// [`NSNetService`](crate::foundation::NSNetService) or the mach
+        /// network layer.
         ///
         /// See [documentation](https://developer.apple.com/documentation/foundation/nsnetserviceserrordomain).
         ns_net_services "NSNetServicesErrorDomain"
@@ -67,16 +68,16 @@ impl NSErrorDomain {
     // NSStream.h
 
     domain! {
-        /// The error domain used by [`NSError`](struct.NSError.html) when
-        /// reporting SOCKS errors.
+        /// The error domain used by [`NSError`](crate::foundation::NSError)
+        /// when reporting SOCKS errors.
         ///
         /// See [documentation](https://developer.apple.com/documentation/foundation/nsstreamsockserrordomain).
         stream_socks "NSStreamSOCKSErrorDomain"
     }
 
     domain! {
-        /// The error domain used by [`NSError`](struct.NSError.html) when
-        /// reporting SSL errors.
+        /// The error domain used by [`NSError`](crate::foundation::NSError)
+        /// when reporting SSL errors.
         ///
         /// See [documentation](https://developer.apple.com/documentation/foundation/nsstreamsocketsslerrordomain).
         stream_socket_ssl "NSStreamSocketSSLErrorDomain"

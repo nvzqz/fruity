@@ -34,7 +34,7 @@ impl CGPoint {
     }
 
     /// Returns a point with the given components losslessly converted to
-    /// [`CGFloat`](type.CGFloat.html)s.
+    /// [`CGFloat`]s.
     #[inline]
     pub const fn from_i16s(x: i16, y: i16) -> Self {
         Self::new(x as _, y as _)

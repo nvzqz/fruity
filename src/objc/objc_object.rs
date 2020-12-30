@@ -18,7 +18,7 @@ pub type id<'data> = Arc<ObjCObject<'data>>;
 /// [`extern type`](https://github.com/rust-lang/rfcs/blob/master/text/1861-extern-types.md).
 ///
 /// All Objective-C class types within this crate ultimately
-/// [`Deref`](https://doc.rust-lang.org/std/ops/trait.Deref.html) to this type.
+/// [`Deref`](std::ops::Deref) to this type.
 ///
 /// This is equivalent to [`objc_object`](https://developer.apple.com/documentation/objectivec/objc_object?language=objc).
 ///

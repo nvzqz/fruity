@@ -13,8 +13,7 @@ pub use encoding::*;
 /// Returns the selector with a given name.
 ///
 /// If the string cannot be converted to UTF-8 (this should be only due to
-/// insufficient memory), this returns
-/// [`None`](https://doc.rust-lang.org/std/option/enum.Option.html#variant.None).
+/// insufficient memory), this returns [`None`].
 ///
 /// Use this function if you want your code to look more like Objective-C.
 /// Otherwise, the [`to_selector`](struct.NSString.html#method.to_selector)
@@ -259,7 +258,7 @@ impl NSString<'_> {
 
     /// Returns an iterator over all supported encodings.
     ///
-    /// Unlike [`available_encodings_slice`](#method.available_encodings_slice),
+    /// Unlike [`available_encodings_slice`](Self::available_encodings_slice),
     /// this is implemented lazily and does not perform caching.
     #[inline]
     #[doc(alias = "availableStringEncodings")]
@@ -305,7 +304,7 @@ impl NSString<'_> {
     /// The first time this is called, one pass is done to determine the number
     /// of encodings. The count is then cached for subsequent calls. This shares
     /// the same cache as
-    /// [`available_encodings_slice`](#method.available_encodings_slice).
+    /// [`available_encodings_slice`](Self::available_encodings_slice).
     #[inline]
     #[doc(alias = "availableStringEncodings")]
     pub fn available_encodings_count() -> usize {
@@ -420,7 +419,7 @@ impl NSString<'_> {
     /// if the internal storage of `self` does not allow this to be returned
     /// efficiently.
     ///
-    /// Unlike [`to_utf8_ptr`](#method.to_utf8_ptr.html), this does not allocate
+    /// Unlike [`to_utf8_ptr`](Self::to_utf8_ptr.html), this does not allocate
     /// and construct a new UTF-8 C string if `self` does not represent one.
     ///
     /// This is retrieved using
@@ -461,7 +460,7 @@ impl NSString<'_> {
     /// if the internal storage of `self` does not allow this to be returned
     /// efficiently.
     ///
-    /// Unlike [`to_str`](#method.to_str.html), this does not allocate and
+    /// Unlike [`to_str`](Self::to_str.html), this does not allocate and
     /// construct a new UTF-8 C string if `self` does not represent one.
     ///
     /// # Safety
@@ -479,14 +478,14 @@ impl NSString<'_> {
 
     /// Returns the contents of `self` as a native UTF-8 string slice.
     ///
-    /// This internally uses [`to_utf8_ptr`](#method.to_utf8_ptr). See its
+    /// This internally uses [`to_utf8_ptr`](Self::to_utf8_ptr). See its
     /// documentation for details.
     ///
     /// # Safety
     ///
     /// The lifetime of the returned string slice may be shorter than this
     /// object. Therefore, long use cases should copy the bytes of the returned
-    /// string slice or use [`to_string`](#method.to_string).
+    /// string slice or use [`to_string`](Self::to_string).
     #[inline]
     pub unsafe fn to_str(&self) -> &str {
         let s = self.to_str_with_nul();
@@ -500,7 +499,7 @@ impl NSString<'_> {
     /// with a 0 byte, or `None` if the internal storage of `self` does not
     /// allow this to be returned efficiently.
     ///
-    /// Unlike [`to_str_with_nul`](#method.to_str_with_nul.html), this does not
+    /// Unlike [`to_str_with_nul`](Self::to_str_with_nul.html), this does not
     /// allocate and construct a new UTF-8 C string if `self` does not represent
     /// one.
     ///
@@ -522,14 +521,14 @@ impl NSString<'_> {
     /// Returns the contents of `self` as a native UTF-8 string slice ending
     /// with a 0 byte.
     ///
-    /// This internally uses [`to_utf8_ptr`](#method.to_utf8_ptr). See its
+    /// This internally uses [`to_utf8_ptr`](Self::to_utf8_ptr). See its
     /// documentation for details.
     ///
     /// # Safety
     ///
     /// The lifetime of the returned string slice may be shorter than this
     /// object. Therefore, long use cases should copy the bytes of the returned
-    /// string slice or use [`to_string_with_nul`](#method.to_string_with_nul).
+    /// string slice or use [`to_string_with_nul`](Self::to_string_with_nul).
     pub unsafe fn to_str_with_nul(&self) -> &str {
         let cstr = CStr::from_ptr(self.to_utf8_ptr());
         str::from_utf8_unchecked(cstr.to_bytes_with_nul())
@@ -537,7 +536,7 @@ impl NSString<'_> {
 
     /// Returns the contents of `self` as a native UTF-8 string buffer.
     ///
-    /// This internally uses [`to_utf8_ptr`](#method.to_utf8_ptr). See its
+    /// This internally uses [`to_utf8_ptr`](Self::to_utf8_ptr). See its
     /// documentation for details.
     ///
     /// # Performance Considerations
@@ -546,8 +545,7 @@ impl NSString<'_> {
     /// [`-[NSString UTF8String]`](https://developer.apple.com/documentation/foundation/nsstring/1411189-utf8string)
     /// works, this method will likely allocate twice as much memory needed for
     /// the length of the resulting buffer. If your use case is short-lived
-    /// enough, consider using [`to_str`](#method.to_str) to save memory and
-    /// time.
+    /// enough, consider using [`to_str`](Self::to_str) to save memory and time.
     #[inline]
     pub fn to_string(&self) -> String {
         // This method relies on `to_string_with_nul` because that method
@@ -567,7 +565,7 @@ impl NSString<'_> {
     /// Returns the contents of `self` as a native UTF-8 string buffer ending
     /// with a 0 byte.
     ///
-    /// This internally uses [`to_utf8_ptr`](#method.to_utf8_ptr). See its
+    /// This internally uses [`to_utf8_ptr`](Self::to_utf8_ptr). See its
     /// documentation for details.
     ///
     /// # Performance Considerations
@@ -576,7 +574,7 @@ impl NSString<'_> {
     /// [`-[NSString UTF8String]`](https://developer.apple.com/documentation/foundation/nsstring/1411189-utf8string)
     /// works, this method will likely allocate twice as much memory needed for
     /// the length of the resulting buffer. If your use case is short-lived
-    /// enough, consider using [`to_str_with_nul`](#method.to_str_with_nul) to
+    /// enough, consider using [`to_str_with_nul`](Self::to_str_with_nul) to
     /// save memory and time.
     pub fn to_string_with_nul(&self) -> String {
         // SAFETY: This use of the string is reasonably short-lived enough for
@@ -594,7 +592,7 @@ impl NSString<'_> {
     /// This is retrieved using
     /// [`CFStringGetCharactersPtr`](https://developer.apple.com/documentation/corefoundation/1542939-cfstringgetcharactersptr)
     ///
-    /// See [`as_utf8_ptr`](#method.as_utf8_ptr) for the UTF-8 equivalent.
+    /// See [`as_utf8_ptr`](Self::as_utf8_ptr) for the UTF-8 equivalent.
     #[inline]
     #[doc(alias = "CFStringGetCharactersPtr")]
     pub fn as_utf16_ptr(&self) -> *const u16 {
@@ -608,7 +606,7 @@ impl NSString<'_> {
     /// the internal storage of `self` does not allow this to be returned
     /// efficiently.
     ///
-    /// See [`as_str`](#method.as_str) for the UTF-8 equivalent.
+    /// See [`as_str`](Self::as_str) for the UTF-8 equivalent.
     ///
     /// # Safety
     ///
@@ -637,8 +635,7 @@ impl NSString<'_> {
     /// Returns a selector with `self` as its name.
     ///
     /// If `self` cannot be converted to UTF-8 (this should be only due to
-    /// insufficient memory), this returns
-    /// [`None`](https://doc.rust-lang.org/std/option/enum.Option.html#variant.None).
+    /// insufficient memory), this returns [`None`].
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/1395294-nsselectorfromstring).
     #[inline]

@@ -5,7 +5,7 @@
 //! This module corresponds to the **`core_foundation`**
 //! [feature flag](../index.html#feature-flags).
 //!
-//! It also transitively enables [`objc`](../objc/index.html).
+//! It also transitively enables [`objc`](crate::objc).
 
 #![cfg(feature = "core_foundation")]
 
@@ -42,8 +42,7 @@ pub const kCFNotFound: CFIndex = -1;
 /// See [documentation](https://developer.apple.com/documentation/corefoundation/cfoptionflags).
 pub type CFOptionFlags = usize;
 
-/// Type for hash codes returned by
-/// [`CFType::hash`](struct.CFType.html#method.hash).
+/// Type for hash codes returned by [`CFType::hash`].
 ///
 /// See [documentation](https://developer.apple.com/documentation/corefoundation/cfhashcode).
 pub type CFHashCode = usize;

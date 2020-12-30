@@ -38,8 +38,7 @@
 //! [feature flag](https://doc.rust-lang.org/cargo/reference/features.html)
 //! with the same name.
 //!
-//! For example, this is how you enable the
-//! [`foundation`](foundation/index.html) module:
+//! For example, this is how you enable the [`foundation`] module:
 //!
 //! ```toml
 //! [dependencies.fruity]
@@ -47,8 +46,8 @@
 //! features = ["foundation"]
 //! ```
 //!
-//! This feature transitively enables the [`objc`](objc/index.html) and
-//! [`core_graphics`](core_graphics/index.html) features/modules.
+//! This feature transitively enables the [`objc`] and [`core_graphics`]
+//! features/modules.
 //!
 //! # Goals
 //!
@@ -63,14 +62,11 @@
 //!   [ownership model](https://doc.rust-lang.org/book/ch04-01-what-is-ownership.html)
 //!   to handle object reference counting for you.
 //!
-//!   [`NSObject`](objc/struct.NSObject.html)
-//!   is a smart pointer that calls
+//!   [`NSObject`](objc::NSObject) is a smart pointer that calls
 //!   [`retain`](https://developer.apple.com/documentation/objectivec/1418956-nsobject/1571946-retain)
-//!   on [`Clone`](https://doc.rust-lang.org/std/clone/trait.Clone.html) and
+//!   on [`Clone`] and
 //!   [`release`](https://developer.apple.com/documentation/objectivec/1418956-nsobject/1571957-release)
-//!   on [`Drop`](https://doc.rust-lang.org/std/ops/trait.Drop.html). This is
-//!   exactly how Rust's
-//!   [`Arc<T>`](https://doc.rust-lang.org/std/sync/struct.Arc.html) works.
+//!   on [`Drop`]. This is exactly how Rust's [`Arc<T>`](std::sync::Arc) works.
 //!
 //! - **`Option<NSObject>`.**
 //!
@@ -79,9 +75,9 @@
 //!   null objects.
 //!
 //!   Fruity reverses that and instead makes all objects (such as
-//!   [`NSObject`](objc/struct.NSObject.html))
+//!   [`NSObject`](objc::NSObject))
 //!   non-null by default. An object can be made nullable by wrapping it with
-//!   [`Option<T>`](https://doc.rust-lang.org/std/option/enum.Option.html).
+//!   [`Option<T>`](Option).
 //!
 //!   To make FFI safe and easy, the following Objective-C and Rust types are
 //!   ABI-compatible:
@@ -90,13 +86,10 @@
 //!
 //!   - `NSObject * _Nullable` and `Option<NSObject>`
 //!
-//!   This is because
-//!   [`NSObject`](objc/struct.NSObject.html)
-//!   is a
+//!   This is because [`NSObject`](objc::NSObject) is a
 //!   [`#[repr(transparent)]`](https://doc.rust-lang.org/nomicon/other-reprs.html#reprtransparent)
 //!   wrapper around a
-//!   [`NonNull<T>`](https://doc.rust-lang.org/std/ptr/struct.NonNull.html)
-//!   pointer.
+//!   [`NonNull<T>`](std::ptr::NonNull) pointer.
 //!
 //! - **`Result<T, NSError>`.**
 //!
@@ -105,17 +98,15 @@
 //!   is placed upon failure. This makes it easy to avoid error handling and
 //!   assume the happy path, which can lead to bugs when errors occur.
 //!
-//!   Fruity instead returns a
-//!   [`Result`](https://doc.rust-lang.org/std/result/enum.Result.html), which
-//!   is the canonical way to handle errors in Rust. This ensures that errors
-//!   must be acknowledged in some way.
+//!   Fruity instead returns a [`Result`](Result), which is the canonical way to
+//!   handle errors in Rust. This ensures that errors must be acknowledged in
+//!   some way.
 //!
 //! - **Natural inheritance.**
 //!
 //!   Most of these types are classes that inherit from each other. Because true
 //!   inheritance is not possible in Rust, Fruity uses
-//!   [`Deref`](https://doc.rust-lang.org/std/ops/trait.Deref.html)
-//!   to model Objective-C subclassing.
+//!   [`Deref`](std::ops::Deref) to model Objective-C subclassing.
 //!
 //! ## Zero Cost
 //!
@@ -144,11 +135,12 @@
 //!   the Objective-C runtime via
 //!   [`objc_getClass`](https://developer.apple.com/documentation/objectivec/1418952-objc_getclass).
 //!
-//! - **Creating an `NSString` from a Rust string literal.**
+//! - **Creating an [`NSString`](foundation::NSString) from a Rust string
+//!   literal.**
 //!
-//!   The [`ns_string!`](macro.ns_string.html)
-//!   macro creates an `NSString` literal (i.e. `@"string"`) at compile time.
-//!   There is no runtime dispatch/allocation/initialization cost.
+//!   The [`ns_string!`](ns_string) macro creates an `NSString` literal (i.e.
+//!   `@"string"`) at compile time. There is no runtime
+//!   dispatch/allocation/initialization cost.
 //!
 //! Some parts of this library are still not zero cost. Your help would be much
 //! appreciated here!

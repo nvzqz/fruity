@@ -33,7 +33,7 @@ impl CGVector {
     }
 
     /// Returns a point with the given components losslessly converted to
-    /// [`CGFloat`](type.CGFloat.html)s.
+    /// [`CGFloat`]s.
     #[inline]
     pub const fn from_i16s(dx: i16, dy: i16) -> Self {
         Self::new(dx as _, dy as _)

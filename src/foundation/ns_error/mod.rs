@@ -21,9 +21,8 @@ objc_subclass! {
     ///
     /// # Formatting
     ///
-    /// The [`Display`](https://doc.rust-lang.org/std/fmt/trait.Display.html)
-    /// implementation writes the result of
-    /// [`localized_description`](#method.localized_description).
+    /// The [`Display`](std::fmt::Display) implementation writes the result of
+    /// [`localized_description`](Self::localized_description).
     pub class NSError<'data>: NSObject<'data>;
 }
 
@@ -68,9 +67,8 @@ impl NSError<'_> {
     /// Returns a string containing the localized description of the error.
     ///
     /// This is the object in the user info dictionary for
-    /// [`NSErrorUserInfoKey::localized_description`](struct.NSErrorUserInfoKey.html#method.localized_description).
-    /// If it doesn't exist, a default string is constructed from the domain and
-    /// code.
+    /// [`NSErrorUserInfoKey::localized_description`]. If it doesn't exist, a
+    /// default string is constructed from the domain and code.
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nserror/1413924-domain).
     #[inline]
@@ -83,7 +81,7 @@ impl NSError<'_> {
     /// the error.
     ///
     /// This is the object in the user info dictionary for
-    /// [`NSErrorUserInfoKey::localized_failure_reason`](struct.NSErrorUserInfoKey.html#method.localized_failure_reason).
+    /// [`NSErrorUserInfoKey::localized_failure_reason`].
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nserror/1412752-localizedfailurereason).
     #[inline]
@@ -98,7 +96,7 @@ impl NSError<'_> {
     /// error.
     ///
     /// This is the object in the user info dictionary for
-    /// [`NSErrorUserInfoKey::localized_recovery_suggestion`](struct.NSErrorUserInfoKey.html#method.localized_recovery_suggestion).
+    /// [`NSErrorUserInfoKey::localized_recovery_suggestion`].
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nserror/1407500-localizedrecoverysuggestion).
     #[inline]
@@ -108,7 +106,7 @@ impl NSError<'_> {
     }
 
     /// Returns the object in the user info dictionary corresponding to
-    /// [`NSErrorUserInfoKey::recovery_attempter`](struct.NSErrorUserInfoKey.html#method.recovery_attempter).
+    /// [`NSErrorUserInfoKey::recovery_attempter`].
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nserror/1408864-recoveryattempter).
     #[inline]
@@ -118,7 +116,7 @@ impl NSError<'_> {
     }
 
     /// Returns the object in the user info dictionary corresponding to
-    /// [`NSErrorUserInfoKey::help_anchor`](struct.NSErrorUserInfoKey.html#method.help_anchor).
+    /// [`NSErrorUserInfoKey::help_anchor`].
     ///
     /// See [documentation](https://developer.apple.com/documentation/foundation/nserror/1414718-helpanchor).
     #[inline]

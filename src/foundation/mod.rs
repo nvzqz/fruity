@@ -5,8 +5,8 @@
 //! This module corresponds to the **`foundation`**
 //! [feature flag](../index.html#feature-flags).
 //!
-//! It also transitively enables [`objc`](../objc/index.html) and
-//! [`core_graphics`](../core_graphics/index.html).
+//! It also transitively enables [`objc`](crate::objc) and
+//! [`core_graphics`](crate::core_graphics).
 
 #![cfg(feature = "foundation")]
 

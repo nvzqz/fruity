@@ -1,6 +1,5 @@
-/// Creates a [`&'static str`](https://doc.rust-lang.org/std/primitive.str.html)
-/// from a selector literal, that may be used as the basis of a
-/// [`Sel`](objc/struct.Sel.html).
+/// Creates a [`&'static str`](str) from a selector literal, that may be used as
+/// the basis of a [`Sel`](crate::objc::Sel).
 ///
 /// # Feature Flag
 ///

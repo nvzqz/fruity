@@ -9,7 +9,7 @@ use std::{
     ptr,
 };
 
-/// Configures and creates a [`DispatchQueue`](struct.DispatchQueue.html).
+/// Configures and creates a [`DispatchQueue`].
 #[must_use = "This does nothing until `build` is called"]
 #[derive(Clone, Copy)]
 pub struct DispatchQueueBuilder<'a> {
@@ -28,7 +28,7 @@ impl Default for DispatchQueueBuilder<'_> {
 }
 
 impl DispatchQueueBuilder<'_> {
-    /// Creates a [`DispatchQueue`](struct.DispatchQueue.html) builder.
+    /// Creates a [`DispatchQueue`] builder.
     #[inline]
     pub const fn new() -> Self {
         Self {
@@ -40,8 +40,8 @@ impl DispatchQueueBuilder<'_> {
         }
     }
 
-    /// Creates a new [`DispatchQueue`](struct.DispatchQueue.html) with the
-    /// configuration specified by this builder.
+    /// Creates a new [`DispatchQueue`] with the configuration specified by this
+    /// builder.
     #[inline]
     #[doc(alias = "dispatch_queue_create")]
     #[doc(alias = "dispatch_queue_create_with_target")]
@@ -124,8 +124,7 @@ impl<'a> DispatchQueueBuilder<'a> {
     /// The value of `qos.relative_priority` is clamped between `0` and `-15`
     /// (`QOS_MIN_RELATIVE_PRIORITY`).
     ///
-    /// Default value:
-    /// [`DispatchQos::UNSPECIFIED`](struct.DispatchQos.html#associatedconstant.UNSPECIFIED).
+    /// Default value: [`DispatchQos::UNSPECIFIED`].
     #[inline]
     pub const fn qos(self, qos: DispatchQos) -> Self {
         // `relative_priority` method handles clamping.
@@ -135,8 +134,7 @@ impl<'a> DispatchQueueBuilder<'a> {
 
     /// Sets the queue's quality-of-service (QoS) class.
     ///
-    /// Default value:
-    /// [`DispatchQosClass::Unspecified`](struct.DispatchQos.html#associatedconstant.Unspecified).
+    /// Default value: [`DispatchQosClass::Unspecified`].
     #[inline]
     pub const fn qos_class(mut self, qos_class: DispatchQosClass) -> Self {
         self.qos.qos_class = qos_class;
@@ -169,8 +167,7 @@ impl<'a> DispatchQueueBuilder<'a> {
 
     /// Sets the attributes that define the behavior of the queue.
     ///
-    /// Default value:
-    /// [`DispatchQueueAttributes::SERIAL`](struct.DispatchQueueAttributes.html#associatedconstant.SERIAL).
+    /// Default value: [`DispatchQueueAttributes::SERIAL`].
     #[inline]
     pub const fn attr(mut self, attr: DispatchQueueAttributes) -> Self {
         self.attr = attr;
@@ -180,8 +177,7 @@ impl<'a> DispatchQueueBuilder<'a> {
     /// Sets the frequency with which the queue creates autorelease pools for
     /// its tasks.
     ///
-    /// Default value:
-    /// [`DispatchAutoreleaseFrequency::Inherit`](struct.DispatchAutoreleaseFrequency.html#variant.Inherit).
+    /// Default value: [`DispatchAutoreleaseFrequency::Inherit`].
     #[inline]
     pub const fn autorelease_frequency(
         mut self,

@@ -52,7 +52,7 @@ impl NSValue {
         unsafe { _msg_send_any![self, objCType] }
     }
 
-    /// Returns [`objc_type`](#method.objc_type) as a C string reference.
+    /// Returns [`objc_type`](Self::objc_type) as a C string reference.
     #[inline]
     #[doc(alias = "objCType")]
     pub fn objc_type_cstr(&self) -> &CStr {

@@ -10,8 +10,7 @@ use std::ffi::c_void;
 /// If a panic occurs within the function, the autorelease pool is drained as
 /// the stack unwinds.
 ///
-/// This is implemented with
-/// [`Drop`](https://doc.rust-lang.org/std/ops/trait.Drop.html).
+/// This is implemented with [`Drop`].
 #[inline]
 pub fn autoreleasepool<F, T>(f: F) -> T
 where

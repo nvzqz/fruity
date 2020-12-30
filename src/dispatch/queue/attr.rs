@@ -10,7 +10,7 @@ pub(crate) struct dispatch_queue_attr_s {
 }
 
 /// Attributes that define the behavior of a
-/// [`DispatchQueue`](struct.DispatchQueue.html).
+/// [`DispatchQueue`](crate::dispatch::DispatchQueue).
 ///
 /// Documentation:
 /// [Swift](https://developer.apple.com/documentation/dispatch/dispatchqueue/attributes) |
@@ -63,7 +63,7 @@ impl DispatchQueueAttributes {
         self.0 & FLAG_CONCURRENT != 0
     }
 
-    /// Reassigns the value of [`is_concurrent`](#method.is_concurrent).
+    /// Reassigns the value of [`is_concurrent`](Self::is_concurrent).
     #[inline]
     pub const fn with_concurrent(self, yes: bool) -> Self {
         Self((self.0 & !FLAG_CONCURRENT) | ((yes as u64) << SHIFT_CONCURRENT))
@@ -77,7 +77,7 @@ impl DispatchQueueAttributes {
     }
 
     /// Reassigns the value of
-    /// [`is_initially_inactive`](#method.is_initially_inactive).
+    /// [`is_initially_inactive`](Self::is_initially_inactive).
     #[inline]
     pub const fn with_initially_inactive(self, yes: bool) -> Self {
         Self((self.0 & !FLAG_INACTIVE) | ((yes as u64) << SHIFT_INACTIVE))

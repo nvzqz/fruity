@@ -1,4 +1,4 @@
-/// The frequency with which a [`DispatchQueue`](struct.DispatchQueue.html)
+/// The frequency with which a [`DispatchQueue`](crate::dispatch::DispatchQueue)
 /// creates autorelease pools for its tasks.
 ///
 /// Documentation:

@@ -14,13 +14,10 @@ use std::{fmt, os::raw::c_schar};
 ///
 /// This crate uses a [newtype] instead of a [type alias] because aliasing
 /// [`bool`] would allow for `if x` on some platforms but not others. When using
-/// this type in a conditional statement, use [`is_yes`](#method.is_yes).
+/// this type in a conditional statement, use [`is_yes`](Self::is_yes).
 ///
 /// [newtype]: https://doc.rust-lang.org/rust-by-example/generics/new_types.html
 /// [type alias]: https://doc.rust-lang.org/rust-by-example/types/alias.html
-/// [`c_schar`]: https://doc.rust-lang.org/std/os/raw/type.c_schar.html
-/// [`i8`]: https://doc.rust-lang.org/std/primitive.i8.html
-/// [`bool`]: https://doc.rust-lang.org/std/primitive.bool.html
 #[repr(transparent)]
 #[derive(Copy, Clone, Default, Ord, PartialOrd, Eq, PartialEq, Hash)]
 pub struct BOOL {
@@ -59,6 +56,9 @@ impl fmt::Debug for BOOL {
 }
 
 impl BOOL {
+    // Keywords `false` and `true` link to `bool` docs instead of keyword docs.
+    // So they are explicitly linked.
+
     /// The [`BOOL`](struct.BOOL.html) equivalent to
     /// [`false`](https://doc.rust-lang.org/std/keyword.false.html).
     ///

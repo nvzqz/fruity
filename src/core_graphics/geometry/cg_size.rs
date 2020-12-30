@@ -33,7 +33,7 @@ impl CGSize {
     }
 
     /// Returns a size with the given components losslessly converted to
-    /// [`CGFloat`](type.CGFloat.html)s.
+    /// [`CGFloat`]s.
     #[inline]
     pub const fn from_i16s(height: i16, width: i16) -> Self {
         Self::new(height as _, width as _)
