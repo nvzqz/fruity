@@ -1,5 +1,8 @@
 // This macro is intentionally undocumented to ensure it is not publicly
 // exported.
+
+#![feature(log_syntax)]
+
 macro_rules! subclass {
     (
         $(#[$meta:meta])+
@@ -55,6 +58,64 @@ macro_rules! subclass {
         impl<$($lifetime,)? T> AsMut<T> for $a $(<$lifetime>)? where $b: AsMut<T> {
             #[inline]
             fn as_mut(&mut self) -> &mut T {
+                self.0.as_mut()
+            }
+        }
+    };
+    (
+        $(#[$meta:meta])+
+        $vis:vis class $a:ident <$lifetime:lifetime, $genty:ident> : $b:ty ;
+    ) => {
+        $(#[$meta])+
+        #[repr(C)]
+        $vis struct $a <$lifetime, $genty> ($b, std::marker::PhantomData<&$lifetime $genty>);
+
+        impl <$lifetime, $genty> $crate::core::ObjectType for $a <$lifetime, $genty> {
+            #[inline]
+            fn retain(obj: &Self) -> $crate::core::Arc<Self> {
+                let obj = $crate::core::Arc::retain(&obj.0);
+                unsafe { $crate::core::Arc::cast_unchecked(obj) }
+            }
+
+            #[inline]
+            unsafe fn release(obj: std::ptr::NonNull<Self>) {
+                <$b>::release(obj.cast());
+            }
+        }
+
+        impl <$lifetime, $genty> std::ops::Deref for $a <$lifetime, $genty> {
+            type Target = $b;
+
+            #[inline]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+
+        impl <$lifetime, $genty> AsRef<$a <$lifetime, $genty>> for $a <$lifetime, $genty> {
+            #[inline]
+            fn as_ref(&self) -> &Self {
+                self
+            }
+        }
+
+        impl <$lifetime, $genty> AsMut<$a <$lifetime, $genty>> for $a <$lifetime, $genty> {
+            #[inline]
+            fn as_mut(&mut self) -> &mut Self {
+                self
+            }
+        }
+
+        impl <$lifetime, $genty, _T> AsRef<_T> for $a <$lifetime, $genty> where $b: AsRef<_T> {
+            #[inline]
+            fn as_ref(&self) -> &_T {
+                self.0.as_ref()
+            }
+        }
+
+        impl <$lifetime, $genty, _T> AsMut<_T> for $a <$lifetime, $genty> where $b: AsMut<_T> {
+            #[inline]
+            fn as_mut(&mut self) -> &mut _T {
                 self.0.as_mut()
             }
         }

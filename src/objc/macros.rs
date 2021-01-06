@@ -1,4 +1,23 @@
 macro_rules! objc_class_type {
+    ($obj:ident <$lifetime:lifetime, $genty:ident>) => {
+        objc_class_type!($obj <$lifetime, $genty>, stringify!($obj));
+    };
+    ($obj:ident <$lifetime:lifetime, $genty:ident>, $class:expr) => {
+        objc_class_type!(@processed_generic
+                         $obj <$lifetime, $genty>,
+                         $class,
+                         concat!("OBJC_CLASS_$_", $class)
+        );
+    };
+    (@processed_generic $obj:ident <$lifetime:lifetime, $genty:ident>, $class:expr, $class_symbol:expr) => {
+        impl<$lifetime, $genty> $crate::objc::ClassType<$lifetime> for $obj<$lifetime, $genty>
+        where $genty: $crate::objc::ObjectType<$lifetime> {
+            #[inline]
+            fn class() -> &'static $crate::objc::Class {
+                $crate::_objc_class!(@ $class_symbol)
+            }
+        }
+    };
     ($obj:ident $(<$lifetime:lifetime>)?) => {
         objc_class_type!($obj $(<$lifetime>)?, stringify!($obj));
     };
@@ -57,6 +76,20 @@ macro_rules! objc_subclass {
         impl<$lifetime> $crate::objc::ObjectType<$lifetime> for $a<$lifetime> {}
 
         objc_class_type!($a <$lifetime>);
+    };
+    (
+        $(#[$meta:meta])+
+            $vis:vis class $a:ident <$lifetime:lifetime, $genty:ident> : $b:ty ;
+    ) => {
+        subclass! {
+            $(#[$meta])+
+                $vis class $a <$lifetime, $genty> : $b ;
+        }
+
+        impl<$lifetime, $genty> $crate::objc::ObjectType<$lifetime> for $a<$lifetime, $genty>
+        where $genty: $crate::objc::ObjectType<$lifetime> {}
+
+        objc_class_type!($a <$lifetime, $genty>);
     };
 }
 
