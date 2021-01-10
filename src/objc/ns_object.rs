@@ -89,6 +89,9 @@ impl<'data> NSObject<'data> {
     }
 
     /// Returns a string that describes the contents of this object.
+    ///
+    /// See [documentation](https://developer.apple.com/documentation/objectivec/1418956-nsobject/1418746-description?language=objc)
+    #[cfg(feature = "foundation")]
     #[inline]
     pub fn description(&self) -> Arc<NSString<'static>> {
         unsafe { _msg_send_any![self, description] }
