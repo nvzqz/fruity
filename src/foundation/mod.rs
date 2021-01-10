@@ -17,6 +17,7 @@ pub mod error_codes;
 
 mod cmp;
 mod geometry;
+mod ns_array;
 mod ns_error;
 mod ns_exception;
 mod ns_null;
@@ -26,6 +27,7 @@ mod ns_value;
 
 pub use cmp::*;
 pub use geometry::*;
+pub use ns_array::*;
 pub use ns_error::*;
 pub use ns_exception::*;
 pub use ns_null::*;
