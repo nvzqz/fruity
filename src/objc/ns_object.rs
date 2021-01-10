@@ -96,4 +96,14 @@ impl<'data> NSObject<'data> {
     pub fn description(&self) -> Arc<NSString<'static>> {
         unsafe { _msg_send_any![self, description] }
     }
+
+    /// Returns a string that describes the contents of the receiver for
+    /// presentation in the debugger.
+    ///
+    /// See [documentation](https://developer.apple.com/documentation/objectivec/1418956-nsobject?language=objc)
+    #[cfg(feature = "foundation")]
+    #[inline]
+    pub fn debug_description(&self) -> Arc<NSString<'static>> {
+        unsafe { _msg_send_any![self, debugDescription] }
+    }
 }
