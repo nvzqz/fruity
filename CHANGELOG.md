@@ -214,6 +214,9 @@ The format is based on [Keep a Changelog] and this project adheres to
 
 ### Fixed
 
+- **\[breaking\]** `NSString` to `&str` conversion now uses the correct length
+  in spite of interior nulls. Previously the C string length was used.
+
 - Correct dispatching of the appropriate `objc_msgSend` based on return type.
 
 - **\[breaking\]** The safety of `DispatchQueue::current_queue_label_owned` by

@@ -1,7 +1,7 @@
 use super::{NSComparisonResult, NSRange};
 use crate::core::Arc;
 use crate::objc::{Class, ClassType, NSObject, NSUInteger, Sel, BOOL};
-use std::{cmp::Ordering, ffi::CStr, fmt, os::raw::c_char, ptr, slice, str};
+use std::{cmp::Ordering, fmt, os::raw::c_char, ptr, slice, str};
 
 #[macro_use]
 mod macros;
@@ -456,6 +456,12 @@ impl NSString<'_> {
         unsafe { _msg_send_any![self, UTF8String] }
     }
 
+    /// Returns the number of bytes required to encode this string as UTF-8.
+    #[inline]
+    pub fn utf8_length(&self) -> usize {
+        self.length_of_bytes_using_encoding(NSStringEncoding::UTF8)
+    }
+
     /// Returns the contents of `self` as a native UTF-8 string slice, or `None`
     /// if the internal storage of `self` does not allow this to be returned
     /// efficiently.
@@ -488,11 +494,9 @@ impl NSString<'_> {
     /// string slice or use [`to_string`](Self::to_string).
     #[inline]
     pub unsafe fn to_str(&self) -> &str {
-        let s = self.to_str_with_nul();
-
-        // `CStr::to_bytes` does a checked slice conversion that emits a length
-        // failure panic that'll never get called.
-        s.get_unchecked(..s.len() - 1)
+        let cstr = self.to_utf8_ptr();
+        let len = self.utf8_length();
+        str::from_utf8_unchecked(slice::from_raw_parts(cstr.cast(), len))
     }
 
     /// Returns the contents of `self` as a native UTF-8 string slice ending
@@ -514,8 +518,11 @@ impl NSString<'_> {
             return None;
         }
 
-        let cstr = CStr::from_ptr(cstr);
-        Some(str::from_utf8_unchecked(cstr.to_bytes_with_nul()))
+        let len = self.utf8_length();
+        Some(str::from_utf8_unchecked(slice::from_raw_parts(
+            cstr.cast(),
+            len + 1,
+        )))
     }
 
     /// Returns the contents of `self` as a native UTF-8 string slice ending
@@ -530,8 +537,9 @@ impl NSString<'_> {
     /// object. Therefore, long use cases should copy the bytes of the returned
     /// string slice or use [`to_string_with_nul`](Self::to_string_with_nul).
     pub unsafe fn to_str_with_nul(&self) -> &str {
-        let cstr = CStr::from_ptr(self.to_utf8_ptr());
-        str::from_utf8_unchecked(cstr.to_bytes_with_nul())
+        let cstr = self.to_utf8_ptr();
+        let len = self.utf8_length();
+        str::from_utf8_unchecked(slice::from_raw_parts(cstr.cast(), len + 1))
     }
 
     /// Returns the contents of `self` as a native UTF-8 string buffer.
@@ -630,6 +638,24 @@ impl NSString<'_> {
     #[inline]
     pub fn length(&self) -> NSUInteger {
         unsafe { _msg_send_any![self, length] }
+    }
+
+    /// Returns the number of bytes required to store `self` in a given
+    /// encoding.
+    ///
+    /// The length does not include space for a terminating null character.
+    /// Returns `0` if the specified encoding cannot be used to convert `self`
+    /// or if the amount of memory required for storing the results of the
+    /// encoding conversion would exceed NSIntegerMax.
+    ///
+    /// The result is exact and is returned in `O(n)` time.
+    ///
+    /// See [documentation](https://developer.apple.com/documentation/foundation/nsstring/1410710-lengthofbytesusingencoding).
+    #[inline]
+    #[doc(alias = "lengthOfBytesUsingEncoding")]
+    #[doc(alias = "lengthOfBytesUsingEncoding:")]
+    pub fn length_of_bytes_using_encoding(&self, encoding: NSStringEncoding) -> NSUInteger {
+        unsafe { _msg_send_any![self, lengthOfBytesUsingEncoding: encoding] }
     }
 
     /// Returns a selector with `self` as its name.
