@@ -27,11 +27,13 @@ mod class;
 mod class_type;
 mod image_info;
 mod int;
+mod ivar;
 mod method;
 mod ns_object;
 mod objc_object;
 mod object_type;
 mod property;
+mod type_encoding;
 
 pub use self::bool::*;
 pub use autoreleasepool::*;
@@ -39,12 +41,14 @@ pub use class::*;
 pub use class_type::*;
 pub use image_info::*;
 pub use int::*;
+pub use ivar::*;
 pub use method::*;
 pub use ns_object::*;
 pub use objc_object::*;
 pub use object_type::*;
 pub use property::*;
 pub use sel::Sel;
+pub use type_encoding::*;
 
 #[link(name = "objc", kind = "dylib")]
 extern "C" {}

@@ -1,13 +1,23 @@
 //! Raw unsafe C functions exposed by libobjc.
 
 use super::*;
-use std::os::raw::{c_char, c_uint};
+use std::os::raw::{c_char, c_uint, c_void};
 
 #[allow(missing_docs)]
 extern "C" {
     pub fn class_getClassMethod(cls: *const Class, name: Sel) -> *const Method;
+    pub fn class_getInstanceVariable(cls: *const Class, name: *const c_char) -> *const Ivar;
     pub fn class_getInstanceMethod(cls: *const Class, name: Sel) -> *const Method;
+    pub fn class_copyIvarList(cls: *const Class, out_count: *mut c_uint) -> *mut *const Ivar;
     pub fn class_copyMethodList(cls: *const Class, out_count: *mut c_uint) -> *mut *const Method;
+
+    pub fn object_getClass(obj: *const ObjCObject) -> *const Class;
+
+    pub fn object_setInstanceVariable(
+        obj: *const ObjCObject,
+        name: *const c_char,
+        value: *mut c_void,
+    ) -> *const Ivar;
 
     pub fn method_getNumberOfArguments(m: *const Method) -> u32;
 
@@ -37,4 +47,10 @@ extern "C" {
     pub fn method_invoke();
     #[cfg(not(target_arch = "aarch64"))]
     pub fn method_invoke_stret();
+
+    pub fn ivar_getName(ivar: *const Ivar) -> *const c_char;
+    pub fn ivar_getOffset(ivar: *const Ivar) -> isize;
+    pub fn ivar_getTypeEncoding(ivar: *const Ivar) -> *const c_char;
+
+    pub fn NSGetSizeAndAlignment(ty: *const c_char, size: *mut NSUInteger, align: *mut NSUInteger);
 }

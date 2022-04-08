@@ -1,4 +1,4 @@
-use super::{sys, Method, Property, Sel, BOOL};
+use super::{sys, Ivar, Method, ObjCObject, Property, Sel, BOOL};
 use crate::core::{Arc, ObjectType};
 use std::{
     cell::UnsafeCell,
@@ -28,7 +28,7 @@ use malloced::Malloced;
 pub struct Class {
     // Stores data that may be mutated behind a shared reference. Internal
     // mutability triggers undefined behavior without `UnsafeCell`.
-    _data: UnsafeCell<[u8; 0]>,
+    data: UnsafeCell<[u8; 0]>,
 }
 
 // This type is used globally, so we must be able to share it across threads.
@@ -138,6 +138,12 @@ impl Class {
         objc_alloc_init(self)
     }
 
+    /// Returns this class as an object.
+    #[inline]
+    pub const fn as_object(&self) -> &ObjCObject {
+        unsafe { &*(self.data.get() as *const ObjCObject) }
+    }
+
     /// Returns `true` if this class implements or inherits a method that can
     /// respond to a specified message.
     ///
@@ -145,7 +151,7 @@ impl Class {
     #[inline]
     #[doc(alias = "respondsToSelector")]
     pub fn responds_to_selector(&self, selector: Sel) -> bool {
-        unsafe { _msg_send_any_cached![self, respondsToSelector: selector => BOOL] }.into()
+        self.as_object().responds_to_selector(selector)
     }
 
     /// Returns `true` if instances of this class implement or inherit a method
@@ -163,6 +169,13 @@ impl Class {
     #[doc(alias = "class_getName")]
     pub fn name(&self) -> &CStr {
         unsafe { CStr::from_ptr(class_getName(self)) }
+    }
+
+    /// Returns this class's metaclass (i.e. its object instance definition).
+    #[inline]
+    #[doc(alias = "object_getClass")]
+    pub fn metaclass(&self) -> &Class {
+        unsafe { &*sys::object_getClass(self.as_object()) }
     }
 
     /// Returns this class's superclass, or `None` if this is a root class
@@ -224,6 +237,21 @@ impl Class {
         unsafe { class_getInstanceSize(self) }
     }
 
+    /// Returns a reference to the data for an instance variable declared by
+    /// `name`, or `None` if this class or its superclasses do not declare this
+    /// instance variable.
+    ///
+    /// Note that this function searches superclasses for implementations,
+    /// whereas [`copy_instance_ivar_list`](Self::copy_instance_ivar_list)
+    /// does not (source?).
+    ///
+    /// See [documentation](https://developer.apple.com/documentation/objectivec/1418643-class_getinstancevariable?language=objc).
+    #[inline]
+    #[doc(alias = "class_getInstanceVariable")]
+    pub fn get_ivar(&self, name: &CStr) -> Option<&Ivar> {
+        unsafe { sys::class_getInstanceVariable(self, name.as_ptr()).as_ref() }
+    }
+
     /// Returns a reference to the data for a class method defined by `name`, or
     /// `None` if this class or its superclasses do not implement a class method
     /// with the specified selector.
@@ -239,6 +267,20 @@ impl Class {
         unsafe { sys::class_getClassMethod(self, name).as_ref() }
     }
 
+    /// Returns the class instance variables declared by this class, or `None`
+    /// if this class declares no class instance variables (such as from a class
+    /// `@property`).
+    ///
+    /// This calls
+    /// [`class_copyIvarList`](https://developer.apple.com/documentation/objectivec/1418910-class_copyivarlist?language=objc)
+    /// on the metaclass of this class.
+    #[cfg(feature = "malloced")]
+    #[inline]
+    #[doc(alias = "class_copyMethodList")]
+    pub fn copy_class_ivar_list(&self) -> Option<Malloced<[&Ivar]>> {
+        self.metaclass().copy_instance_ivar_list()
+    }
+
     /// Returns the class methods implemented by this class, or `None` if this
     /// class implements no instance methods.
     ///
@@ -252,27 +294,7 @@ impl Class {
     #[inline]
     #[doc(alias = "class_copyMethodList")]
     pub fn copy_class_method_list(&self) -> Option<Malloced<[&Method]>> {
-        use std::{mem::MaybeUninit, os::raw::c_uint};
-
-        // TODO: Move this function into `objc::sys` module.
-        extern "C" {
-            fn object_getClass(obj: *const Class) -> *const Class;
-        }
-
-        let superclass = unsafe { object_getClass(self) };
-
-        let mut len = MaybeUninit::<c_uint>::uninit();
-        unsafe {
-            let data = sys::class_copyMethodList(superclass, len.as_mut_ptr());
-            if data.is_null() {
-                None
-            } else {
-                Some(Malloced::slice_from_raw_parts(
-                    data.cast::<&Method>(),
-                    len.assume_init() as usize,
-                ))
-            }
-        }
+        self.metaclass().copy_instance_method_list()
     }
 
     /// Returns a reference to the data for an instance method defined by
@@ -288,6 +310,30 @@ impl Class {
     #[doc(alias = "class_getInstanceMethod")]
     pub fn get_instance_method(&self, name: Sel) -> Option<&Method> {
         unsafe { sys::class_getInstanceMethod(self, name).as_ref() }
+    }
+
+    /// Returns the instance variables declared by this class, or `None` if
+    /// this class declares no instance variables.
+    ///
+    /// See [`documentation`](https://developer.apple.com/documentation/objectivec/1418910-class_copyivarlist?language=objc).
+    #[cfg(feature = "malloced")]
+    #[inline]
+    #[doc(alias = "class_copyIvarList")]
+    pub fn copy_instance_ivar_list(&self) -> Option<Malloced<[&Ivar]>> {
+        use std::{mem::MaybeUninit, os::raw::c_uint};
+
+        let mut len = MaybeUninit::<c_uint>::uninit();
+        unsafe {
+            let data = sys::class_copyIvarList(self, len.as_mut_ptr());
+            if data.is_null() {
+                None
+            } else {
+                Some(Malloced::slice_from_raw_parts(
+                    data.cast::<&Ivar>(),
+                    len.assume_init() as usize,
+                ))
+            }
+        }
     }
 
     /// Returns the instance methods implemented by this class, or `None` if

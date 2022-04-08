@@ -5,6 +5,8 @@ mod description;
 
 pub use description::*;
 
+use super::TypeEncoding;
+
 /// A pointer to the function of a method implementation.
 ///
 /// The first argument is a pointer to `self` (that is, the memory for the
@@ -82,13 +84,13 @@ impl Method {
     /// See [documentation](https://developer.apple.com/documentation/objectivec/1418488-method_gettypeencoding?language=objc).
     #[inline]
     #[doc(alias = "method_getTypeEncoding")]
-    pub fn type_encoding(&self) -> Option<&CStr> {
+    pub fn type_encoding(&self) -> Option<&TypeEncoding> {
         unsafe {
             let encoding = sys::method_getTypeEncoding(self);
             if encoding.is_null() {
                 None
             } else {
-                Some(CStr::from_ptr(encoding))
+                Some(TypeEncoding::from_ptr(encoding))
             }
         }
     }

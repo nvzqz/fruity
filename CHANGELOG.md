@@ -7,6 +7,18 @@ The format is based on [Keep a Changelog] and this project adheres to
 
 ## [Unreleased]
 
+### Added
+
+- Added APIs to `objc` module:
+
+  - `Ivar` opaque type.
+
+  - `TypeEncoding` thin C string for ObjC `@encode(type)`.
+
+### Changed
+
+- **\[breaking\]** `Method::type_encoding` uses `TypeEncoding` over `CStr`.
+
 ## [0.3.0]
 
 ### Added

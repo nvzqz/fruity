@@ -41,7 +41,7 @@ impl<'data> NSObject<'data> {
     /// See [documentation](https://developer.apple.com/documentation/objectivec/1418956-nsobject/1418583-respondstoselector).
     #[inline]
     pub fn responds_to_selector(&self, selector: Sel) -> bool {
-        unsafe { _msg_send_any_cached![self, respondsToSelector: selector => BOOL] }.into()
+        self.0.responds_to_selector(selector)
     }
 
     /// Returns `true` if this object is an instance or subclass of `class`.
