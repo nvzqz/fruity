@@ -75,8 +75,8 @@ impl Method {
 
     /// Returns [`name`](Self::name) as a C string.
     #[inline]
-    pub fn name_c_str(&self) -> &'static CStr {
-        self.name().name()
+    pub fn name_cstr(&self) -> &'static CStr {
+        self.name().as_cstr()
     }
 
     /// Returns a C string describing this method's parameter and return types.

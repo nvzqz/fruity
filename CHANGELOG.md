@@ -18,6 +18,8 @@ The format is based on [Keep a Changelog] and this project adheres to
 ### Changed
 
 - **\[breaking\]** `Method::type_encoding` uses `TypeEncoding` over `CStr`.
+- **\[breaking\]** `Method::as_c_str` to `Method::as_cstr`.
+- **\[breaking\]** `Sel::name` to `Sel::as_cstr`.
 
 ## [0.3.0]
 

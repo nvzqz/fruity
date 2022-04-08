@@ -41,7 +41,7 @@ impl Eq for Sel {}
 impl fmt::Debug for Sel {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        self.name().fmt(f)
+        self.as_cstr().fmt(f)
     }
 }
 
@@ -92,7 +92,7 @@ impl Sel {
 
     /// Returns the name of the method this selector refers to.
     #[inline]
-    pub fn name(self) -> &'static CStr {
+    pub fn as_cstr(self) -> &'static CStr {
         unsafe { CStr::from_ptr(sel_getName(self)) }
     }
 }
