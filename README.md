@@ -32,7 +32,7 @@ by adding the following to your project's [`Cargo.toml`]:
 
 ```toml
 [dependencies.fruity]
-version = "0.2.0"
+version = "0.3.0"
 ```
 
 ### Feature Flags
@@ -42,17 +42,17 @@ Each module for a library or framework has its own
 with the same name.
 
 For example, this is how you enable the
-[`foundation`](https://docs.rs/fruity/0.2.0/fruity/foundation/index.html)
+[`foundation`](https://docs.rs/fruity/0.3.0/fruity/foundation/index.html)
 module:
 
 ```toml
 [dependencies.fruity]
-version = "0.2.0"
+version = "0.3.0"
 features = ["foundation"]
 ```
 
 This feature transitively enables the
-[`objc`](https://docs.rs/fruity/0.2.0/fruity/objc/index.html)
+[`objc`](https://docs.rs/fruity/0.3.0/fruity/objc/index.html)
 feature/module.
 
 ## Goals
@@ -67,7 +67,7 @@ Fruity makes interfacing with these C and Objective-C APIs feel natural in Rust.
   [ownership model](https://doc.rust-lang.org/book/ch04-01-what-is-ownership.html)
   to handle object reference counting for you.
 
-  [`NSObject`](https://docs.rs/fruity/0.2.0/fruity/objc/struct.NSObject.html)
+  [`NSObject`](https://docs.rs/fruity/0.3.0/fruity/objc/struct.NSObject.html)
   is a smart pointer that calls
   [`retain`](https://developer.apple.com/documentation/objectivec/1418956-nsobject/1571946-retain)
   on [`Clone`](https://doc.rust-lang.org/std/clone/trait.Clone.html) and
@@ -83,7 +83,7 @@ Fruity makes interfacing with these C and Objective-C APIs feel natural in Rust.
   objects.
 
   Fruity reverses that and instead makes all objects (such as
-  [`NSObject`](https://docs.rs/fruity/0.2.0/fruity/objc/struct.NSObject.html))
+  [`NSObject`](https://docs.rs/fruity/0.3.0/fruity/objc/struct.NSObject.html))
   non-null by default. An object can be made nullable by wrapping it with
   [`Option<T>`](https://doc.rust-lang.org/std/option/enum.Option.html).
 
@@ -95,7 +95,7 @@ Fruity makes interfacing with these C and Objective-C APIs feel natural in Rust.
   - `NSObject * _Nullable` and `Option<NSObject>`
 
   This is because
-  [`NSObject`](https://docs.rs/fruity/0.2.0/fruity/objc/struct.NSObject.html)
+  [`NSObject`](https://docs.rs/fruity/0.3.0/fruity/objc/struct.NSObject.html)
   is a
   [`#[repr(transparent)]`](https://doc.rust-lang.org/nomicon/other-reprs.html#reprtransparent)
   wrapper around a
@@ -165,7 +165,7 @@ This is true for the following:
 
 - **Creating an `NSString` from a Rust string literal.**
 
-  The [`nsstring!`](https://docs.rs/fruity/0.2.0/fruity/macro.nsstring.html)
+  The [`nsstring!`](https://docs.rs/fruity/0.3.0/fruity/macro.nsstring.html)
   macro creates an `NSString` literal (i.e. `@"string"`) at compile time. There
   is no runtime dispatch/allocation/initialization cost.
 
