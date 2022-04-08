@@ -161,9 +161,9 @@ macro_rules! ns_string {
 
         let cfstring_ptr: *const $crate::_priv::c_void = {
             // Remove any trailing null early.
-            const INPUT: &[u8] = $crate::_priv::cfstring::trim_trailing_nul($s);
+            const INPUT: &[u8] = $crate::_priv::cf_string::trim_trailing_nul($s);
 
-            if $crate::_priv::cfstring::is_ascii(INPUT) {
+            if $crate::_priv::cf_string::is_ascii(INPUT) {
                 // The ASCII bytes with a trailing null byte.
                 #[repr(C)]
                 struct Ascii {
@@ -180,8 +180,8 @@ macro_rules! ns_string {
                     unsafe { $crate::_priv::std::mem::transmute(&ASCII) };
 
                 #[link_section = "__DATA,__cfstring,regular"]
-                static CFSTRING: $crate::_priv::cfstring::CFStringAscii =
-                    $crate::_priv::cfstring::CFStringAscii::new(
+                static CFSTRING: $crate::_priv::cf_string::CFStringAscii =
+                    $crate::_priv::cf_string::CFStringAscii::new(
                         unsafe { &__CFConstantStringClassReference },
                         ASCII_ARRAY.as_ptr(),
                         // The length does not include the trailing null.
@@ -193,7 +193,7 @@ macro_rules! ns_string {
                 // The full UTF-16 contents along with the written length.
                 const UTF16_FULL: (&[u16; INPUT.len()], usize) = {
                     let mut out = [0u16; INPUT.len()];
-                    let mut iter = $crate::_priv::cfstring::utf16::EncodeUtf16Iter::new(INPUT);
+                    let mut iter = $crate::_priv::cf_string::utf16::EncodeUtf16Iter::new(INPUT);
                     let mut written = 0;
 
                     while let Some((state, chars)) = iter.next() {
@@ -228,8 +228,8 @@ macro_rules! ns_string {
                     unsafe { $crate::_priv::std::mem::transmute(&UTF16) };
 
                 #[link_section = "__DATA,__cfstring,regular"]
-                static CFSTRING: $crate::_priv::cfstring::CFStringUtf16 =
-                    $crate::_priv::cfstring::CFStringUtf16::new(
+                static CFSTRING: $crate::_priv::cf_string::CFStringUtf16 =
+                    $crate::_priv::cf_string::CFStringUtf16::new(
                         unsafe { &__CFConstantStringClassReference },
                         UTF16_ARRAY.as_ptr(),
                         // The length does not include the trailing null.
