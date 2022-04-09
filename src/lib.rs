@@ -171,6 +171,9 @@
 #![deny(improper_ctypes)]
 #![warn(missing_docs)]
 
+#[cfg(feature = "libc")]
+pub extern crate libc;
+
 pub(crate) mod common;
 
 #[macro_use]
