@@ -52,5 +52,6 @@ pub type NSTimeInterval = f64;
 #[allow(non_upper_case_globals)]
 pub const NSNotFound: crate::objc::NSInteger = crate::objc::NSIntegerMax;
 
-#[link(name = "Foundation", kind = "framework")]
+#[cfg_attr(target_vendor = "apple", link(name = "Foundation", kind = "framework"))]
+#[cfg_attr(not(target_vendor = "apple"), link(name = "Foundation"))]
 extern "C" {}

@@ -7,7 +7,8 @@
 
 #![cfg(feature = "core_graphics")]
 
-#[link(name = "CoreGraphics", kind = "framework")]
+#[cfg_attr(target_vendor = "apple", link(name = "CoreGraphics", kind = "framework"))]
+#[cfg_attr(not(target_vendor = "apple"), link(name = "CoreGraphics"))]
 extern "C" {}
 
 mod geometry;
