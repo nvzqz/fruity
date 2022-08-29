@@ -107,6 +107,7 @@ impl From<c_uint> for Arc<NSNumber> {
     }
 }
 
+#[cfg(not(windows))] // On windows, c_long and c_int are the same type.
 impl From<c_long> for Arc<NSNumber> {
     #[inline]
     fn from(value: c_long) -> Self {
@@ -114,6 +115,7 @@ impl From<c_long> for Arc<NSNumber> {
     }
 }
 
+#[cfg(not(windows))] // On windows, c_ulong and c_uint are the same type.
 impl From<c_ulong> for Arc<NSNumber> {
     #[inline]
     fn from(value: c_ulong) -> Self {
